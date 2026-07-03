@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Expand-Archive -Path \"assets\\\\iloveimg-converted.zip\" -DestinationPath \"$env:TEMP\\\\claude\\\\iloveimg-check\" -Force; Get-ChildItem \"$env:TEMP\\\\claude\\\\iloveimg-check\" -Recurse | Select-Object Name, @{N='KB';E={[math]::Round\\($_.Length/1KB\\)}})",
+      "PowerShell(foreach \\($cmd in 'magick','cwebp','ffmpeg','node','npx'\\) { $c = Get-Command $cmd -ErrorAction SilentlyContinue; if \\($c\\) { Write-Output \"$cmd => $\\($c.Source\\)\" } else { Write-Output \"$cmd => NO\" } })"
+    ]
+  }
+}
