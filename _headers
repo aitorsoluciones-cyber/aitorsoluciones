@@ -1,0 +1,25 @@
+/assets/img/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/styles.css
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/assets/script.js
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+
+/manifest.webmanifest
+  Content-Type: application/manifest+json
+  Cache-Control: public, max-age=3600
+
+/service-worker.js
+  Content-Type: application/javascript; charset=utf-8
+  Cache-Control: no-cache, no-store, must-revalidate
+  Service-Worker-Allowed: /
+
+/offline.html
+  Cache-Control: public, max-age=3600
