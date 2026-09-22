@@ -25,13 +25,24 @@
 {{ obj | jsonify | safe }}
 {% endmacro %}
 
-{% macro websiteSchema(business) %}
-{% set obj = { "@context": "https://schema.org", "@type": "WebSite", "@id": business.domain + "/#website", "url": business.domain + "/", "name": business.name, "inLanguage": "es" } %}
+{% macro websiteSchema(business, lang) %}
+{% set obj = { "@context": "https://schema.org", "@type": "WebSite", "@id": business.domain + "/#website", "url": business.domain + "/", "name": business.name, "inLanguage": (lang or "es") } %}
 {{ obj | jsonify | safe }}
 {% endmacro %}
 
 {% macro serviceSchema(business, service) %}
 {% set obj = { "@context": "https://schema.org", "@type": "Service", "name": service.name, "provider": { "@id": business.domain + "/#business" }, "areaServed": "Alcanar y alrededores", "url": business.domain + service.url, "description": service.metaDescription } %}
+{{ obj | jsonify | safe }}
+{% endmacro %}
+
+{% macro locationServiceSchema(business, location, serviceName, url, description) %}
+{% set obj = { "@context": "https://schema.org", "@type": "Service", "name": serviceName, "provider": { "@id": business.domain + "/#business" }, "areaServed": { "@type": "City", "name": location.name }, "url": business.domain + url, "description": description } %}
+{{ obj | jsonify | safe }}
+{% endmacro %}
+
+{% macro imageGallerySchema(business, images) %}
+{% set obj = { "@context": "https://schema.org", "@type": "ImageGallery", "image": [] } %}
+{% for img in images %}{% set entry = { "@type": "ImageObject", "contentUrl": business.domain + "/assets/img/" + img.name + ".webp", "caption": img.caption } %}{% set _ = obj.image.push(entry) %}{% endfor %}
 {{ obj | jsonify | safe }}
 {% endmacro %}
 

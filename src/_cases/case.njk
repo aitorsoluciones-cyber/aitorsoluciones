@@ -5,7 +5,7 @@ pagination:
   alias: case
 permalink: "/trabajos/{{ case.slug }}/"
 eleventyComputed:
-  title: "{{ case.title }} | Trabajos reales | Aitor Soluciones"
+  title: "{{ case.title }} | Aitor Soluciones"
   description: "{{ case.problem }}"
 layout: layouts/base.njk
 ---
@@ -20,8 +20,14 @@ layout: layouts/base.njk
 {% set waMsg = "Hola Aitor, he visto el trabajo \"" + case.title + "\" en la web. Quiero valorar algo parecido. La ubicación es..." %}
 {% set waLinkCase = business.whatsapp | waLink(waMsg) %}
 {% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Trabajos", url: "/trabajos/" }, { label: case.title, url: "/trabajos/" + case.slug + "/" }] %}
+{% set galleryImages = [{ name: case.before, caption: case.title + " - antes" }, { name: case.after, caption: case.title + " - después" }] %}
+{% if case.gallery and case.gallery.length %}{% for pair in case.gallery %}
+{% if pair.before %}{% set _ = galleryImages.push({ name: pair.before, caption: case.title + " - detalle antes" }) %}{% endif %}
+{% if pair.after %}{% set _ = galleryImages.push({ name: pair.after, caption: case.title + " - detalle después" }) %}{% endif %}
+{% endfor %}{% endif %}
 
 <script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+<script type="application/ld+json">{{ ld.imageGallerySchema(business, galleryImages) | safe }}</script>
 
 <div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
 
@@ -42,8 +48,8 @@ layout: layouts/base.njk
 {% for pair in case.gallery %}
 <article class="work">
 <div class="work-pair">
-{% if pair.before %}<img src="/assets/img/{{ pair.before }}.webp" alt="{{ case.title }} - detalle antes" loading="lazy" width="800" height="1067">{% endif %}
-{% if pair.after %}<img src="/assets/img/{{ pair.after }}.webp" alt="{{ case.title }} - detalle después" loading="lazy" width="800" height="1067" style="{% if not pair.before %}grid-column:1 / -1{% endif %}">{% endif %}
+{% if pair.before %}<a href="/assets/img/{{ pair.before }}.webp" target="_blank" rel="noopener"><img src="/assets/img/{{ pair.before }}-sm.webp" alt="{{ case.title }} - detalle antes" loading="lazy" width="480" height="640"></a>{% endif %}
+{% if pair.after %}<a href="/assets/img/{{ pair.after }}.webp" target="_blank" rel="noopener"><img src="/assets/img/{{ pair.after }}-sm.webp" alt="{{ case.title }} - detalle después" loading="lazy" width="480" height="640" style="{% if not pair.before %}grid-column:1 / -1{% endif %}"></a>{% endif %}
 </div>
 </article>
 {% endfor %}

@@ -1,5 +1,5 @@
 /assets/img/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=604800, must-revalidate
 
 /assets/styles.css
   Cache-Control: public, max-age=3600, must-revalidate

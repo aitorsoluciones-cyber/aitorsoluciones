@@ -1,0 +1,61 @@
+Corrige hallazgos CRITICO/IMPORTANTE del QA final y varias mejoras
+
+CRITICO
+- sitemap.xml: generado ahora desde los datos (activeServices,
+  landingLocations, publishedCases) en lugar de collections.all, que solo
+  incluia una pagina por plantilla paginada. Pasa de 13 a 22 URLs, con las
+  6 paginas de servicio, las 5 locales y los 3 casos reales.
+- /offline/ vs /offline.html: eran dos copias del mismo contenido (una via
+  passthrough, otra procesada por Eleventy). Se elimina el passthrough
+  duplicado, se fija permalink "/offline.html" y se anade
+  noindex,nofollow. Ya no aparece en el sitemap.
+
+IMPORTANTE
+- /mantenimiento-fincas-alcanar/ pasa a noindex,follow: deja de competir
+  con /mantenimiento-jardines/ por la misma intencion sin aplicar todavia
+  el 301 (sigue pendiente de revisar Search Console, tal como pide el
+  spec). El enlace a la pagina nueva se mantiene.
+- Formulario: el select de servicio comparaba el texto contra
+  service.name, que no coincidia con las opciones (ej. "Desbroce y
+  parcelas" vs "Desbroce de parcela o solar"), asi que siempre quedaba en
+  la primera opcion. Ahora compara por id estable y preselecciona bien
+  segun la pagina.
+- Pagina en ingles: cabecera, pie y CTA de WhatsApp estaban en espanol (y
+  el CTA de cabecera ademas usaba el mensaje de WhatsApp en espanol por un
+  fallback incorrecto). Se anaden siteHeaderEn/siteFooterEn y un mensaje
+  de WhatsApp por defecto en ingles; WebSite schema pasa a inLanguage:"en".
+- Cabecera: el punto de quiebre a menu movil sube de 980px a 1150px para
+  que no se comprima entre ~980-1150px con dos desplegables + selector de
+  idioma + CTA.
+- Menu movil: max-height + overflow-y:auto para que no se corte en
+  pantallas bajas; cierra con Escape y clic fuera; el aria-label alterna
+  Abrir/Cerrar (y Open/Close en ingles).
+- Cache de imagenes: se quita "immutable" (los nombres no llevan hash) y
+  se reduce a 1 semana; se elimina la duplicacion de cabeceras entre
+  netlify.toml y src/_headers, dejando _headers como unica fuente.
+- Miniaturas: nuevo tools/make-thumbnails.mjs genera variantes -sm
+  (480px, 40-110 KB) de todas las fotos reales antes/despues. La galeria
+  de /trabajos/ y las fichas de caso usan las miniaturas; el componente
+  beforeAfter incorpora srcset/sizes (480w/1200w).
+- Paginas locales: se anade JSON-LD Service por localidad (areaServed =
+  ciudad, provider = LocalBusiness).
+
+MEJORA
+- Home: la tarjeta de jardineria duplicada en el bloque de servicio
+  principal se sustituye por un enlace "Ver toda la jardineria ->".
+- Formulario: solo nombre, telefono, localidad, servicio y consentimiento
+  son obligatorios; metros, fecha, restos y descripcion pasan a
+  (opcional). La casilla de privacidad tiene name="acepta-privacidad".
+- Titles largos recortados (quitando "y alrededores" donde no aportaba) en
+  los servicios y en el patron de titulo de las fichas de caso.
+- Casos reales: JSON-LD ImageGallery/ImageObject para las fotos de cada
+  ficha; las imagenes de detalle enlazan a la version grande al hacer
+  clic.
+- Service worker: CACHE_VERSION a v6 y precache alineado exactamente con
+  las URLs que pide el HTML (styles.css?v=6, script.js sin query).
+
+No se ha configurado GA4/GTM (MEASUREMENT_ID sigue vacio): el spec pide no
+inventar IDs de analitica; el usuario debe indicarlo antes de publicar.
+
+tools/check-links.mjs ahora tambien valida src/srcset de <img>, no solo
+href. Build limpio, 0 enlaces/recursos rotos, 91 bloques JSON-LD validos.

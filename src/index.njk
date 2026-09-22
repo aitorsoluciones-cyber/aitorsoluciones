@@ -29,8 +29,8 @@ layout: layouts/base.njk
 <div class="section-head"><span class="eyebrow">Servicio principal</span><h2>Jardinería: mantenimiento, desbroce y poda</h2><p>El eje principal de Aitor Soluciones. Nos centramos en los trabajos que más necesitas para recuperar y mantener un jardín, una parcela o una finca.</p></div>
 <div class="services-grid">
 {% for childId in jardineria.childServiceIds %}{% set child = services | findById(childId) %}{{ cardsc.serviceCard(child) }}{% endfor %}
-{{ cardsc.serviceCard(jardineria) }}
 </div>
+<p style="margin-top:18px"><a href="/jardineria/">Ver toda la jardinería →</a></p>
 </div></section>
 
 <section class="section section-soft"><div class="container">

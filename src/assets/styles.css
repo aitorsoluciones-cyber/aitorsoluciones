@@ -111,8 +111,8 @@ footer a{color:#fff}
 .local-photo img{width:100%;height:520px;object-fit:cover}
 .kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
 .kpi{background:#fff;border:1px solid var(--line);padding:16px;border-radius:16px;text-align:center;font-weight:900;color:var(--navy)}
-@media(max-width:980px){
-  .nav-links{display:none;position:absolute;left:0;right:0;top:78px;background:#fff;padding:20px 22px;border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch}
+@media(max-width:1150px){
+  .nav-links{display:none;position:absolute;left:0;right:0;top:78px;background:#fff;padding:20px 22px;border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;max-height:calc(100vh - 78px);overflow-y:auto}
   .nav-links.open{display:flex}
   .menu-toggle{display:block}
   .hero-grid,.pack,.contact-box,.local-grid{grid-template-columns:1fr}
@@ -185,7 +185,7 @@ a.btn[href^="tel:"]::before{-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns
 .nav-dropdown-panel a{padding:10px 12px;border-radius:10px;white-space:nowrap}
 .nav-dropdown-panel a:hover{background:var(--bg)}
 .nav-dropdown:hover .nav-dropdown-panel,.nav-dropdown:focus-within .nav-dropdown-panel{display:flex}
-@media(max-width:980px){
+@media(max-width:1150px){
   .nav-dropdown-panel{display:flex;position:static;box-shadow:none;border:0;padding:0 0 0 14px;min-width:0}
 }
 

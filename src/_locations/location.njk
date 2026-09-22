@@ -25,6 +25,7 @@ layout: layouts/base.njk
 {% set caseObj = workCases | findById(lp.caseId) %}
 
 <script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+<script type="application/ld+json">{{ ld.locationServiceSchema(business, location, lp.h1, location.url, lp.metaDescription) | safe }}</script>
 {% if lp.faqLocal.length %}<script type="application/ld+json">{{ ld.faqSchema(lp.faqLocal) | safe }}</script>{% endif %}
 
 <section class="local-hero"><div class="container breadcrumbs"><a href="/">Inicio</a> <span aria-hidden="true">›</span> {{ location.name }}</div>

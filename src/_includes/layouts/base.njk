@@ -34,15 +34,23 @@
 <meta name="twitter:card" content="summary_large_image">
 {% if not noindex %}
 <script type="application/ld+json">{{ ld.organizationSchema(business) | safe }}</script>
-<script type="application/ld+json">{{ ld.websiteSchema(business) | safe }}</script>
+<script type="application/ld+json">{{ ld.websiteSchema(business, lang) | safe }}</script>
 {% endif %}
 </head>
 <body>
+{% if lang == "en" %}
+{{ navc.siteHeaderEn(business, services, waLink or (business.whatsapp | waLink(business.waMessageDefaultEn))) }}
+<main>
+{{ content | safe }}
+</main>
+{{ navc.siteFooterEn(business, waLink or (business.whatsapp | waLink(business.waMessageDefaultEn))) }}
+{% else %}
 {{ navc.siteHeader(business, services, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}
 <main>
 {{ content | safe }}
 </main>
 {{ navc.siteFooter(business, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}
+{% endif %}
 <script src="/assets/script.js" defer></script>
 </body>
 </html>

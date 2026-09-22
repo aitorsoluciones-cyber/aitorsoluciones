@@ -28,7 +28,11 @@ const knownExternalPrefixes = ["http://", "https://", "mailto:", "tel:"];
 for (const file of htmlFiles) {
   const html = await fs.readFile(file, "utf8");
   const hrefs = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
-  for (const href of hrefs) {
+  const srcs = [...html.matchAll(/\ssrc="([^"]+)"/g)].map((m) => m[1]);
+  const srcsetUrls = [...html.matchAll(/srcset="([^"]+)"/g)].flatMap((m) =>
+    m[1].split(",").map((part) => part.trim().split(/\s+/)[0])
+  );
+  for (const href of [...hrefs, ...srcs, ...srcsetUrls]) {
     if (knownExternalPrefixes.some((p) => href.startsWith(p))) continue;
     if (!href.startsWith("/")) continue;
     if (href.startsWith("/assets/") || href === "/manifest.webmanifest" || href === "/sitemap.xml" || href === "/robots.txt" || href.startsWith("/service-worker.js")) {

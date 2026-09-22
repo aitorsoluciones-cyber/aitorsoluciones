@@ -30,6 +30,37 @@
 </div></header>
 {% endmacro %}
 
+{% macro siteHeaderEn(business, services, waLink) %}
+<div class="topbar"><div class="container topbar-inner">
+<span>{{ business.base }} · Local service up to {{ business.serviceRadiusKm }} km</span>
+<a href="tel:{{ business.phone }}" data-lead="phone" data-source="topbar">{{ business.phoneDisplay }}</a>
+</div></div>
+<header class="site-header"><div class="container nav">
+<a class="logo" href="/en/property-maintenance/" aria-label="{{ business.name }}, home"><img src="{{ business.logo }}" alt="{{ business.name }}" width="500" height="154"></a>
+<button class="menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<nav class="nav-links" aria-label="Main navigation">
+<a href="/en/property-maintenance/#services">Services</a>
+<a href="/en/property-maintenance/#results">Results</a>
+<a href="/en/property-maintenance/#faq">FAQ</a>
+<a class="lang-link" href="/">ES</a>
+<a class="btn btn-primary" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="header">Send photos on WhatsApp</a>
+</nav>
+</div></header>
+{% endmacro %}
+
+{% macro siteFooterEn(business, waLink) %}
+<footer><div class="container footer-grid">
+<div><img class="footer-logo" src="{{ business.logo }}" alt="{{ business.name }}" width="500" height="154"><p>Garden and property maintenance. Local service, direct contact and clear quotes.</p></div>
+<div><h3>Services</h3><p><a href="/mantenimiento-segundas-residencias/">Second home maintenance (ES)</a><br><a href="/jardineria/">Jardinería (ES)</a></p></div>
+<div><h3>Contact</h3><p><a href="tel:{{ business.phone }}">{{ business.phoneDisplay }}</a><br><a href="mailto:{{ business.email }}">{{ business.email }}</a><br>{{ business.base }}</p></div>
+<div><h3>Information</h3><p><a href="/">Español</a><br><a href="/politica-privacidad/">Privacy policy (ES)</a><br><a href="/aviso-legal/">Legal notice (ES)</a><br><a href="/sitemap.xml">Sitemap</a></p></div>
+</div></footer>
+<div class="mobile-bar">
+<a class="btn btn-secondary" href="tel:{{ business.phone }}" data-lead="phone" data-source="mobile_bar">Call</a>
+<a class="btn btn-whatsapp" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="mobile_bar">WhatsApp</a>
+</div>
+{% endmacro %}
+
 {% macro siteFooter(business, waLink) %}
 <footer><div class="container footer-grid">
 <div><img class="footer-logo" src="{{ business.logo }}" alt="{{ business.name }}" width="500" height="154"><p>Jardinería y mantenimiento de propiedades en Alcanar y alrededores. Trabajo local, trato directo y presupuesto claro.</p></div>

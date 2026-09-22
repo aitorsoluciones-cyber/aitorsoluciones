@@ -2,7 +2,6 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/manifest.webmanifest": "manifest.webmanifest" });
   eleventyConfig.addPassthroughCopy({ "src/service-worker.js": "service-worker.js" });
-  eleventyConfig.addPassthroughCopy({ "src/offline.html": "offline.html" });
   eleventyConfig.addPassthroughCopy({ "src/_redirects": "_redirects" });
   eleventyConfig.addPassthroughCopy({ "src/_headers": "_headers" });
 

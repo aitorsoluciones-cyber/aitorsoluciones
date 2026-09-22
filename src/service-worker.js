@@ -1,4 +1,4 @@
-const CACHE_VERSION = "aitor-soluciones-v5";
+const CACHE_VERSION = "aitor-soluciones-v6";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -6,8 +6,8 @@ const PRECACHE_URLS = [
   "/",
   "/offline.html",
   "/manifest.webmanifest",
-  "/assets/styles.css?v=5",
-  "/assets/script.js?v=5",
+  "/assets/styles.css?v=6",
+  "/assets/script.js",
   "/assets/img/logo-aitor-soluciones.webp",
   "/assets/img/favicon.png",
   "/assets/img/apple-touch-icon.png",

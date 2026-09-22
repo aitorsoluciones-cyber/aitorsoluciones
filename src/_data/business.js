@@ -20,6 +20,8 @@ export default {
     "Envíanos 2 o 3 fotos, la localidad y qué necesitas. Te indicaremos cómo lo plantearíamos y si hace falta verlo en persona.",
   waMessageDefault:
     "Hola Aitor, vengo de la web. Quiero valorar un trabajo de jardinería o mantenimiento. La ubicación es...",
+  waMessageDefaultEn:
+    "Hello Aitor, I found the English website. I would like a quote for my property. The location is...",
   defaultProcessSteps: [
     { title: "Envías fotos y ubicación", text: "Con metros aproximados y qué quieres conservar o retirar." },
     { title: "Valoración o visita", text: "Te decimos si podemos orientarte por fotos o si conviene verlo." },

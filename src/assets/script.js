@@ -2,13 +2,33 @@
 const menuBtn = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
 if (menuBtn && navLinks) {
+  const openLabel = menuBtn.getAttribute('aria-label') || 'Abrir menú';
+  const closeLabel = openLabel.replace(/^Abrir/, 'Cerrar').replace(/^Open/, 'Close');
+  const closeNav = () => {
+    navLinks.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    menuBtn.setAttribute('aria-label', openLabel);
+  };
   menuBtn.addEventListener('click', () => {
     const isOpen = navLinks.classList.toggle('open');
     menuBtn.setAttribute('aria-expanded', String(isOpen));
+    menuBtn.setAttribute('aria-label', isOpen ? closeLabel : openLabel);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navLinks.classList.contains('open')) closeNav();
+  });
+  document.addEventListener('click', (e) => {
+    if (navLinks.classList.contains('open') && !navLinks.contains(e.target) && !menuBtn.contains(e.target)) {
+      closeNav();
+    }
   });
 }
 document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click',()=>navLinks?.classList.remove('open'));
+  a.addEventListener('click',()=>{
+    navLinks?.classList.remove('open');
+    menuBtn?.setAttribute('aria-expanded', 'false');
+    if (menuBtn) menuBtn.setAttribute('aria-label', menuBtn.getAttribute('aria-label').replace(/^Cerrar/, 'Abrir').replace(/^Close/, 'Open'));
+  });
 });
 
 /* ============================================================

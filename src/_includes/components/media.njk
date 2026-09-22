@@ -1,8 +1,8 @@
 {% macro beforeAfter(before, after, beforeAlt, afterAlt, resultText) %}
 <div class="before-after" aria-label="Antes y después">
 <div class="before-after-grid">
-<figure><img src="/assets/img/{{ before }}.webp" alt="{{ beforeAlt }}" width="800" height="1067" loading="lazy"><span class="label">ANTES</span></figure>
-<figure class="after"><img src="/assets/img/{{ after }}.webp" alt="{{ afterAlt }}" width="800" height="1067" loading="lazy"><span class="label">DESPUÉS</span></figure>
+<figure><img src="/assets/img/{{ before }}.webp" srcset="/assets/img/{{ before }}-sm.webp 480w, /assets/img/{{ before }}.webp 1200w" sizes="(max-width: 640px) 92vw, 560px" alt="{{ beforeAlt }}" width="800" height="1067" loading="lazy"><span class="label">ANTES</span></figure>
+<figure class="after"><img src="/assets/img/{{ after }}.webp" srcset="/assets/img/{{ after }}-sm.webp 480w, /assets/img/{{ after }}.webp 1200w" sizes="(max-width: 640px) 92vw, 560px" alt="{{ afterAlt }}" width="800" height="1067" loading="lazy"><span class="label">DESPUÉS</span></figure>
 </div>
 {% if resultText %}<div class="result-card">{{ resultText }}</div>{% endif %}
 </div>
@@ -14,8 +14,8 @@
 {% set loc = locations | findById(c.locationId) %}
 <article class="work">
 <div class="work-pair">
-<img src="/assets/img/{{ c.before }}.webp" alt="{{ c.title }} - antes" loading="lazy" width="800" height="1067">
-<img src="/assets/img/{{ c.after }}.webp" alt="{{ c.title }} - después" loading="lazy" width="800" height="1067">
+<img src="/assets/img/{{ c.before }}-sm.webp" alt="{{ c.title }} - antes" loading="lazy" width="480" height="640">
+<img src="/assets/img/{{ c.after }}-sm.webp" alt="{{ c.title }} - después" loading="lazy" width="480" height="640">
 </div>
 <div class="work-copy">
 {% if loc %}<strong>{{ loc.name }}</strong>{% endif %}

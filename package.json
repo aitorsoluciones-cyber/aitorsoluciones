@@ -7,7 +7,7 @@
   "scripts": {
     "build": "eleventy",
     "serve": "eleventy --serve",
-    "images": "node tools/convert-images.mjs",
+    "images": "node tools/convert-images.mjs && node tools/make-thumbnails.mjs",
     "linkcheck": "node tools/check-links.mjs"
   },
   "devDependencies": {
