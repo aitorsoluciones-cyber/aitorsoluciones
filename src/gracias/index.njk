@@ -1,0 +1,13 @@
+---
+title: "Gracias | Aitor Soluciones"
+description: "Hemos recibido tu consulta."
+noindex: true
+layout: layouts/base.njk
+---
+{% set waLinkGracias = business.whatsapp | waLink(business.waMessageDefault) %}
+<section class="section"><div class="container">
+<span class="eyebrow">Consulta enviada</span>
+<h1>Gracias. Te responderemos lo antes posible.</h1>
+<p class="lead">Para avanzar más rápido, envía también 2 o 3 fotos y la ubicación por WhatsApp.</p>
+<a class="btn btn-primary" href="{{ waLinkGracias }}" target="_blank" rel="noopener">Enviar fotos</a>
+</div></section>

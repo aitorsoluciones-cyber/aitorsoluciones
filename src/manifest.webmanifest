@@ -1,0 +1,75 @@
+{
+  "id": "/",
+  "name": "Aitor Soluciones",
+  "short_name": "Aitor",
+  "description": "Limpieza, desbroce y mantenimiento de fincas, parcelas, jardines y exteriores en Alcanar y alrededores.",
+  "lang": "es",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait-primary",
+  "background_color": "#FFFFFF",
+  "theme_color": "#071E3B",
+  "categories": [
+    "business",
+    "lifestyle",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/assets/img/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/img/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/img/pwa-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/img/pwa-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Pedir presupuesto",
+      "short_name": "Presupuesto",
+      "description": "Abrir WhatsApp para pedir una valoración",
+      "url": "https://wa.me/34603207780?text=Hola%20Aitor%2C%20vengo%20de%20la%20web.%20Quiero%20pedir%20presupuesto.",
+      "icons": [
+        {
+          "src": "/assets/img/pwa-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Llamar",
+      "short_name": "Llamar",
+      "description": "Llamar a Aitor Soluciones",
+      "url": "tel:+34603207780",
+      "icons": [
+        {
+          "src": "/assets/img/pwa-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

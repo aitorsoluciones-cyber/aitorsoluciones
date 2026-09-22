@@ -1,0 +1,120 @@
+---
+pagination:
+  data: activeServices
+  size: 1
+  alias: service
+permalink: "{{ service.url }}"
+eleventyComputed:
+  title: "{{ service.title }}"
+  description: "{{ service.metaDescription }}"
+layout: layouts/base.njk
+---
+{% import "components/hero.njk" as heroc %}
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/cards.njk" as cardsc %}
+{% import "components/media.njk" as mediac %}
+{% import "components/trust.njk" as trustc %}
+{% import "components/faq.njk" as faqc %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/related.njk" as relc %}
+{% import "components/form.njk" as formc %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set waMsg = "Hola Aitor, vengo de la web. Quiero valorar " + (service.name | lower) + ". La ubicación es..." %}
+{% set waLinkService = business.whatsapp | waLink(waMsg) %}
+{% set parentService = services | findById(service.parentId) %}
+{% set faqEntries = service.faqIds | pickByIds(faqs) %}
+{% if service.isHub %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: service.name, url: service.url }] %}
+{% else %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: parentService.name, url: parentService.url }, { label: service.name, url: service.url }] %}
+{% endif %}
+
+<script type="application/ld+json">{{ ld.serviceSchema(business, service) | safe }}</script>
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+{% if faqEntries.length %}<script type="application/ld+json">{{ ld.faqSchema(faqEntries) | safe }}</script>{% endif %}
+
+<div class="container">
+{{ bc.breadcrumbs(breadcrumbItems) }}
+</div>
+
+{{ heroc.pageHero(service.eyebrow, service.h1, service.intro or service.problem, waLinkService, service.slug) }}
+
+{% if service.isHub %}
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Servicios</span><h2>Accesos principales</h2></div>
+<div class="services-grid">
+{% for child in service.childServiceIds | pickByIds(services) %}{{ cardsc.serviceCard(child) }}{% endfor %}
+</div>
+</div></section>
+{% if service.images and service.images.before %}
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Antes y después</span><h2>Así dejamos el trabajo</h2></div>
+{{ mediac.beforeAfter(service.images.before, service.images.after, service.name + " antes", service.name + " después") }}
+</div></section>
+{% endif %}
+{% else %}
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">El problema</span><h2>Cuándo tiene sentido este servicio</h2><p>{{ service.problem }}</p></div>
+<p class="lead">{{ service.whatWeDo }}</p>
+<div class="includes-grid">
+<div><h3>Qué incluye</h3><ul class="includes-list">{% for item in service.includes %}<li>{{ item }}</li>{% endfor %}</ul></div>
+<div><h3>Qué requiere valoración aparte</h3><ul class="includes-list excludes-list">{% for item in service.excludes %}<li>{{ item }}</li>{% endfor %}</ul></div>
+</div>
+{% if service.forWhom %}<p class="note" style="margin-top:18px"><strong>Para quién:</strong> {{ service.forWhom }}</p>{% endif %}
+</div></section>
+
+{% if service.images and service.images.before %}
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Trabajo real</span><h2>Antes y después</h2></div>
+{{ mediac.beforeAfter(service.images.before, service.images.after, service.name + " antes", service.name + " después") }}
+{% if service.images.process %}<p class="note" style="margin-top:16px;text-align:center">Proceso de trabajo en la misma parcela.</p>{% endif %}
+</div></section>
+{% endif %}
+
+<section class="section section-dark"><div class="container">
+<div class="section-head"><span class="eyebrow">Proceso sencillo</span><h2>Cómo lo planteamos</h2></div>
+{{ trustc.process(business.defaultProcessSteps) }}
+</div></section>
+
+{% if service.periodicity %}
+<section class="section"><div class="container">
+{{ ctac.maintenanceCta(waLinkService) }}
+</div></section>
+{% endif %}
+{% endif %}
+
+<section class="section{% if service.isHub %} section-soft{% endif %}"><div class="container">
+<div class="section-head"><span class="eyebrow">Zonas</span><h2>Dónde trabajamos este servicio</h2><p>Base en {{ business.base }}, con desplazamiento habitual hasta {{ business.serviceRadiusKm }} km.</p></div>
+<div class="areas-grid">
+{% for loc in locations %}{% if loc.hasLandingPage %}{{ cardsc.locationCard(loc) }}{% endif %}{% endfor %}
+</div>
+<p style="margin-top:18px"><a href="/zonas/">Ver todas las zonas atendidas →</a></p>
+</div></section>
+
+{% set relatedCases = workCases | casesByService(service.id) %}
+{% if relatedCases.length %}
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Trabajos reales</span><h2>Casos relacionados</h2></div>
+{{ mediac.workGallery(relatedCases, locations) }}
+</div></section>
+{% endif %}
+
+{% if faqEntries.length %}
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Preguntas frecuentes</span><h2>Antes de pedir presupuesto</h2></div>
+{{ faqc.faqList(faqEntries) }}
+</div></section>
+{% endif %}
+
+<section class="section"><div class="container">
+{{ relc.relatedServices(service.relatedServiceIds, services, "Servicios relacionados") }}
+</div></section>
+
+<section class="section section-soft" id="contacto"><div class="container contact-box">
+<div>
+<span class="eyebrow">Pide valoración</span><h2>{{ business.ctaSupportMessage }}</h2>
+<div class="cta-row">{{ ctac.whatsappCta(waLinkService, "Abrir WhatsApp", service.slug + "_final") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, service.slug + "_final") }}</div>
+</div>
+{{ formc.leadForm(service.name, "") }}
+</div></section>

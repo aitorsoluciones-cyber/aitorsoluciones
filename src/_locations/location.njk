@@ -1,0 +1,77 @@
+---
+pagination:
+  data: landingLocations
+  size: 1
+  alias: location
+permalink: "{{ location.url }}"
+eleventyComputed:
+  title: "{{ localPages[location.id].title }}"
+  description: "{{ localPages[location.id].metaDescription }}"
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/cards.njk" as cardsc %}
+{% import "components/media.njk" as mediac %}
+{% import "components/faq.njk" as faqc %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/related.njk" as relc %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set lp = localPages[location.id] %}
+{% set waMsg = "Hola Aitor, vengo de la página de " + location.name + ". Quiero valorar un trabajo de jardinería o desbroce. La ubicación es..." %}
+{% set waLinkLoc = business.whatsapp | waLink(waMsg) %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: location.name, url: location.url }] %}
+{% set relatedServiceObjs = ["jardineria", "desbroce-parcelas", "mantenimiento-jardines", "poda-mantenimiento-exterior"] | pickByIds(services) %}
+{% set caseObj = workCases | findById(lp.caseId) %}
+
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+{% if lp.faqLocal.length %}<script type="application/ld+json">{{ ld.faqSchema(lp.faqLocal) | safe }}</script>{% endif %}
+
+<section class="local-hero"><div class="container breadcrumbs"><a href="/">Inicio</a> <span aria-hidden="true">›</span> {{ location.name }}</div>
+<div class="container local-grid">
+<div>
+<span class="eyebrow">Servicio local</span>
+<h1>{{ lp.h1 }}</h1>
+<p class="lead">{{ lp.lead }}</p>
+{% if lp.noPhysicalPresenceNote %}<p class="note">Servicio prestado desde nuestra base en {{ business.base }}, sin sede física en {{ location.name }}.</p>{% endif %}
+<div class="cta-row">
+<a class="btn btn-primary" href="{{ waLinkLoc }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="{{ location.id }}_hero">Enviar fotos por WhatsApp</a>
+<a class="btn btn-secondary" href="tel:{{ business.phone }}" data-lead="phone" data-source="{{ location.id }}_hero">Llamar</a>
+</div>
+<div class="kpi-row"><div class="kpi">Fotos reales</div><div class="kpi">Precio claro</div><div class="kpi">Trato directo</div></div>
+</div>
+<div class="local-photo"><img src="/assets/img/{{ lp.heroImage }}.webp" alt="{{ lp.heroImageAlt }}" width="800" height="1067" fetchpriority="high"></div>
+</div></section>
+
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Qué resolvemos</span><h2>{{ lp.introHeading }}</h2><p>{{ lp.introText }}</p></div>
+<div class="services-grid">
+{% for s in relatedServiceObjs %}{{ cardsc.serviceCard(s) }}{% endfor %}
+</div>
+<div class="zone-block"><h3>{{ lp.zoneHeading }}</h3><p>{{ lp.zoneText }}</p>
+<div class="zone-chips">{% for chip in lp.zoneChips %}<span>{{ chip }}</span>{% endfor %}</div></div>
+</div></section>
+
+<section class="section section-soft"><div class="container pack">
+<div><span class="eyebrow">Cómo pedir presupuesto</span><h2>Con 3 fotos y la ubicación podemos avanzar mucho</h2>
+<div class="pack-list"><div class="check">Indica los metros aproximados</div><div class="check">Explica qué quieres conservar o cortar</div><div class="check">Aclara si los restos se agrupan o se retiran</div><div class="check">Muestra el acceso para vehículo o remolque</div></div></div>
+<div><p class="lead">Te diremos si podemos orientarte por WhatsApp o si es mejor organizar una visita.</p><a class="btn btn-primary" href="{{ waLinkLoc }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="{{ location.id }}_process">Pedir valoración</a></div>
+</div></section>
+
+{% if caseObj %}
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Antes y después real</span><h2>Un resultado visible</h2><p>{{ caseObj.whatWeDid }}</p></div>
+{{ mediac.beforeAfter(caseObj.before, caseObj.after, caseObj.title + " antes", caseObj.title + " después") }}
+</div></section>
+{% endif %}
+
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Preguntas de {{ location.name }}</span><h2>Antes de contactar</h2></div>
+{{ faqc.faqList(lp.faqLocal) }}
+</div></section>
+
+<section class="section"><div class="container">
+{{ relc.relatedLocations(location.nearbyIds, locations, "Zonas cercanas") }}
+</div></section>
+
+<section class="section section-dark"><div class="container"><h2>¿Tu jardín o parcela está en {{ location.name }}?</h2><p class="lead">Envía ahora las fotos y la ubicación. Te responderemos personalmente.</p><a class="btn btn-primary" href="{{ waLinkLoc }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="{{ location.id }}_final">Abrir WhatsApp</a></div></section>

@@ -1,0 +1,21 @@
+{
+  "name": "aitor-soluciones-web",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Web de Aitor Soluciones (Eleventy, arquitectura por componentes y datos)",
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "images": "node tools/convert-images.mjs",
+    "linkcheck": "node tools/check-links.mjs"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "heic-convert": "^2.1.0",
+    "sharp": "^0.33.5"
+  },
+  "allowScripts": {
+    "sharp@0.33.5": true
+  }
+}

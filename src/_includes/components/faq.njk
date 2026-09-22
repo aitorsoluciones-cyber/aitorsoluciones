@@ -1,0 +1,7 @@
+{% macro faqList(items) %}
+<div class="faq">
+{% for f in items %}
+<details><summary>{{ f.question }}</summary><p>{{ f.answer }}</p></details>
+{% endfor %}
+</div>
+{% endmacro %}

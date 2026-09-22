@@ -1,0 +1,14 @@
+---
+title: "Política de privacidad | Aitor Soluciones"
+description: "Política de privacidad de Aitor Soluciones."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Política de privacidad", url: "/politica-privacidad/" }] %}
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+<section class="section"><div class="container">
+<h1>Política de privacidad</h1>
+<p>Los datos enviados mediante formularios, llamadas o WhatsApp se utilizan únicamente para responder consultas, preparar presupuestos y gestionar los trabajos solicitados.</p>
+<p>No se venden datos a terceros. Puedes solicitar acceso, modificación o eliminación escribiendo a <a href="mailto:{{ business.email }}">{{ business.email }}</a>.</p>
+<p>Los formularios de esta web se gestionan mediante Netlify Forms. Los datos se conservan solo durante el tiempo necesario para atender la consulta y cumplir obligaciones aplicables.</p>
+</div></section>

@@ -1,0 +1,49 @@
+{% macro organizationSchema(business) %}
+{% set obj = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": business.domain + "/#business",
+  "name": business.name,
+  "url": business.domain + "/",
+  "logo": business.domain + business.logo,
+  "image": business.domain + business.ogImage,
+  "telephone": business.phone,
+  "email": business.email,
+  "description": "Jardinería y mantenimiento de propiedades en Alcanar, Les Cases d'Alcanar, La Ràpita, Amposta, Vinaròs, La Sénia y alrededores.",
+  "address": { "@type": "PostalAddress", "addressLocality": business.addressLocality, "addressRegion": business.addressRegion, "addressCountry": business.addressCountry },
+  "areaServed": [
+    { "@type": "City", "name": "Alcanar" },
+    { "@type": "City", "name": "Les Cases d'Alcanar" },
+    { "@type": "City", "name": "La Ràpita" },
+    { "@type": "City", "name": "Amposta" },
+    { "@type": "City", "name": "Vinaròs" },
+    { "@type": "City", "name": "La Sénia" }
+  ],
+  "geo": { "@type": "GeoCoordinates", "latitude": business.geo.latitude, "longitude": business.geo.longitude },
+  "sameAs": [business.googleMapsUrl]
+} %}
+{{ obj | jsonify | safe }}
+{% endmacro %}
+
+{% macro websiteSchema(business) %}
+{% set obj = { "@context": "https://schema.org", "@type": "WebSite", "@id": business.domain + "/#website", "url": business.domain + "/", "name": business.name, "inLanguage": "es" } %}
+{{ obj | jsonify | safe }}
+{% endmacro %}
+
+{% macro serviceSchema(business, service) %}
+{% set obj = { "@context": "https://schema.org", "@type": "Service", "name": service.name, "provider": { "@id": business.domain + "/#business" }, "areaServed": "Alcanar y alrededores", "url": business.domain + service.url, "description": service.metaDescription } %}
+{{ obj | jsonify | safe }}
+{% endmacro %}
+
+{% macro breadcrumbSchema(business, items) %}
+{% set entries = [] %}
+{% set obj = { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [] } %}
+{% for item in items %}{% set entry = { "@type": "ListItem", "position": loop.index, "name": item.label, "item": business.domain + item.url } %}{% set _ = obj.itemListElement.push(entry) %}{% endfor %}
+{{ obj | jsonify | safe }}
+{% endmacro %}
+
+{% macro faqSchema(faqEntries) %}
+{% set obj = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [] } %}
+{% for f in faqEntries %}{% set entry = { "@type": "Question", "name": f.question, "acceptedAnswer": { "@type": "Answer", "text": f.answer } } %}{% set _ = obj.mainEntity.push(entry) %}{% endfor %}
+{{ obj | jsonify | safe }}
+{% endmacro %}

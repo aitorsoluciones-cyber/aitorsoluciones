@@ -1,0 +1,38 @@
+---
+title: "Mantenimiento de fincas en Alcanar | Aitor Soluciones"
+description: "Mantenimiento preventivo de fincas y jardines en Alcanar: visitas periódicas para controlar hierba, accesos y zonas alrededor de árboles."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set waLinkMant = business.whatsapp | waLink("Hola Aitor, quiero información sobre mantenimiento de finca. Está en...") %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Mantenimiento de fincas", url: "/mantenimiento-fincas-alcanar/" }] %}
+
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+
+<section class="local-hero"><div class="container local-grid">
+<div><span class="eyebrow">Mantenimiento preventivo</span><h1>Evita que la finca vuelva a empezar desde cero</h1><p class="lead">Después de una limpieza grande, unas visitas bien programadas permiten controlar la hierba, los accesos y las zonas alrededor de árboles.</p>
+<p class="note">Este contenido se ha ampliado en nuestra página de <a href="/mantenimiento-jardines/">mantenimiento de jardines</a>, que reúne toda la información sobre mantenimiento periódico.</p>
+<div class="cta-row">{{ ctac.whatsappCta(waLinkMant, "Consultar mantenimiento", "maintenance_hero") }}</div>
+</div>
+<div class="local-photo"><img src="/assets/img/jardin-olivos-despues.webp" alt="Jardín con olivos mantenido y con vegetación controlada" width="800" height="1067"></div>
+</div></section>
+
+<section class="section"><div class="container">
+<div class="section-head"><h2>Un plan adaptado, no una cuota genérica</h2><p>La frecuencia depende de superficie, tipo de vegetación, época del año, acceso y objetivo del propietario.</p></div>
+<div class="services-grid">
+<div class="card"><h3>Control de crecimiento</h3><p>Repaso de hierba y maleza antes de que vuelva a ocupar el jardín o la parcela.</p></div>
+<div class="card"><h3>Accesos y perímetros</h3><p>Zonas de paso, entradas, alrededor de vivienda y árboles.</p></div>
+<div class="card"><h3>Revisión visual</h3><p>Detección de restos, ramas o pequeños problemas exteriores.</p></div>
+<div class="card"><h3>Fotos al terminar</h3><p>Especialmente útil para propietarios que viven fuera.</p></div>
+</div>
+</div></section>
+
+<section class="section section-soft"><div class="container contact-box">
+<div><h2>Pide una propuesta de mantenimiento</h2><p class="lead">Visitas de mantenimiento <strong>desde 90 €/visita</strong>. Envía fotos, ubicación y cada cuánto visitas la finca: te propondremos una frecuencia realista.</p><p class="note">Retirada de restos, poda fuerte, tala, triturado, transporte, herbicida y materiales se valoran aparte.</p></div>
+{{ ctac.whatsappCta(waLinkMant, "Escribir por WhatsApp", "maintenance_final") }}
+</div></section>

@@ -1,0 +1,15 @@
+---
+title: "Aviso legal | Aitor Soluciones"
+description: "Aviso legal de Aitor Soluciones."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Aviso legal", url: "/aviso-legal/" }] %}
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+<section class="section"><div class="container">
+<h1>Aviso legal</h1>
+<p><strong>Titular del sitio:</strong> {{ business.name }}.</p>
+<p><strong>Contacto:</strong> {{ business.phoneDisplay }} · {{ business.email }} · {{ business.base }}, {{ business.addressRegion }}.</p>
+<p>Este sitio ofrece información sobre servicios de jardinería y mantenimiento de propiedades, además de medios de contacto para solicitar una valoración.</p>
+<p><strong>Importante:</strong> revisa y completa este aviso con los datos fiscales y de identificación legal que correspondan antes de publicar la nueva versión.</p>
+</div></section>

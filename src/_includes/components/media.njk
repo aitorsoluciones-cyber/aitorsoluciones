@@ -1,0 +1,29 @@
+{% macro beforeAfter(before, after, beforeAlt, afterAlt, resultText) %}
+<div class="before-after" aria-label="Antes y después">
+<div class="before-after-grid">
+<figure><img src="/assets/img/{{ before }}.webp" alt="{{ beforeAlt }}" width="800" height="1067" loading="lazy"><span class="label">ANTES</span></figure>
+<figure class="after"><img src="/assets/img/{{ after }}.webp" alt="{{ afterAlt }}" width="800" height="1067" loading="lazy"><span class="label">DESPUÉS</span></figure>
+</div>
+{% if resultText %}<div class="result-card">{{ resultText }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro workGallery(cases, locations) %}
+<div class="gallery">
+{% for c in cases %}
+{% set loc = locations | findById(c.locationId) %}
+<article class="work">
+<div class="work-pair">
+<img src="/assets/img/{{ c.before }}.webp" alt="{{ c.title }} - antes" loading="lazy" width="800" height="1067">
+<img src="/assets/img/{{ c.after }}.webp" alt="{{ c.title }} - después" loading="lazy" width="800" height="1067">
+</div>
+<div class="work-copy">
+{% if loc %}<strong>{{ loc.name }}</strong>{% endif %}
+<h3>{{ c.title }}</h3>
+<p>{{ c.whatWeDid }}</p>
+{% if c.hasPage %}<a href="/trabajos/{{ c.slug }}/">Ver el caso completo →</a>{% endif %}
+</div>
+</article>
+{% endfor %}
+</div>
+{% endmacro %}

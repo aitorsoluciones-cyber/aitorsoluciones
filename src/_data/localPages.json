@@ -1,0 +1,107 @@
+{
+  "alcanar": {
+    "title": "Jardinería, desbroce y mantenimiento en Alcanar | Aitor Soluciones",
+    "metaDescription": "Jardinería, desbroce de fincas y mantenimiento de parcelas en Alcanar, Les Cases d'Alcanar y Alcanar Platja. Valoración rápida por fotos o visita.",
+    "h1": "Jardinería, desbroce y mantenimiento en Alcanar",
+    "lead": "Servicio cercano desde Les Cases d'Alcanar para recuperar jardines, fincas y parcelas con hierba, maleza o falta de mantenimiento, y para mantenerlos después con visitas periódicas.",
+    "heroImage": "alcanar-platja-despues",
+    "heroImageAlt": "Parcela real limpia después del desbroce en Alcanar Platja",
+    "introHeading": "Tu jardín o parcela en Alcanar, atendida desde aquí mismo",
+    "introText": "Trabajo desde Les Cases d'Alcanar: puedo valorar el acceso antes, organizar visitas con rapidez y plantear un mantenimiento que evite repetir una limpieza grande. Jardinería, desbroce de fincas y mantenimiento de exteriores sin esperas de semanas.",
+    "zoneHeading": "Dónde trabajamos en Alcanar",
+    "zoneText": "Del casco urbano a la costa y las partidas: jardines de vivienda, parcelas residenciales, terrenos sin edificar y fincas agrícolas de olivos y algarrobos que llevan tiempo sin desbrozar.",
+    "zoneChips": ["Alcanar", "Les Cases d'Alcanar", "Alcanar Platja", "Partidas y caminos del municipio"],
+    "caseId": "parcela-alcanar-platja",
+    "faqLocal": [
+      { "question": "¿Cuánto tardáis en venir a ver la parcela?", "answer": "La base está en Les Cases d'Alcanar, así que en Alcanar normalmente puedo pasar a verlo en pocos días. En muchos casos basta con fotos y ubicación para dar una primera valoración el mismo día." },
+      { "question": "¿Trabajáis en Alcanar Platja y en las partidas del municipio?", "answer": "Sí. Parcelas residenciales, jardines y terrenos en el núcleo de Alcanar, Les Cases, Alcanar Platja y las partidas agrícolas de olivos y algarrobos." },
+      { "question": "¿Qué hacéis con los restos del desbroce?", "answer": "Lo habitual es agruparlos dentro de la parcela, incluido en el precio. La retirada con carga y transporte se valora aparte y se deja cerrada antes de empezar." },
+      { "question": "¿Hacéis mantenimiento de jardines en Alcanar?", "answer": "Sí. Después de la puesta a punto podemos acordar visitas puntuales o periódicas para controlar hierba, setos y zonas alrededor de árboles." }
+    ],
+    "noPhysicalPresenceNote": false
+  },
+  "vinaros": {
+    "title": "Jardinería y limpieza de parcelas en Vinaròs | Aitor Soluciones",
+    "metaDescription": "Jardinería, desbroce y mantenimiento de parcelas en Vinaròs. Ideal para segundas residencias. Envía fotos por WhatsApp y recibe una valoración.",
+    "h1": "Jardinería y limpieza de parcelas en Vinaròs",
+    "lead": "Puesta a punto de jardines, parcelas y exteriores de viviendas que llevan tiempo sin mantenimiento o cuyos propietarios viven fuera, con posibilidad de mantenimiento periódico después.",
+    "heroImage": "hero-after",
+    "heroImageAlt": "Ejemplo de resultado: parcela limpia y accesible después de un desbroce",
+    "introHeading": "Tu chalet o parcela en Vinaròs, cuidado aunque vivas fuera",
+    "introText": "Gran parte de los clientes de Vinaròs son propietarios de segundas residencias que pasan meses sin venir. El jardín crece, la parcela se cierra y la casa pierde imagen. Nos encargamos del desbroce, la limpieza del terreno y el mantenimiento del jardín, y enviamos fotos del resultado.",
+    "zoneHeading": "Dónde trabajamos en Vinaròs",
+    "zoneText": "Sobre todo en las urbanizaciones de segunda residencia de la costa norte y sur, además del casco urbano y las partidas agrícolas del término municipal.",
+    "zoneChips": ["Costa norte y costa sur", "Cala Puntal", "El Saldonar", "Les Deveses", "Els Boverals", "Casco urbano y partidas"],
+    "caseId": null,
+    "faqLocal": [
+      { "question": "Vivo fuera, ¿podéis encargaros de todo?", "answer": "Sí. Es la situación más habitual en Vinaròs: acordamos el trabajo por WhatsApp, coordinamos el acceso y enviamos fotografías del antes y el después sin que tengas que desplazarte." },
+      { "question": "¿Hacéis mantenimiento de jardines de chalets?", "answer": "Sí. Control de hierba, setos y zonas de paso en jardines de chalets y segundas residencias, con visitas puntuales o periódicas según la época del año." },
+      { "question": "¿Cómo organizamos el acceso si no estoy en Vinaròs?", "answer": "Se acuerda antes de empezar: una llave, un vecino o familiar de confianza, o una parcela accesible desde el exterior. Todo queda hablado por escrito." },
+      { "question": "¿La retirada de restos está incluida en el precio?", "answer": "La agrupación dentro de la parcela sí. La retirada con carga y transporte se valora aparte y se confirma antes de empezar el trabajo." }
+    ],
+    "noPhysicalPresenceNote": false
+  },
+  "la-rapita": {
+    "title": "Jardinería y limpieza de fincas en La Ràpita | Aitor Soluciones",
+    "metaDescription": "Jardinería, desbroce y mantenimiento de fincas y exteriores en La Ràpita. Fotos reales de trabajos realizados. Valoración por WhatsApp.",
+    "h1": "Jardinería y limpieza de fincas en La Ràpita",
+    "lead": "Recuperación y mantenimiento de jardines, terrenos y zonas exteriores para volver a acceder, disfrutar o mantener la propiedad en mejores condiciones.",
+    "heroImage": "rapita-despues",
+    "heroImageAlt": "Parcela real limpia después del desbroce en La Ràpita",
+    "introHeading": "Jardines y fincas de La Ràpita, listos para disfrutarse",
+    "introText": "En La Ràpita el trabajo más habitual es de jardinería: mantenimiento de jardines de casas y chalets, control de setos y hierba, y recuperación de fincas que pasan temporadas cerradas. Una puesta a punto inicial más visitas de mantenimiento evita volver a empezar de cero.",
+    "zoneHeading": "Dónde trabajamos en La Ràpita",
+    "zoneText": "Jardines y exteriores en el casco urbano, chalets y segundas residencias de las zonas residenciales, y fincas y parcelas del término municipal, en la falda del Montsià.",
+    "zoneChips": ["Casco urbano", "Jardines de casas y chalets", "Urbanizaciones y zonas residenciales", "Fincas del término municipal"],
+    "caseId": "finca-recuperada-la-rapita",
+    "extraCaseIds": ["olivo-la-rapita"],
+    "faqLocal": [
+      { "question": "¿Hacéis trabajos de jardinería en La Ràpita?", "answer": "Sí. Mantenimiento de jardines de casas y chalets, control de hierba y setos, y puesta a punto de exteriores que llevan tiempo sin cuidarse." },
+      { "question": "¿Las fotos de antes y después son de La Ràpita?", "answer": "Sí. Los trabajos que se muestran en esta página se realizaron en fincas de La Ràpita y uno de los clientes dejó su reseña en el perfil de Google." },
+      { "question": "¿La retirada de restos está incluida?", "answer": "No siempre. Puedes elegir agrupación dentro de la finca, triturado o retirada cuando sea viable. Se deja definido antes de empezar." },
+      { "question": "¿Trabajáis con propietarios que viven lejos?", "answer": "Sí. Podemos coordinar por WhatsApp, enviar fotografías del resultado y organizar el acceso previamente." }
+    ],
+    "noPhysicalPresenceNote": false
+  },
+  "amposta": {
+    "title": "Jardinería, desbroce y mantenimiento en Amposta | Aitor Soluciones",
+    "metaDescription": "Desbroce, jardinería y mantenimiento de parcelas y fincas agrícolas en Amposta. Presupuesto por zonas, claro antes de empezar.",
+    "h1": "Jardinería, desbroce y mantenimiento en Amposta",
+    "lead": "Servicio para jardines, terrenos, fincas y propiedades que necesitan recuperar superficie, accesos y una imagen más cuidada, con mantenimiento periódico si interesa.",
+    "heroImage": "hero-after",
+    "heroImageAlt": "Ejemplo de resultado: parcela limpia y accesible después de un desbroce",
+    "introHeading": "Fincas y terrenos de Amposta, valorados por zonas",
+    "introText": "En Amposta lo más habitual son fincas agrícolas y terrenos de superficie grande. Conviene separar las zonas por tipo de vegetación y dificultad: así el presupuesto de desbroce es más claro y no se calcula todo como si fuera zarza o terreno complicado.",
+    "zoneHeading": "Dónde trabajamos en Amposta",
+    "zoneText": "Limpieza de terrenos y solares en el casco urbano, desbroce de fincas agrícolas y mantenimiento de jardines y parcelas en todo el término municipal.",
+    "zoneChips": ["Casco urbano", "Solares y terrenos urbanos", "Fincas agrícolas", "Término municipal y caminos"],
+    "caseId": null,
+    "faqLocal": [
+      { "question": "¿Limpiáis solares y terrenos urbanos en Amposta?", "answer": "Sí. Muchos propietarios limpian el solar para mantenerlo en condiciones, evitar quejas y reducir el riesgo de incendio en verano. Con la referencia catastral o la ubicación podemos valorarlo." },
+      { "question": "¿Cómo presupuestáis una finca grande?", "answer": "Por zonas: se separa lo que es hierba de lo que es zarza o maleza alta, y el acceso de maquinaria de cada parte. Así no se paga todo al precio de la zona más difícil." },
+      { "question": "¿Hacéis trabajos de varios días?", "answer": "Sí. Las fincas completas con maleza alta o superficies grandes se planifican por fases, con el alcance y el plazo cerrados antes de empezar." },
+      { "question": "¿Los restos se retiran o se quedan en la finca?", "answer": "Por defecto se agrupan dentro de la finca. La retirada con carga y transporte se presupuesta aparte, según el volumen y los viajes necesarios." }
+    ],
+    "noPhysicalPresenceNote": false
+  },
+  "la-senia": {
+    "title": "Jardinería en La Sénia | Aitor Soluciones",
+    "metaDescription": "Jardinero en La Sénia: mantenimiento de jardines, desbroce, poda y puesta a punto exterior. Servicio habitual en la zona desde Alcanar. Valoración por WhatsApp.",
+    "h1": "Jardinería en La Sénia",
+    "lead": "Mantenimiento de jardines, desbroce y puesta a punto exterior en La Sénia. Trabajamos habitualmente en la zona desde nuestra base en Alcanar y Les Cases d'Alcanar.",
+    "heroImage": "jardin-olivos-despues",
+    "heroImageAlt": "Jardín con olivos cuidado tras una puesta a punto",
+    "introHeading": "Jardinero en La Sénia, con base cercana en Alcanar",
+    "introText": "No tenemos oficina en La Sénia: trabajamos en la localidad de forma habitual desplazándonos desde Alcanar y Les Cases d'Alcanar, a poca distancia. Eso nos permite ofrecer mantenimiento de jardines, desbroce, poda y puesta a punto exterior con la misma cercanía que en nuestra zona base.",
+    "zoneHeading": "Qué hacemos en La Sénia",
+    "zoneText": "Mantenimiento de jardines particulares, desbroce de parcelas y fincas, poda ligera y puesta a punto de exteriores antes de temporada o de una visita.",
+    "zoneChips": ["Mantenimiento de jardines", "Desbroce de parcelas", "Poda ligera", "Puesta a punto exterior"],
+    "caseId": "jardin-con-olivos",
+    "faqLocal": [
+      { "question": "¿Tenéis oficina en La Sénia?", "answer": "No tenemos sede física en La Sénia. Trabajamos habitualmente en la zona desde nuestra base en Alcanar y Les Cases d'Alcanar, a poca distancia." },
+      { "question": "¿Con qué frecuencia podéis venir a La Sénia?", "answer": "Coordinamos las visitas por WhatsApp según la zona y el trabajo. Al estar cerca, podemos organizar tanto una puesta a punto puntual como un mantenimiento periódico." },
+      { "question": "¿Qué necesitáis para dar una primera valoración?", "answer": "Localidad, unas fotos del jardín o la parcela y los metros aproximados. Con eso podemos orientarte y decir si hace falta ver el jardín en persona." }
+    ],
+    "noPhysicalPresenceNote": true
+  }
+}

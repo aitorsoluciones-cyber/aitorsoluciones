@@ -1,0 +1,28 @@
+---
+title: "Trabajos reales de jardinería y mantenimiento | Aitor Soluciones"
+description: "Fotografías reales de antes y después: jardinería, desbroce de parcelas y mantenimiento de propiedades en Alcanar y alrededores."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/hero.njk" as heroc %}
+{% import "components/media.njk" as mediac %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set waLinkTrabajos = business.whatsapp | waLink("Hola Aitor, he visto los trabajos de la web. Quiero valorar algo parecido. La ubicación es...") %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Trabajos", url: "/trabajos/" }] %}
+{% set activeCases = workCases | whereActive %}
+
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+
+{{ heroc.pageHero("Trabajos reales", "Trabajos reales de jardinería y mantenimiento", "Fotografías reales de antes y después, sin imágenes de stock. Jardinería, desbroce de parcelas y mantenimiento de propiedades en Alcanar y alrededores.", waLinkTrabajos, "trabajos") }}
+
+<section class="section"><div class="container">
+{{ mediac.workGallery(activeCases, locations) }}
+</div></section>
+
+<section class="section section-dark"><div class="container"><h2>¿Quieres un resultado parecido?</h2><p class="lead">Envía fotos y la ubicación de tu jardín, parcela o finca.</p>
+<div class="cta-row">{{ ctac.whatsappCta(waLinkTrabajos, "Enviar fotos y ubicación", "trabajos_final") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, "trabajos_final") }}</div>
+</div></section>

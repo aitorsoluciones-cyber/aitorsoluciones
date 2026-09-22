@@ -1,0 +1,30 @@
+---
+title: "Contacto | Aitor Soluciones"
+description: "Pide valoración por WhatsApp, llamada o formulario. Jardinería y mantenimiento de propiedades en Alcanar y alrededores."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/hero.njk" as heroc %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/form.njk" as formc %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set waLinkContacto = business.whatsapp | waLink(business.waMessageDefault) %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Contacto", url: "/contacto/" }] %}
+
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+
+{{ heroc.pageHero("Contacto", "Pide tu valoración", business.ctaSupportMessage, waLinkContacto, "contacto") }}
+
+<section class="section"><div class="container contact-box">
+<div>
+<span class="eyebrow">Vías de contacto</span>
+<h2>WhatsApp, llamada o formulario</h2>
+<p class="lead">WhatsApp es la vía más rápida: envía 2 o 3 fotos, la localidad y qué necesitas.</p>
+<div class="cta-row">{{ ctac.whatsappCta(waLinkContacto, "Abrir WhatsApp", "contacto_main") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, "contacto_main") }}</div>
+<p style="margin-top:24px"><strong>Email:</strong> <a href="mailto:{{ business.email }}">{{ business.email }}</a><br><strong>Base:</strong> {{ business.base }}</p>
+</div>
+{{ formc.leadForm("", "") }}
+</div></section>

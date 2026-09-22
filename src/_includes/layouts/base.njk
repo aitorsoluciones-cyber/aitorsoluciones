@@ -1,0 +1,48 @@
+{% import "components/nav.njk" as navc %}
+{% import "components/jsonld.njk" as ld %}
+<!doctype html>
+<html lang="{{ lang or 'es' }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+<link rel="canonical" href="{{ business.domain }}{{ canonical or page.url }}">
+{% if hreflangEs and hreflangEn %}
+<link rel="alternate" hreflang="es" href="{{ business.domain }}{{ hreflangEs }}">
+<link rel="alternate" hreflang="en" href="{{ business.domain }}{{ hreflangEn }}">
+<link rel="alternate" hreflang="x-default" href="{{ business.domain }}{{ hreflangEs }}">
+{% endif %}
+<meta name="robots" content="{{ 'noindex,follow' if noindex else 'index,follow,max-image-preview:large' }}">
+<meta name="theme-color" content="#071e3b">
+<link rel="icon" href="/assets/img/favicon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Aitor Soluciones">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preload" href="/assets/styles.css?v=6" as="style">
+<link rel="stylesheet" href="/assets/styles.css?v=6">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="{{ 'en_US' if lang == 'en' else 'es_ES' }}">
+<meta property="og:site_name" content="{{ business.name }}">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="{{ business.domain }}{{ canonical or page.url }}">
+<meta property="og:image" content="{{ business.domain }}{{ ogImage or business.ogImage }}">
+<meta name="twitter:card" content="summary_large_image">
+{% if not noindex %}
+<script type="application/ld+json">{{ ld.organizationSchema(business) | safe }}</script>
+<script type="application/ld+json">{{ ld.websiteSchema(business) | safe }}</script>
+{% endif %}
+</head>
+<body>
+{{ navc.siteHeader(business, services, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}
+<main>
+{{ content | safe }}
+</main>
+{{ navc.siteFooter(business, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}
+<script src="/assets/script.js" defer></script>
+</body>
+</html>

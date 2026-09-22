@@ -1,0 +1,36 @@
+---
+title: "Zonas de servicio: Alcanar y alrededores | Aitor Soluciones"
+description: "Jardinería y mantenimiento de propiedades en Alcanar, Tarragona, Castellón y Teruel. Consulta toda la cobertura y las localidades con página propia."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/hero.njk" as heroc %}
+{% import "components/areas.njk" as areasc %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set waLinkZonas = business.whatsapp | waLink("Hola Aitor, vengo de la página de zonas. Quiero saber si trabajáis en mi localidad. La ubicación es...") %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Zonas", url: "/zonas/" }] %}
+
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+
+{{ heroc.pageHero("Cobertura", "Zonas de servicio: Alcanar y alrededores", "Base operativa en " + business.base + ", con desplazamiento habitual hasta " + business.serviceRadiusKm + " km. La disponibilidad depende del trabajo y del desplazamiento.", waLinkZonas, "zonas") }}
+
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Localidades prioritarias</span><h2>Con página propia</h2><p>Estas localidades tienen contenido específico y son nuestra prioridad comercial y de posicionamiento.</p></div>
+{{ areasc.priorityAreas(locations) }}
+</div></section>
+
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Cobertura completa</span><h2>Todas las zonas atendidas</h2><p>El resto de localidades se atienden según el trabajo y el desplazamiento, sin página individual todavía.</p></div>
+
+<div class="zone-block"><h3>Tarragona</h3>{{ areasc.provinceList(locations, "Tarragona") }}</div>
+<div class="zone-block"><h3>Castellón</h3>{{ areasc.provinceList(locations, "Castellón") }}</div>
+<div class="zone-block"><h3>Teruel</h3>{{ areasc.provinceList(locations, "Teruel") }}</div>
+</div></section>
+
+<section class="section section-dark"><div class="container"><h2>¿No ves tu localidad?</h2><p class="lead">Escríbenos igualmente: la disponibilidad depende del trabajo y el desplazamiento, no solo de esta lista.</p>
+<div class="cta-row">{{ ctac.whatsappCta(waLinkZonas, "Consultar mi localidad", "zonas_final") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, "zonas_final") }}</div>
+</div></section>

@@ -1,0 +1,21 @@
+{% macro trustBar(items) %}
+<div class="trust-row">
+{% for item in items %}<span class="trust-pill">{{ item }}</span>{% endfor %}
+</div>
+{% endmacro %}
+
+{% macro process(steps) %}
+<div class="steps">
+{% for step in steps %}
+<div class="step"><div class="step-num">{{ "0" + loop.index if loop.index < 10 else loop.index }}</div><h3>{{ step.title }}</h3><p>{{ step.text }}</p></div>
+{% endfor %}
+</div>
+{% endmacro %}
+
+{% macro reviewsTrust(googleMapsUrl) %}
+<div class="quote">
+<strong class="stars-line"><svg width="112" height="20" viewBox="0 0 112 20" fill="#fbbc04" aria-hidden="true"><defs><path id="st" d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L1.5 7.7l5.9-.8z"/></defs><use href="#st"/><use href="#st" x="23"/><use href="#st" x="46"/><use href="#st" x="69"/><use href="#st" x="92"/></svg> Reseñas verificadas en Google</strong>
+<p>Consulta las opiniones publicadas por clientes y las fotografías de trabajos realizados en el perfil de Google.</p>
+<a class="btn btn-secondary" href="{{ googleMapsUrl }}" target="_blank" rel="noopener">Ver perfil y reseñas</a>
+</div>
+{% endmacro %}

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "fotos-precio",
+    "question": "¿Puedes dar precio solo con fotos?",
+    "answer": "En trabajos sencillos, muchas veces sí. Si hay dudas sobre acceso, restos, desniveles, zarzas o maquinaria necesaria, acordamos una visita."
+  },
+  {
+    "id": "restos-incluidos",
+    "question": "¿La retirada de restos está incluida?",
+    "answer": "No siempre. Puedes elegir agrupación dentro de la finca, triturado o retirada cuando sea viable. Se deja definido antes de empezar."
+  },
+  {
+    "id": "info-enviar",
+    "question": "¿Qué información debo enviar?",
+    "answer": "Localidad, metros aproximados, 3 o 4 fotos, acceso para vehículo y qué quieres conservar, cortar o retirar."
+  },
+  {
+    "id": "mantenimiento-posterior",
+    "question": "¿Hacéis mantenimiento después de limpiar?",
+    "answer": "Sí. Podemos acordar visitas puntuales o periódicas para controlar crecimiento, accesos y zonas alrededor de árboles."
+  },
+  {
+    "id": "vive-lejos",
+    "question": "¿Trabajáis con propietarios que viven lejos?",
+    "answer": "Sí. Podemos coordinar por WhatsApp, enviar fotografías del resultado y organizar el acceso previamente."
+  },
+  {
+    "id": "senia-sede",
+    "question": "¿Tenéis oficina en La Sénia?",
+    "answer": "No tenemos sede física en La Sénia. Trabajamos habitualmente en la zona desde nuestra base en Alcanar y Les Cases d'Alcanar, a poca distancia."
+  },
+  {
+    "id": "zona-cobertura",
+    "question": "¿Hasta dónde os desplazáis?",
+    "answer": "Trabajamos en Alcanar y un radio aproximado de 50 km: La Ràpita, Amposta, La Sénia, Vinaròs y el resto de localidades de la zona. La disponibilidad depende del trabajo y el desplazamiento."
+  }
+]

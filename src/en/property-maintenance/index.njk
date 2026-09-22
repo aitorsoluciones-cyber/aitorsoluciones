@@ -1,0 +1,68 @@
+---
+title: "Garden & Property Maintenance in Alcanar | Aitor Soluciones"
+description: "Garden maintenance, land clearing and property checks for owners living abroad, near Alcanar, Vinaròs, La Ràpita and Amposta. Real photos, clear quotes."
+lang: en
+hreflangEs: "/"
+hreflangEn: "/en/property-maintenance/"
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/media.njk" as mediac %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set waLinkEn = business.whatsapp | waLink("Hello Aitor, I found the English website. My property is in... I would like a quote for...") %}
+{% set breadcrumbItems = [{ label: "Home", url: "/" }, { label: "Property maintenance", url: "/en/property-maintenance/" }] %}
+{% set enFaqs = [
+  { question: "I live abroad. Can you handle everything remotely?", answer: "Yes. Most of my English-speaking clients are owners who live abroad. We agree the work on WhatsApp, I arrange access, and I send photos of the property before and after the work." },
+  { question: "Can you quote from photos?", answer: "For straightforward jobs, usually yes: send 3 or 4 photos, the location and the approximate size. If access, waste or terrain raise doubts, I will visit the property first." },
+  { question: "Is green waste removal included?", answer: "Grouping the waste inside the plot is included. Removal with loading and transport is quoted separately and agreed before the work starts." },
+  { question: "Can you keep the property maintained all year?", answer: "Yes. After the initial clean-up we can agree regular visits so the garden or plot never becomes overgrown again, with photos sent after each visit." }
+] %}
+
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+<script type="application/ld+json">{{ ld.faqSchema(enFaqs) | safe }}</script>
+
+<section class="local-hero"><div class="container breadcrumbs"><a href="/">Home</a> <span aria-hidden="true">›</span> Property maintenance</div>
+<div class="container local-grid">
+<div><span class="eyebrow">For foreign property owners</span><h1>Keep your garden or plot under control, even when you live abroad</h1><p class="lead">Garden maintenance, land clearing, pruning and property checks around Alcanar, Vinaròs, La Ràpita, Amposta and La Sénia.</p>
+<div class="cta-row"><a class="btn btn-primary" href="{{ waLinkEn }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="english_hero">Send photos on WhatsApp</a><a class="btn btn-secondary" href="tel:{{ business.phone }}" data-lead="phone" data-source="english_hero">Call</a></div>
+<div class="kpi-row"><div class="kpi">Real photos</div><div class="kpi">Clear quotes</div><div class="kpi">Direct contact</div></div>
+</div>
+<div class="local-photo"><img src="/assets/img/rapita-despues.webp" alt="Cleared and accessible plot after vegetation clearance in La Ràpita" width="800" height="1067" fetchpriority="high"></div>
+</div></section>
+
+<section class="section" id="services"><div class="container">
+<div class="section-head"><span class="eyebrow">Services</span><h2>What we take care of</h2><p>Focused on the work a garden or property needs to stay accessible, tidy and easy to maintain while you are away.</p></div>
+<div class="services-grid">
+<div class="card"><h3>Garden maintenance</h3><p>Mowing, hedges, weeding and general upkeep of the garden, one-off or on a regular schedule.</p></div>
+<div class="card"><h3>Land clearing</h3><p>Overgrown grass, weeds and brambles, and clearing around trees, walls and paths.</p></div>
+<div class="card"><h3>Pruning & exteriors</h3><p>Light pruning, branch removal and a general tidy-up of the outdoor areas.</p></div>
+<div class="card"><h3>Property checks</h3><p>Scheduled visits with photos sent afterwards, so the property never gets out of hand while you are away.</p></div>
+</div>
+</div></section>
+
+<section class="section section-soft" id="results"><div class="container">
+<div class="section-head"><span class="eyebrow">Before and after</span><h2>Real work, real results</h2><p>Photographs of actual jobs in the area. No stock images.</p></div>
+{{ mediac.beforeAfter("rapita-antes", "rapita-despues", "Overgrown plot before clearing in La Ràpita", "Cleared plot after the work in La Ràpita") }}
+</div></section>
+
+<section class="section section-soft"><div class="container"><div class="section-head"><h2>A simple process from a distance</h2><p>We can organise the assessment by WhatsApp, agree what stays and what is removed, and send photos when the work is finished.</p></div><div class="steps">
+<div class="step"><div class="step-num">01</div><h3>Send location and photos</h3><p>Include approximate size and access information.</p></div>
+<div class="step"><div class="step-num">02</div><h3>Clear scope and quote</h3><p>Work, waste and extras are explained before starting.</p></div>
+<div class="step"><div class="step-num">03</div><h3>Work completed</h3><p>The agreed areas are cleared and left accessible.</p></div>
+<div class="step"><div class="step-num">04</div><h3>Maintenance option</h3><p>Regular visits can prevent the property becoming overgrown again.</p></div>
+</div></div></section>
+
+<section class="section" id="faq"><div class="container">
+<div class="section-head"><span class="eyebrow">FAQ</span><h2>Before you get in touch</h2></div>
+<div class="faq">{% for f in enFaqs %}<details><summary>{{ f.question }}</summary><p>{{ f.answer }}</p></details>{% endfor %}</div>
+</div></section>
+
+<section class="section"><div class="container">
+<div class="zone-block"><h3>Related</h3><div class="zone-chips">
+<a href="/mantenimiento-segundas-residencias/" style="text-decoration:none"><span>Second home maintenance (ES)</span></a>
+<a href="/jardineria/" style="text-decoration:none"><span>Jardinería (ES)</span></a>
+</div></div>
+</div></section>
+
+<section class="section section-dark"><div class="container"><h2>Send your property details</h2><p class="lead">Photos + location + approximate size are enough to start.</p><a class="btn btn-primary" href="{{ waLinkEn }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="english_final">Open WhatsApp</a></div></section>
