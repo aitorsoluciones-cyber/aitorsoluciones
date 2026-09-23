@@ -2,5 +2,11 @@
   command = "npm run build"
   publish = "_site"
 
+# Los datos legales del titular se publican a proposito en el Aviso legal
+# (obligatorio por la LSSI); se excluyen del escaner de secretos de Netlify
+# para que no interprete su aparicion en el HTML como una fuga.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "LEGAL_HOLDER_NAME,LEGAL_TAX_ID,LEGAL_POSTAL_ADDRESS"
+
 # Las cabeceras HTTP (cache-control, seguridad) se definen en src/_headers
 # (formato nativo de Netlify), no aqui, para evitar reglas duplicadas.
