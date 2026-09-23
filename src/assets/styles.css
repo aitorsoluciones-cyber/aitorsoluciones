@@ -308,3 +308,28 @@ footer h3{color:#fff}
   .page-hero .cta-row .btn{flex:1 1 100%}
   .breadcrumbs{margin:12px 0}
 }
+
+/* Pantallas muy pequenas (320-380 px): CTA a la vista sin desplazarse */
+@media(max-width:380px){
+  h1{font-size:1.72rem}
+  .hero .lead,.page-hero .lead{font-size:.96rem;line-height:1.45}
+  .hero .eyebrow{font-size:.68rem}
+  .hero:not(.page-hero) .eyebrow{display:none}
+  .hero{padding-top:18px}
+  .page-hero{padding-top:14px!important}
+  .hero .cta-row{gap:10px}
+  .hero .cta-row .btn{padding:12px 16px}
+}
+
+@media(max-width:640px){
+  .local-hero{padding:18px 0 28px}
+  .local-hero .breadcrumbs{margin-bottom:12px}
+  .local-hero .lead{font-size:.98rem;line-height:1.45}
+  .local-hero .cta-row{margin-top:14px}
+  .local-hero .kpi-row{margin:16px 0 0}
+}
+@media(max-width:380px){
+  .page-hero h1{font-size:1.5rem}
+  .local-hero h1{font-size:1.6rem}
+  .local-hero .eyebrow{display:none}
+}
