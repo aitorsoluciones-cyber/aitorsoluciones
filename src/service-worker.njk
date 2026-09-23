@@ -1,4 +1,8 @@
-﻿const CACHE_VERSION = "aitor-soluciones-v7";
+﻿---
+permalink: "/service-worker.js"
+eleventyExcludeFromCollections: true
+---
+const CACHE_VERSION = "aitor-soluciones-{{ assetVersion.css }}-{{ assetVersion.js }}";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -6,8 +10,8 @@ const PRECACHE_URLS = [
   "/",
   "/offline.html",
   "/manifest.webmanifest",
-  "/assets/styles.css?v=7",
-  "/assets/script.js",
+  "/assets/styles.css?v={{ assetVersion.css }}",
+  "/assets/script.js?v={{ assetVersion.js }}",
   "/assets/img/logo-aitor-soluciones.webp",
   "/assets/img/favicon.png",
   "/assets/img/apple-touch-icon.png",

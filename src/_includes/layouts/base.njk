@@ -22,8 +22,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Aitor Soluciones">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="preload" href="/assets/styles.css?v=7" as="style">
-<link rel="stylesheet" href="/assets/styles.css?v=7">
+<link rel="preload" href="/assets/styles.css?v={{ assetVersion.css }}" as="style">
+<link rel="stylesheet" href="/assets/styles.css?v={{ assetVersion.css }}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="{{ 'en_US' if lang == 'en' else 'es_ES' }}">
 <meta property="og:site_name" content="{{ business.name }}">
@@ -52,6 +52,6 @@
 </main>
 {{ navc.siteFooter(business, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}
 {% endif %}
-<script src="/assets/script.js" defer></script>
+<script src="/assets/script.js?v={{ assetVersion.js }}" defer></script>
 </body>
 </html>

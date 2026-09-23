@@ -1,8 +1,13 @@
-import fs from "node:fs";
+﻿import fs from "node:fs";
+import crypto from "node:crypto";
 
 const imageMeta = JSON.parse(fs.readFileSync("src/_data/imageMeta.json", "utf8"));
 
+const fileHash = (f) => crypto.createHash("md5").update(fs.readFileSync(f)).digest("hex").slice(0, 8);
+
 export default function (eleventyConfig) {
+  // Versionado por contenido: cambia la URL de CSS/JS cuando cambia el fichero.
+  eleventyConfig.addGlobalData("assetVersion", () => ({ css: fileHash("src/assets/styles.css"), js: fileHash("src/assets/script.js") }));
   eleventyConfig.addFilter("imgsrcset", (name) => {
     const m = imageMeta[name];
     if (!m) return `/assets/img/${name}.webp`;
@@ -18,7 +23,6 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/manifest.webmanifest": "manifest.webmanifest" });
-  eleventyConfig.addPassthroughCopy({ "src/service-worker.js": "service-worker.js" });
   eleventyConfig.addPassthroughCopy({ "src/_redirects": "_redirects" });
   eleventyConfig.addPassthroughCopy({ "src/_headers": "_headers" });
 
