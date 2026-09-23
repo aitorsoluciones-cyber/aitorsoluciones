@@ -54,6 +54,16 @@ layout: layouts/base.njk
 </div></section>
 {% endif %}
 {% else %}
+{% if service.lean %}
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Cómo empezar</span><h2>Cuéntanos qué necesitas</h2><p>{{ service.problem }}</p></div>
+<p class="lead">{{ service.whatWeDo }}</p>
+<div class="includes-grid">
+<div><h3>Qué te pedimos para valorarlo</h3><ul class="includes-list">{% for item in service.toSend %}<li>{{ item }}</li>{% endfor %}</ul></div>
+<div><h3>Antes de empezar</h3><ul class="includes-list"><li>Recibes el alcance y el presupuesto antes de empezar</li><li>Si hace falta verlo en persona, lo acordamos antes</li><li>Coordinamos todo por WhatsApp, llamada o formulario</li></ul></div>
+</div>
+</div></section>
+{% else %}
 <section class="section"><div class="container">
 <div class="section-head"><span class="eyebrow">El problema</span><h2>Cuándo tiene sentido este servicio</h2><p>{{ service.problem }}</p></div>
 <p class="lead">{{ service.whatWeDo }}</p>
@@ -63,6 +73,7 @@ layout: layouts/base.njk
 </div>
 {% if service.forWhom %}<p class="note" style="margin-top:18px"><strong>Para quién:</strong> {{ service.forWhom }}</p>{% endif %}
 </div></section>
+{% endif %}
 
 {% if service.images and service.images.before %}
 <section class="section section-soft"><div class="container">
@@ -74,7 +85,7 @@ layout: layouts/base.njk
 
 <section class="section section-dark"><div class="container">
 <div class="section-head"><span class="eyebrow">Proceso sencillo</span><h2>Cómo lo planteamos</h2></div>
-{{ trustc.process(business.defaultProcessSteps) }}
+{{ trustc.process(business.homeProcessSteps if service.lean else business.defaultProcessSteps) }}
 </div></section>
 
 {% if service.periodicity %}

@@ -51,6 +51,7 @@ layout: layouts/base.njk
 </div>
 <div class="zone-block"><h3>{{ lp.zoneHeading }}</h3><p>{{ lp.zoneText }}</p>
 <div class="zone-chips">{% for chip in lp.zoneChips %}<span>{{ chip }}</span>{% endfor %}</div></div>
+{{ relc.relatedServices(["mantenimiento-segundas-residencias", "limpieza-viviendas", "pintura", "reparaciones-hogar"], services, "También ofrecemos") }}
 </div></section>
 
 <section class="section section-soft"><div class="container pack">
@@ -61,7 +62,7 @@ layout: layouts/base.njk
 
 {% if caseObj %}
 <section class="section"><div class="container">
-<div class="section-head"><span class="eyebrow">Antes y después real</span><h2>Un resultado visible</h2><p>{{ caseObj.whatWeDid }}</p></div>
+<div class="section-head"><span class="eyebrow">Antes y después real</span><h2>Un resultado visible</h2><p>{{ caseObj.whatWeDid }}</p>{% if lp.caseNote %}<p class="note">{{ lp.caseNote }}</p>{% endif %}</div>
 {{ mediac.beforeAfter(caseObj.before, caseObj.after, caseObj.title + " antes", caseObj.title + " después") }}
 </div></section>
 {% endif %}

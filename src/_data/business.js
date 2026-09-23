@@ -22,6 +22,12 @@ export default {
     "Hola Aitor, vengo de la web. Quiero valorar un trabajo de jardinería o mantenimiento. La ubicación es...",
   waMessageDefaultEn:
     "Hello Aitor, I found the English website. I would like a quote for my property. The location is...",
+  homeProcessSteps: [
+    { title: "Envías fotos y localidad", text: "Con lo que quieres hacer y cuándo te vendría bien." },
+    { title: "Valoración o visita", text: "Te decimos si podemos orientarte por fotos o si conviene verlo." },
+    { title: "Presupuesto antes de empezar", text: "Alcance, condiciones y plazo bien definidos." },
+    { title: "Trabajo y seguimiento", text: "Coordinamos por WhatsApp hasta terminar." },
+  ],
   defaultProcessSteps: [
     { title: "Envías fotos y ubicación", text: "Con metros aproximados y qué quieres conservar o retirar." },
     { title: "Valoración o visita", text: "Te decimos si podemos orientarte por fotos o si conviene verlo." },

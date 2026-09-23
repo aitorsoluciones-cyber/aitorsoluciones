@@ -1,4 +1,4 @@
-{
+﻿{
   "alcanar": {
     "title": "Jardinería, desbroce y mantenimiento en Alcanar | Aitor Soluciones",
     "metaDescription": "Jardinería, desbroce de fincas y mantenimiento de parcelas en Alcanar, Les Cases d'Alcanar y Alcanar Platja. Valoración rápida por fotos o visita.",
@@ -57,7 +57,7 @@
     "extraCaseIds": ["olivo-la-rapita"],
     "faqLocal": [
       { "question": "¿Hacéis trabajos de jardinería en La Ràpita?", "answer": "Sí. Mantenimiento de jardines de casas y chalets, control de hierba y setos, y puesta a punto de exteriores que llevan tiempo sin cuidarse." },
-      { "question": "¿Las fotos de antes y después son de La Ràpita?", "answer": "Sí. Los trabajos que se muestran en esta página se realizaron en fincas de La Ràpita y uno de los clientes dejó su reseña en el perfil de Google." },
+      { "question": "¿Las fotos de antes y después son de La Ràpita?", "answer": "Sí. Los trabajos que se muestran en esta página se realizaron en fincas de La Ràpita." },
       { "question": "¿La retirada de restos está incluida?", "answer": "No siempre. Puedes elegir agrupación dentro de la finca, triturado o retirada cuando sea viable. Se deja definido antes de empezar." },
       { "question": "¿Trabajáis con propietarios que viven lejos?", "answer": "Sí. Podemos coordinar por WhatsApp, enviar fotografías del resultado y organizar el acceso previamente." }
     ],

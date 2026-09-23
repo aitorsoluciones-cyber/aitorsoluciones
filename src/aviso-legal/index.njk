@@ -1,4 +1,4 @@
----
+﻿---
 title: "Aviso legal | Aitor Soluciones"
 description: "Aviso legal e información del titular del sitio web de Aitor Soluciones."
 layout: layouts/base.njk
@@ -15,8 +15,8 @@ layout: layouts/base.njk
 <p>En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI), se informa de que este sitio web es titularidad de:</p>
 <ul>
 <li><strong>Nombre comercial:</strong> {{ legal.tradeName }}</li>
-<li><strong>Titular (persona física):</strong> {{ lg.field(legal.holderName, "nombre y apellidos legales completos") }}</li>
-<li><strong>NIF:</strong> {{ lg.field(legal.taxId, "NIF") }}</li>
+<li><strong>Titular{% if legal.holderKind %} ({{ legal.holderKind }}){% endif %}:</strong> {{ lg.field(legal.holderName, "nombre y apellidos o razón social del titular") }}</li>
+<li><strong>{{ legal.taxIdLabel }}:</strong> {{ lg.field(legal.taxId, "NIF/CIF") }}</li>
 <li><strong>Dirección postal:</strong> {{ lg.field(legal.postalAddress, "dirección postal o profesional válida") }}</li>
 <li><strong>Correo electrónico:</strong> <a href="mailto:{{ legal.email }}">{{ legal.email }}</a></li>
 <li><strong>Teléfono:</strong> <a href="tel:{{ business.phone }}">{{ legal.phone }}</a></li>
@@ -25,7 +25,7 @@ layout: layouts/base.njk
 <p>«{{ legal.tradeName }}» es el nombre comercial con el que el titular presta sus servicios. La atención se realiza por teléfono, WhatsApp, correo electrónico o formulario y, cuando hace falta valorar un trabajo, mediante visita acordada previamente.</p>
 
 <h2>2. Objeto y condiciones de uso</h2>
-<p>Este sitio ofrece información sobre los servicios de jardinería, desbroce, poda y mantenimiento de propiedades del titular, así como medios de contacto para solicitar una valoración. Su uso atribuye la condición de usuario e implica el uso conforme a la ley, a la buena fe y a este aviso.</p>
+<p>Este sitio ofrece información sobre los servicios del titular (jardinería, desbroce, poda, mantenimiento de propiedades, limpieza de viviendas, pintura y pequeñas reparaciones), así como medios de contacto para solicitar una valoración. Su uso atribuye la condición de usuario e implica el uso conforme a la ley, a la buena fe y a este aviso.</p>
 
 <h2>3. Información y presupuestos</h2>
 <p>Los contenidos del sitio tienen carácter informativo. Las descripciones de servicios y las fotografías de trabajos no constituyen una oferta vinculante; el alcance, el precio y las condiciones de cada trabajo se confirman por escrito en un presupuesto antes de empezar.</p>

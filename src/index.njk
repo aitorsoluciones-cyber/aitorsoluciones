@@ -23,7 +23,8 @@ layout: layouts/base.njk
 
 <script type="application/ld+json">{{ ld.faqSchema(homeFaqs) | safe }}</script>
 
-{{ heroc.homeHero(business, waLinkHome) }}
+{% set quickLinks = ["jardineria", "desbroce-parcelas", "poda-mantenimiento-exterior", "mantenimiento-segundas-residencias", "limpieza-viviendas", "pintura", "reparaciones-hogar"] | pickByIds(services) %}
+{{ heroc.homeHero(business, waLinkHome, quickLinks) }}
 
 <section class="section" id="servicios"><div class="container">
 <div class="section-head"><span class="eyebrow">Servicio principal</span><h2>Jardinería: mantenimiento, desbroce y poda</h2><p>El eje principal de Aitor Soluciones. Nos centramos en los trabajos que más necesitas para recuperar y mantener un jardín, una parcela o una finca.</p></div>
@@ -54,11 +55,11 @@ layout: layouts/base.njk
 </div></section>
 
 <section class="section"><div class="container">
-<div class="section-head"><span class="eyebrow">Segundo pilar</span><h2>{{ mantProp.name }}</h2><p>{{ mantProp.intro }}</p></div>
+<div class="section-head"><span class="eyebrow">Vivienda y propiedades</span><h2>{{ mantProp.name }}</h2><p>{{ mantProp.intro }}</p></div>
 <div class="services-grid">
-{{ cardsc.serviceCard(mantProp) }}
-{% for childId in mantProp.childServiceIds %}{% set child = services | findById(childId) %}{{ cardsc.serviceCard(child) }}{% endfor %}
+{% for child in mantProp.childServiceIds | pickByIds(services) %}{{ cardsc.serviceCard(child) }}{% endfor %}
 </div>
+<p style="margin-top:18px"><a href="{{ mantProp.url }}">Ver mantenimiento de propiedades →</a></p>
 </div></section>
 
 <section class="section section-soft" id="trabajos"><div class="container">
@@ -68,7 +69,7 @@ layout: layouts/base.njk
 </div></section>
 
 <section class="section"><div class="container">
-<div class="section-head"><span class="eyebrow">Confianza</span><h2>Comprueba cómo trabajamos antes de contratar</h2><p>El perfil de Google reúne reseñas reales, fotografías y datos de contacto verificados.</p></div>
+<div class="section-head"><span class="eyebrow">Confianza</span><h2>Comprueba cómo trabajamos antes de contratar</h2><p>El perfil de Google muestra las opiniones publicadas por clientes, fotografías y los datos de contacto del negocio.</p></div>
 {{ trustc.reviewsTrust(business.googleMapsUrl) }}
 </div></section>
 

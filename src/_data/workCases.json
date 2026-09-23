@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "finca-recuperada-la-rapita",
     "slug": "finca-recuperada-la-rapita",
@@ -10,7 +10,7 @@
     "before": "rapita-antes",
     "after": "rapita-despues",
     "problem": "Finca con maleza alta que llevaba tiempo sin desbrozar, con acceso complicado y zonas de difícil recuperación.",
-    "whatWeDid": "Desbroce y limpieza completa de la parcela, despeje de accesos y agrupación de restos. El cliente dejó su reseña en Google tras el trabajo.",
+    "whatWeDid": "Desbroce y limpieza completa de la parcela, despeje de accesos y agrupación de restos.",
     "conditions": "Acceso para maquinaria disponible, restos agrupados dentro de la finca.",
     "relatedServiceIds": ["mantenimiento-jardines"]
   },

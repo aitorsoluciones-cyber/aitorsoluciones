@@ -1,11 +1,11 @@
-// Comprobaciones SEO/estructura sobre _site: un H1 por pagina, title y
+﻿// Comprobaciones SEO/estructura sobre _site: un H1 por pagina, title y
 // description unicos, canonica correcta, hreflang reciproco, sitemap y robots.
 import fs from "node:fs/promises";
 import path from "node:path";
 
 const SITE = path.resolve("_site");
 const DOMAIN = "https://aitorsoluciones.com";
-const EXPECTED_SITEMAP = 22;
+const EXPECTED_SITEMAP = 25;
 const NOINDEX = ["/gracias/", "/404.html", "/mantenimiento-fincas-alcanar/", "/offline.html"];
 
 async function walk(dir) {

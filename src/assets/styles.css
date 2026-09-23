@@ -290,3 +290,21 @@ footer h3{color:#fff}
 @media(max-width:640px){
   .nav-links{max-height:calc(100vh - 210px);max-height:calc(100dvh - 210px);padding-bottom:24px}
 }
+
+/* Accesos rapidos a servicios en el hero de la portada */
+.hero-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.hero-link{display:inline-flex;align-items:center;min-height:40px;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;color:var(--navy);font-weight:800;font-size:.9rem;text-decoration:none;transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.hero-link.is-main{background:var(--navy);border-color:var(--navy);color:#fff}
+.hero-link:hover{border-color:var(--navy)}
+.hero-link.is-main:hover{background:var(--navy-2)}
+
+.footer-grid{grid-template-columns:1.3fr 1.2fr 1fr 1fr}
+@media(max-width:980px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.footer-grid{grid-template-columns:1fr}}
+
+@media(max-width:640px){
+  .page-hero{padding:22px 0 30px!important}
+  .page-hero .cta-row{margin-top:16px}
+  .page-hero .cta-row .btn{flex:1 1 100%}
+  .breadcrumbs{margin:12px 0}
+}

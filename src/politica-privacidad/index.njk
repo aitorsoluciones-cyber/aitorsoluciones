@@ -1,4 +1,4 @@
----
+﻿---
 title: "Política de privacidad | Aitor Soluciones"
 description: "Cómo trata Aitor Soluciones los datos personales que recibe por el formulario, el teléfono, el correo o WhatsApp."
 layout: layouts/base.njk
@@ -13,8 +13,8 @@ layout: layouts/base.njk
 
 <h2>1. Responsable del tratamiento</h2>
 <ul>
-<li><strong>Responsable:</strong> {{ lg.field(legal.holderName, "nombre y apellidos legales completos") }}, que actúa bajo el nombre comercial {{ legal.tradeName }}.</li>
-<li><strong>NIF:</strong> {{ lg.field(legal.taxId, "NIF") }}</li>
+<li><strong>Responsable:</strong> {{ lg.field(legal.holderName, "nombre y apellidos o razón social del titular") }}, que actúa bajo el nombre comercial {{ legal.tradeName }}.</li>
+<li><strong>{{ legal.taxIdLabel }}:</strong> {{ lg.field(legal.taxId, "NIF/CIF") }}</li>
 <li><strong>Dirección postal:</strong> {{ lg.field(legal.postalAddress, "dirección postal o profesional válida") }}</li>
 <li><strong>Contacto:</strong> <a href="mailto:{{ legal.email }}">{{ legal.email }}</a> · <a href="tel:{{ business.phone }}">{{ legal.phone }}</a></li>
 </ul>

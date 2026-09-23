@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": "jardineria",
     "slug": "jardineria",
@@ -29,15 +29,16 @@
     "name": "Mantenimiento de jardines",
     "navLabel": "Mantenimiento de jardines",
     "title": "Mantenimiento de jardines en Alcanar | Aitor Soluciones",
-    "metaDescription": "Mantenimiento puntual o periódico de jardines: siega, setos, limpieza de hojas y restos y puesta a punto general. Alcanar, Vinaròs, La Ràpita, Amposta.",
+    "metaDescription": "Mantenimiento puntual o periódico de jardines: siega, setos, limpieza de restos y puesta a punto general. Alcanar, Vinaròs, La Ràpita, Amposta.",
     "eyebrow": "Jardinería",
     "h1": "Mantenimiento de jardines en Alcanar y alrededores",
+    "intro": "Siega, setos, limpieza de restos y puesta a punto de tu jardín, puntual o con visitas periódicas. Envía fotos y te decimos cómo lo plantearíamos.",
     "problem": "Un jardín que no se cuida con regularidad se descontrola rápido: la hierba crece, los setos pierden forma y las zonas alrededor de árboles y muros se llenan de maleza. Muchos propietarios no tienen tiempo, viven fuera o solo pueden ocuparse de la casa en temporada.",
-    "whatWeDo": "Ponemos el jardín a punto y, si tiene sentido, acordamos visitas periódicas para que no vuelva a descontrolarse: siega, recorte de setos y bordes, limpieza de hojas y restos, control de malas hierbas y revisión visual general del exterior.",
+    "whatWeDo": "Ponemos el jardín a punto y, si tiene sentido, acordamos visitas periódicas para que no vuelva a descontrolarse: siega, recorte de setos y bordes, limpieza de restos, control de malas hierbas y revisión visual general del exterior.",
     "includes": [
       "Siega y recorte de césped o hierba",
       "Recorte de setos y arbustos",
-      "Limpieza de hojas, ramas caídas y restos vegetales",
+      "Limpieza de ramas y restos vegetales",
       "Control de malas hierbas en zonas ajardinadas y caminos",
       "Puesta a punto general antes de temporada"
     ],
@@ -65,6 +66,7 @@
     "metaDescription": "Desbroce de parcelas, solares y fincas: hierba alta, maleza y zarzas. Limpieza, agrupación de restos y parcela accesible. Alcanar, Vinaròs, La Ràpita, Amposta.",
     "eyebrow": "Jardinería",
     "h1": "Desbroce de parcelas y solares en Alcanar y alrededores",
+    "intro": "Desbroce de parcelas, solares y fincas: hierba alta, maleza y zarzas. Envía fotos y ubicación para una valoración clara.",
     "problem": "Una parcela sin desbrozar acumula hierba alta, maleza y zarzas que dificultan el acceso, esconden restos y pueden dar mal aspecto a una vivienda, un solar urbano o una finca agrícola. En verano, además, es un riesgo de incendio.",
     "whatWeDo": "Desbrozamos con la maquinaria adecuada al terreno (desbrozadora, motoguadaña) hasta dejar la parcela limpia y accesible, agrupando los restos dentro de la finca o gestionando la retirada si hace falta.",
     "includes": [
@@ -99,7 +101,8 @@
     "metaDescription": "Poda puntual, retirada de ramas y mantenimiento general de exteriores en Alcanar, Vinaròs, La Ràpita, Amposta y La Sénia. Presupuesto con fotos por WhatsApp.",
     "eyebrow": "Jardinería",
     "h1": "Poda y mantenimiento exterior en Alcanar y alrededores",
-    "problem": "Ramas que molestan en el paso, árboles y olivos que no se podan desde hace tiempo, o un exterior que necesita una puesta a punto general antes de que llegue la familia o los inquilinos.",
+    "intro": "Poda ligera, retirada de ramas y puesta a punto del exterior. Presupuesto con fotos por WhatsApp.",
+    "problem": "Ramas que molestan en el paso, árboles y olivos que no se podan desde hace tiempo, o un exterior que necesita una puesta a punto general antes de que llegue la familia.",
     "whatWeDo": "Poda ligera y puntual de árboles y arbustos, retirada de ramas y restos, y mantenimiento general del exterior (caminos, muros, zonas alrededor de la vivienda) como parte de la puesta a punto.",
     "includes": [
       "Poda ligera de árboles y arbustos",
@@ -129,11 +132,11 @@
     "name": "Mantenimiento de propiedades",
     "navLabel": "Mantenimiento de propiedades",
     "title": "Mantenimiento de propiedades en Alcanar | Aitor Soluciones",
-    "metaDescription": "Mantenimiento de viviendas y segundas residencias: exterior, jardín y pequeñas incidencias. Ideal para propietarios que viven lejos. Alcanar y alrededores.",
-    "eyebrow": "Segundo pilar",
+    "metaDescription": "Mantenimiento de propiedades y segundas residencias, limpieza de viviendas, pintura y pequeñas reparaciones en Alcanar y alrededores.",
+    "eyebrow": "Vivienda y propiedades",
     "h1": "Mantenimiento de propiedades en Alcanar y alrededores",
-    "intro": "Además de jardinería, nos ocupamos de mantener la propiedad por fuera: revisiones periódicas, coordinación de pequeñas incidencias y puesta a punto del exterior para cuando llegues.",
-    "childServiceIds": ["mantenimiento-segundas-residencias"],
+    "intro": "Además de jardinería, cuidamos tu vivienda o segunda residencia: mantenimiento de la propiedad, limpieza de viviendas, pintura y pequeñas reparaciones. Cuéntanos qué necesitas y te indicamos cómo lo plantearíamos.",
+    "childServiceIds": ["mantenimiento-segundas-residencias", "limpieza-viviendas", "pintura", "reparaciones-hogar"],
     "relatedServiceIds": ["jardineria"],
     "images": { "before": "jardin-olivos-caseta-antes", "after": "jardin-olivos-caseta-despues" },
     "faqIds": ["vive-lejos", "fotos-precio"]
@@ -151,32 +154,50 @@
     "metaDescription": "Mantenimiento de segundas residencias para propietarios ausentes: jardín, revisión exterior y aviso ante incidencias. Alcanar, Vinaròs, La Ràpita, Amposta.",
     "eyebrow": "Mantenimiento de propiedades",
     "h1": "Mantenimiento de segundas residencias en Alcanar y alrededores",
+    "intro": "Cuidamos el jardín y el exterior de tu segunda residencia mientras estás fuera y coordinamos todo por WhatsApp.",
     "problem": "Una segunda residencia que pasa meses cerrada acumula jardín descontrolado, correo, hojas y pequeñas incidencias que nadie detecta hasta la siguiente visita. Si vives lejos, coordinar todo esto a distancia es complicado.",
     "whatWeDo": "Visitas periódicas para mantener el jardín y el exterior, comprobar que todo está en orden y avisarte con fotos si detectamos algo que requiere atención. Coordinamos por WhatsApp antes y después de cada visita.",
     "includes": [
       "Mantenimiento del jardín y exterior en tu ausencia",
       "Puesta a punto antes de tu llegada",
-      "Aviso con fotos si hay alguna incidencia",
-      "Coordinación de acceso con vecinos, alarma o llaves"
+      "Fotos del resultado tras cada visita",
+      "Coordinación del acceso (llaves, vecino o familiar de confianza)"
     ],
     "excludes": [
-      "Trabajos en el interior de la vivienda (no incluidos en este servicio)",
+      "Limpieza de la vivienda, pintura y pequeñas reparaciones: se piden como servicios propios",
       "Reparaciones que requieran un profesional especializado"
     ],
     "forWhom": "Propietarios que viven fuera de la zona o en el extranjero y quieren la propiedad cuidada entre visitas.",
     "periodicity": true,
-    "relatedServiceIds": ["mantenimiento-jardines", "jardineria"],
+    "relatedServiceIds": ["mantenimiento-jardines", "limpieza-viviendas", "pintura", "reparaciones-hogar"],
     "images": { "before": "jardin-olivos-caseta-antes", "after": "jardin-olivos-caseta-despues" },
     "faqIds": ["vive-lejos", "mantenimiento-posterior"]
   },
   {
     "id": "limpieza-viviendas",
     "slug": "limpieza-viviendas",
+    "url": "/limpieza-viviendas/",
     "level": 3,
+    "lean": true,
     "parentId": "mantenimiento-propiedades",
-    "status": "draft",
+    "status": "active",
     "name": "Limpieza de viviendas",
-    "navLabel": "Limpieza de viviendas"
+    "navLabel": "Limpieza de viviendas",
+    "title": "Limpieza de viviendas en Alcanar | Aitor Soluciones",
+    "metaDescription": "Limpieza de viviendas en Alcanar y alrededores. Envía fotos y la localidad por WhatsApp y te indicamos cómo lo plantearíamos, con presupuesto antes de empezar.",
+    "eyebrow": "Vivienda y propiedades",
+    "h1": "Limpieza de viviendas en Alcanar y alrededores",
+    "intro": "Limpieza de viviendas en Alcanar y alrededores. Cuéntanos qué necesitas y te indicamos cómo lo plantearíamos y si hace falta verlo en persona.",
+    "problem": "Una vivienda puede necesitar una limpieza porque no hay tiempo de hacerla, porque ha estado cerrada una temporada o porque se va a ocupar.",
+    "whatWeDo": "Cuéntanos cómo es la vivienda y qué necesitas limpiar. Te decimos cómo lo plantearíamos y, si conviene verlo en persona, lo acordamos antes de darte el presupuesto.",
+    "toSend": [
+      "La localidad y qué vivienda es",
+      "Unas fotos de las zonas que quieres limpiar",
+      "Los metros aproximados, si los conoces",
+      "Cuándo te vendría bien"
+    ],
+    "relatedServiceIds": ["pintura", "reparaciones-hogar", "mantenimiento-segundas-residencias"],
+    "faqIds": ["valorar-vivienda", "presupuesto-previo", "vive-lejos"]
   },
   {
     "id": "limpieza-apartamentos-turisticos",
@@ -188,22 +209,56 @@
     "navLabel": "Limpieza turística"
   },
   {
-    "id": "reparaciones-hogar",
-    "slug": "reparaciones-hogar",
-    "level": 3,
-    "parentId": "mantenimiento-propiedades",
-    "status": "draft",
-    "name": "Reparaciones del hogar",
-    "navLabel": "Reparaciones"
-  },
-  {
     "id": "pintura",
     "slug": "pintura",
+    "url": "/pintura/",
     "level": 3,
+    "lean": true,
     "parentId": "mantenimiento-propiedades",
-    "status": "draft",
+    "status": "active",
     "name": "Pintura",
-    "navLabel": "Pintura"
+    "navLabel": "Pintura",
+    "title": "Pintura en Alcanar y alrededores | Aitor Soluciones",
+    "metaDescription": "Trabajos de pintura en Alcanar y alrededores. Envía fotos y la localidad por WhatsApp y te indicamos cómo lo plantearíamos, con presupuesto antes de empezar.",
+    "eyebrow": "Vivienda y propiedades",
+    "h1": "Pintura en Alcanar y alrededores",
+    "intro": "Trabajos de pintura en Alcanar y alrededores. Con unas fotos y la localidad te indicamos cómo lo plantearíamos.",
+    "problem": "Un trabajo de pintura depende de las superficies, del estado en que están y del acabado que buscas; por eso conviene verlo en fotos antes de dar un precio.",
+    "whatWeDo": "Cuéntanos qué quieres pintar y envíanos fotos. Te decimos cómo lo plantearíamos y, si conviene verlo en persona, lo acordamos antes de darte el presupuesto.",
+    "toSend": [
+      "La localidad y qué quieres pintar",
+      "Unas fotos de las superficies",
+      "Las medidas aproximadas, si las conoces",
+      "Cuándo te vendría bien"
+    ],
+    "relatedServiceIds": ["limpieza-viviendas", "reparaciones-hogar", "mantenimiento-segundas-residencias"],
+    "faqIds": ["valorar-vivienda", "presupuesto-previo", "vive-lejos"]
+  },
+  {
+    "id": "reparaciones-hogar",
+    "slug": "reparaciones-hogar",
+    "url": "/reparaciones-hogar/",
+    "level": 3,
+    "lean": true,
+    "parentId": "mantenimiento-propiedades",
+    "status": "active",
+    "name": "Pequeñas reparaciones",
+    "navLabel": "Pequeñas reparaciones",
+    "title": "Pequeñas reparaciones del hogar en Alcanar | Aitor Soluciones",
+    "metaDescription": "Pequeñas reparaciones del hogar en Alcanar y alrededores. Cuéntanos qué hay que arreglar y envía fotos por WhatsApp; te confirmamos si podemos encargarnos.",
+    "eyebrow": "Vivienda y propiedades",
+    "h1": "Pequeñas reparaciones del hogar en Alcanar y alrededores",
+    "intro": "Pequeñas reparaciones del hogar. Cuéntanos qué hay que arreglar y envía fotos: te confirmamos si podemos encargarnos.",
+    "problem": "Cuando hay una reparación pequeña pendiente en casa, lo primero es saber qué es exactamente. Con unas fotos y una descripción podemos decirte si es un trabajo que podemos hacer.",
+    "whatWeDo": "Cuéntanos qué hay que arreglar y envíanos fotos. Te confirmamos si podemos encargarnos y cómo lo plantearíamos; si no es un trabajo que hagamos, te lo decimos.",
+    "toSend": [
+      "La localidad y qué hay que arreglar",
+      "Unas fotos del problema",
+      "Una breve descripción de lo que ocurre",
+      "Cuándo te vendría bien"
+    ],
+    "relatedServiceIds": ["pintura", "limpieza-viviendas", "mantenimiento-segundas-residencias"],
+    "faqIds": ["valorar-vivienda", "presupuesto-previo", "vive-lejos"]
   },
   {
     "id": "montajes",
