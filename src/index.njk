@@ -1,4 +1,4 @@
----
+﻿---
 title: "Jardinería y mantenimiento de propiedades en Alcanar | Aitor Soluciones"
 description: "Jardinería, desbroce, poda y mantenimiento de propiedades en Alcanar, La Ràpita, Amposta, Vinaròs y La Sénia. Envía fotos por WhatsApp y recibe una valoración clara."
 hreflangEs: "/"
@@ -35,7 +35,7 @@ layout: layouts/base.njk
 
 <section class="section section-soft"><div class="container">
 <div class="section-head"><span class="eyebrow">Antes y después</span><h2>Lo que más convence es ver el cambio</h2><p>Fotografías reales de antes y después. Sin imágenes de stock para simular resultados.</p></div>
-{{ mediac.beforeAfter("jardin-olivos-antes", "jardin-olivos-despues", "Jardín con olivos antes de la puesta a punto", "Jardín con olivos después de la puesta a punto", "Lo dejamos cuidado y más fácil de mantener.") }}
+{{ mediac.beforeAfter("jardin-olivos-antes", "jardin-olivos-despues", "Jardín con olivos antes de la puesta a punto", "Jardín con olivos después de la puesta a punto", "Lo dejamos cuidado y más fácil de mantener.", true) }}
 </div></section>
 
 <section class="section"><div class="container">
@@ -48,7 +48,7 @@ layout: layouts/base.njk
 </div>
 </div></section>
 
-<section class="section section-soft"><div class="container">
+<section class="section section-dark"><div class="container">
 <div class="section-head"><span class="eyebrow">Mantenimiento periódico</span><h2>Lo ponemos a punto y podemos mantenerlo</h2><p>Para que no vuelva a descontrolarse, acordamos visitas puntuales o periódicas después del primer trabajo.</p></div>
 {{ trustc.process(business.defaultProcessSteps) }}
 </div></section>
@@ -88,5 +88,5 @@ layout: layouts/base.njk
 <span class="eyebrow">Pide valoración</span><h2>{{ business.ctaSupportMessage }}</h2>
 <div class="cta-row">{{ ctac.whatsappCta(waLinkHome, "Abrir WhatsApp", "home_final") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, "home_final") }}</div>
 </div>
-{{ formc.leadForm("", "") }}
+{{ formc.leadForm("", "", legal) }}
 </div></section>

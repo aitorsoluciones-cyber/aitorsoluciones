@@ -1,0 +1,272 @@
+{
+  "hero-before": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "hero-after": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "rapita-antes": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "rapita-despues": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "rapita-campo-antes": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "rapita-campo-despues": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "rapita-olivo-antes": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "rapita-olivo-despues": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "alcanar-platja-antes": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "alcanar-platja-despues": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "work2-before": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "work2-after": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "work3-before": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "work3-after": {
+    "w": 800,
+    "h": 1067,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": null
+  },
+  "jardin-olivos-antes": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "jardin-olivos-despues": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "jardin-olivos-terraza-antes": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "jardin-olivos-terraza-despues": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "jardin-olivos-caseta-antes": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "jardin-olivos-caseta-despues": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "parcela-agricola-antes": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "parcela-agricola-despues": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "parcela-agricola-proceso": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "solar-urbano-antes": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "solar-urbano-despues": {
+    "w": 1200,
+    "h": 1600,
+    "sm": {
+      "w": 480,
+      "h": 640
+    },
+    "md": {
+      "w": 800,
+      "h": 1067
+    }
+  },
+  "solar-urbano-despues-amplio": {
+    "w": 1200,
+    "h": 900,
+    "sm": {
+      "w": 480,
+      "h": 360
+    },
+    "md": {
+      "w": 800,
+      "h": 600
+    }
+  }
+}

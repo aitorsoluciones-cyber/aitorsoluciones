@@ -1,4 +1,4 @@
----
+﻿---
 title: "Contacto | Aitor Soluciones"
 description: "Pide valoración por WhatsApp, llamada o formulario. Jardinería y mantenimiento de propiedades en Alcanar y alrededores."
 layout: layouts/base.njk
@@ -26,5 +26,5 @@ layout: layouts/base.njk
 <div class="cta-row">{{ ctac.whatsappCta(waLinkContacto, "Abrir WhatsApp", "contacto_main") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, "contacto_main") }}</div>
 <p style="margin-top:24px"><strong>Email:</strong> <a href="mailto:{{ business.email }}">{{ business.email }}</a><br><strong>Base:</strong> {{ business.base }}</p>
 </div>
-{{ formc.leadForm("", "") }}
+{{ formc.leadForm("", "", legal) }}
 </div></section>

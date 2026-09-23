@@ -79,3 +79,27 @@ publicará cuando se apruebe el despliegue).
    como pide el spec.
 
 No se ha hecho `git push` ni desplegado a Netlify.
+
+---
+
+## Cierre final (2026-09-23)
+
+### Datos legales (bloqueo de publicación legal)
+El Aviso legal y la Política de privacidad se generan a partir de `src/_data/legal.js`.
+Faltan tres datos que solo puede facilitar Aitor y que **no se han inventado**:
+
+| Variable de entorno (Netlify) | Dato |
+|---|---|
+| `LEGAL_HOLDER_NAME` | Nombre y apellidos legales completos del titular |
+| `LEGAL_TAX_ID` | NIF |
+| `LEGAL_POSTAL_ADDRESS` | Dirección postal o profesional válida |
+
+- Mientras falten, los **Deploy Previews** muestran los campos marcados como pendientes.
+- Una build de **producción** (`CONTEXT=production`) falla a propósito con "BLOQUEO DE PUBLICACION LEGAL", de modo que no puede publicarse un aviso incompleto.
+- Configúralos en Netlify (Site configuration → Environment variables) para no guardarlos en el repositorio, que es público. `npm run check:legal` indica el estado.
+
+### Comprobaciones
+`npm run build` · `npm run check` (enlaces e imágenes, JSON-LD, SEO: un H1, title/description únicos, canónicas, hreflang recíproco, sitemap de 22 URLs, robots).
+
+### Analítica
+`MEASUREMENT_ID` sigue vacío en `src/assets/script.js`: no se carga ninguna etiqueta hasta que Aitor facilite un ID real de GA4/GTM. Al activarla habrá que añadir banner de consentimiento y actualizar la política de privacidad.

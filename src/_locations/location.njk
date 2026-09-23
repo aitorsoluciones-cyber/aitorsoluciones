@@ -1,4 +1,4 @@
----
+﻿---
 pagination:
   data: landingLocations
   size: 1
@@ -41,7 +41,7 @@ layout: layouts/base.njk
 </div>
 <div class="kpi-row"><div class="kpi">Fotos reales</div><div class="kpi">Precio claro</div><div class="kpi">Trato directo</div></div>
 </div>
-<div class="local-photo"><img src="/assets/img/{{ lp.heroImage }}.webp" alt="{{ lp.heroImageAlt }}" width="800" height="1067" fetchpriority="high"></div>
+<div class="local-photo"><img src="/assets/img/{{ lp.heroImage }}.webp" srcset="{{ lp.heroImage | imgsrcset }}" sizes="(max-width: 1150px) 92vw, 540px" alt="{{ lp.heroImageAlt }}" width="{{ lp.heroImage | imgw }}" height="{{ lp.heroImage | imgh }}" fetchpriority="high"></div>
 </div></section>
 
 <section class="section"><div class="container">

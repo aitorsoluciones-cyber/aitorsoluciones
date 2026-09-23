@@ -1,4 +1,4 @@
-{% import "components/nav.njk" as navc %}
+﻿{% import "components/nav.njk" as navc %}
 {% import "components/jsonld.njk" as ld %}
 <!doctype html>
 <html lang="{{ lang or 'es' }}">
@@ -22,8 +22,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Aitor Soluciones">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="preload" href="/assets/styles.css?v=6" as="style">
-<link rel="stylesheet" href="/assets/styles.css?v=6">
+<link rel="preload" href="/assets/styles.css?v=7" as="style">
+<link rel="stylesheet" href="/assets/styles.css?v=7">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="{{ 'en_US' if lang == 'en' else 'es_ES' }}">
 <meta property="og:site_name" content="{{ business.name }}">
@@ -38,15 +38,16 @@
 {% endif %}
 </head>
 <body>
+<a class="skip-link" href="#contenido">{{ 'Skip to content' if lang == 'en' else 'Saltar al contenido' }}</a>
 {% if lang == "en" %}
 {{ navc.siteHeaderEn(business, services, waLink or (business.whatsapp | waLink(business.waMessageDefaultEn))) }}
-<main>
+<main id="contenido" tabindex="-1">
 {{ content | safe }}
 </main>
 {{ navc.siteFooterEn(business, waLink or (business.whatsapp | waLink(business.waMessageDefaultEn))) }}
 {% else %}
 {{ navc.siteHeader(business, services, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}
-<main>
+<main id="contenido" tabindex="-1">
 {{ content | safe }}
 </main>
 {{ navc.siteFooter(business, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}

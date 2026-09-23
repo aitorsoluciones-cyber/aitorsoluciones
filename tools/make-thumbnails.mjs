@@ -1,6 +1,7 @@
-// Genera variantes "-sm" (480px de ancho) de las fotos reales antes/despues
-// ya convertidas a WebP, para usarlas en miniaturas de galeria (srcset) sin
-// servir siempre la version de 1200px.
+// Genera variantes responsive de las fotos reales antes/despues ya convertidas
+// a WebP: "-sm" (480px) y, cuando el original supera 800px, "-md" (800px).
+// Escribe src/_data/imageMeta.json con las dimensiones reales para width/height
+// y srcset correctos.
 import sharp from "sharp";
 import path from "node:path";
 import fs from "node:fs/promises";
@@ -22,9 +23,10 @@ const BASE_NAMES = [
   "solar-urbano-antes", "solar-urbano-despues", "solar-urbano-despues-amplio",
 ];
 
+const meta = {};
+
 for (const name of BASE_NAMES) {
   const src = path.join(DIR, `${name}.webp`);
-  const out = path.join(DIR, `${name}-sm.webp`);
   try {
     await fs.access(src);
   } catch {
@@ -32,10 +34,23 @@ for (const name of BASE_NAMES) {
     continue;
   }
   const buffer = await fs.readFile(src);
-  await sharp(buffer).resize({ width: 480, withoutEnlargement: true }).webp({ quality: 72 }).toFile(out);
-  const meta = await sharp(out).metadata();
-  const kb = Math.round((await fs.stat(out)).size / 1024);
-  console.log(`${name}-sm.webp: ${meta.width}x${meta.height} (${kb} KB)`);
+  const info = await sharp(buffer).metadata();
+  const entry = { w: info.width, h: info.height, sm: { w: 480 }, md: null };
+
+  const smInfo = await sharp(buffer).resize({ width: 480, withoutEnlargement: true }).webp({ quality: 72 }).toFile(path.join(DIR, `${name}-sm.webp`));
+  entry.sm = { w: smInfo.width, h: smInfo.height };
+
+  const mdPath = path.join(DIR, `${name}-md.webp`);
+  if (info.width > 800) {
+    const mdInfo = await sharp(buffer).resize({ width: 800 }).webp({ quality: 74 }).toFile(mdPath);
+    entry.md = { w: mdInfo.width, h: mdInfo.height };
+  } else {
+    await fs.rm(mdPath, { force: true });
+  }
+  meta[name] = entry;
+  const kb = async (p) => Math.round((await fs.stat(p)).size / 1024);
+  console.log(`${name}: ${info.width}x${info.height} (${await kb(src)} KB) | sm ${await kb(path.join(DIR, name + "-sm.webp"))} KB${entry.md ? " | md " + (await kb(mdPath)) + " KB" : ""}`);
 }
 
-console.log("Miniaturas generadas.");
+await fs.writeFile(path.resolve("src/_data/imageMeta.json"), JSON.stringify(meta, null, 2) + "\n");
+console.log("Miniaturas y imageMeta.json generados.");

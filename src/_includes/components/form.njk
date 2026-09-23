@@ -1,4 +1,5 @@
-{% macro leadForm(defaultServiceId, defaultLocation) %}
+{% import "components/legal.njk" as lg %}
+{% macro leadForm(defaultServiceId, defaultLocation, legal) %}
 {% set serviceOptions = [
   { id: "mantenimiento-jardines", label: "Jardinería / mantenimiento de jardines" },
   { id: "desbroce-parcelas", label: "Desbroce de parcela o solar" },
@@ -27,6 +28,7 @@
 <textarea id="necesidad" name="necesidad" placeholder="Cuéntanos brevemente qué necesitas..."></textarea>
 <label><input type="checkbox" name="prefiere-whatsapp" value="Sí" style="width:auto"> Prefiero enviar las fotos por WhatsApp</label>
 <label><input type="checkbox" name="acepta-privacidad" value="Sí" required style="width:auto"> Acepto la <a href="/politica-privacidad/">política de privacidad</a>.</label>
+{{ lg.collectionNotice(legal) }}
 <button class="btn btn-primary" type="submit">Enviar consulta</button>
 </form>
 {% endmacro %}

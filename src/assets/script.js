@@ -104,3 +104,35 @@ if ("serviceWorker" in navigator) {
       .catch(error => console.error("No se pudo registrar el service worker:", error));
   });
 }
+
+/* Comparador antes/despues: mejora progresiva accesible (teclado y tactil).
+   Sin JS se siguen viendo las dos fotografias una junto a otra. */
+document.querySelectorAll('[data-compare]').forEach((box, i) => {
+  const grid = box.querySelector('.before-after-grid');
+  if (!grid || grid.querySelectorAll('figure').length !== 2) return;
+  const range = document.createElement('input');
+  range.type = 'range';
+  range.min = '0';
+  range.max = '100';
+  range.step = '1';
+  range.value = '50';
+  range.className = 'ba-range';
+  range.id = 'ba-range-' + i;
+  range.setAttribute('aria-label', 'Comparar antes y después: mueve el control para ver más de cada foto');
+  const handle = document.createElement('span');
+  handle.className = 'ba-handle';
+  handle.setAttribute('aria-hidden', 'true');
+  const update = () => {
+    box.style.setProperty('--pos', range.value + '%');
+    range.setAttribute('aria-valuetext', 'Antes ' + range.value + ' %, después ' + (100 - range.value) + ' %');
+  };
+  range.addEventListener('input', update);
+  grid.appendChild(range);
+  grid.appendChild(handle);
+  box.classList.add('is-compare');
+  update();
+  const hint = document.createElement('p');
+  hint.className = 'ba-hint';
+  hint.textContent = 'Desliza para comparar el antes y el después.';
+  box.insertAdjacentElement('afterend', hint);
+});

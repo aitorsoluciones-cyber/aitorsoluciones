@@ -29,23 +29,22 @@
     "name": "Mantenimiento de jardines",
     "navLabel": "Mantenimiento de jardines",
     "title": "Mantenimiento de jardines en Alcanar | Aitor Soluciones",
-    "metaDescription": "Mantenimiento puntual o periódico de jardines: hierba, riego básico, setos, limpieza de hojas y puesta a punto general. Alcanar, Vinaròs, La Ràpita, Amposta.",
+    "metaDescription": "Mantenimiento puntual o periódico de jardines: siega, setos, limpieza de hojas y restos y puesta a punto general. Alcanar, Vinaròs, La Ràpita, Amposta.",
     "eyebrow": "Jardinería",
     "h1": "Mantenimiento de jardines en Alcanar y alrededores",
     "problem": "Un jardín que no se cuida con regularidad se descontrola rápido: la hierba crece, los setos pierden forma y las zonas alrededor de árboles y muros se llenan de maleza. Muchos propietarios no tienen tiempo, viven fuera o solo pueden ocuparse de la casa en temporada.",
-    "whatWeDo": "Ponemos el jardín a punto y, si tiene sentido, acordamos visitas periódicas para que no vuelva a descontrolarse: siega, recorte de setos y bordes, limpieza de hojas y restos, control de malas hierbas y revisión general del riego básico.",
+    "whatWeDo": "Ponemos el jardín a punto y, si tiene sentido, acordamos visitas periódicas para que no vuelva a descontrolarse: siega, recorte de setos y bordes, limpieza de hojas y restos, control de malas hierbas y revisión visual general del exterior.",
     "includes": [
       "Siega y recorte de césped o hierba",
       "Recorte de setos y arbustos",
       "Limpieza de hojas, ramas caídas y restos vegetales",
-      "Control de malas hierbas en parterres y caminos",
-      "Revisión básica de riego (goteo, aspersores)",
+      "Control de malas hierbas en zonas ajardinadas y caminos",
       "Puesta a punto general antes de temporada"
     ],
     "excludes": [
       "Tala de árboles grandes",
-      "Instalación de sistemas de riego nuevos",
-      "Diseño y plantación completa de jardín"
+      "Diseño y plantación completa de jardín",
+      "Retirada de restos fuera de la propiedad (se valora aparte)"
     ],
     "forWhom": "Viviendas habituales, segundas residencias y propietarios que viven fuera y necesitan que alguien mantenga el jardín entre visitas.",
     "periodicity": true,
@@ -133,7 +132,7 @@
     "metaDescription": "Mantenimiento de viviendas y segundas residencias: exterior, jardín y pequeñas incidencias. Ideal para propietarios que viven lejos. Alcanar y alrededores.",
     "eyebrow": "Segundo pilar",
     "h1": "Mantenimiento de propiedades en Alcanar y alrededores",
-    "intro": "Además de jardinería, nos ocupamos de mantener la propiedad por fuera: revisiones periódicas, coordinación de pequeñas incidencias y puesta a punto para cuando llegues o para alquilarla con tranquilidad.",
+    "intro": "Además de jardinería, nos ocupamos de mantener la propiedad por fuera: revisiones periódicas, coordinación de pequeñas incidencias y puesta a punto del exterior para cuando llegues.",
     "childServiceIds": ["mantenimiento-segundas-residencias"],
     "relatedServiceIds": ["jardineria"],
     "images": { "before": "jardin-olivos-caseta-antes", "after": "jardin-olivos-caseta-despues" },
@@ -161,8 +160,8 @@
       "Coordinación de acceso con vecinos, alarma o llaves"
     ],
     "excludes": [
-      "Limpieza interior de la vivienda (todavía no disponible)",
-      "Reparaciones que requieran gremio especializado"
+      "Trabajos en el interior de la vivienda (no incluidos en este servicio)",
+      "Reparaciones que requieran un profesional especializado"
     ],
     "forWhom": "Propietarios que viven fuera de la zona o en el extranjero y quieren la propiedad cuidada entre visitas.",
     "periodicity": true,

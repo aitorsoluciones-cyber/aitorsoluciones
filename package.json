@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "aitor-soluciones-web",
   "version": "2.0.0",
   "private": true,
@@ -8,7 +8,9 @@
     "build": "eleventy",
     "serve": "eleventy --serve",
     "images": "node tools/convert-images.mjs && node tools/make-thumbnails.mjs",
-    "linkcheck": "node tools/check-links.mjs"
+    "linkcheck": "node tools/check-links.mjs",
+    "check": "node tools/check-links.mjs && node tools/check-jsonld.mjs && node tools/check-seo.mjs",
+    "check:legal": "node tools/check-legal.mjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",

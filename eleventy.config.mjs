@@ -1,4 +1,21 @@
+import fs from "node:fs";
+
+const imageMeta = JSON.parse(fs.readFileSync("src/_data/imageMeta.json", "utf8"));
+
 export default function (eleventyConfig) {
+  eleventyConfig.addFilter("imgsrcset", (name) => {
+    const m = imageMeta[name];
+    if (!m) return `/assets/img/${name}.webp`;
+    const parts = [`/assets/img/${name}-sm.webp ${m.sm.w}w`];
+    if (m.md) parts.push(`/assets/img/${name}-md.webp ${m.md.w}w`);
+    parts.push(`/assets/img/${name}.webp ${m.w}w`);
+    return parts.join(", ");
+  });
+  eleventyConfig.addFilter("imgw", (name) => (imageMeta[name] ? imageMeta[name].w : 800));
+  eleventyConfig.addFilter("imgh", (name) => (imageMeta[name] ? imageMeta[name].h : 1067));
+  eleventyConfig.addFilter("imgsmw", (name) => (imageMeta[name] ? imageMeta[name].sm.w : 480));
+  eleventyConfig.addFilter("imgsmh", (name) => (imageMeta[name] ? imageMeta[name].sm.h : 640));
+
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/manifest.webmanifest": "manifest.webmanifest" });
   eleventyConfig.addPassthroughCopy({ "src/service-worker.js": "service-worker.js" });
