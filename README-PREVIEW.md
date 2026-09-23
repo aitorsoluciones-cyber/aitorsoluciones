@@ -103,3 +103,9 @@ Faltan tres datos que solo puede facilitar Aitor y que **no se han inventado**:
 
 ### Analítica
 `MEASUREMENT_ID` sigue vacío en `src/assets/script.js`: no se carga ninguna etiqueta hasta que Aitor facilite un ID real de GA4/GTM. Al activarla habrá que añadir banner de consentimiento y actualizar la política de privacidad.
+
+### Datos legales: comportamiento verificado (2026-09-23)
+- El NIF se normaliza (mayúsculas, sin espacios ni guiones) y se valida como DNI/NIE con su letra de control. Si es otro tipo de documento válido, `LEGAL_SKIP_NIF_VALIDATION=1` omite la validación.
+- Las variables se leen al construir: tras guardarlas en Netlify hay que lanzar un nuevo deploy (Deploys → Trigger deploy → Clear cache and deploy site) para que aparezcan.
+- Producción (`CONTEXT=production`) falla si falta un dato o el NIF es inválido; previews y local no fallan.
+- `netlify.toml` excluye estas tres variables del escáner de secretos de Netlify (`SECRETS_SCAN_OMIT_KEYS`), porque el Aviso legal las publica a propósito.
