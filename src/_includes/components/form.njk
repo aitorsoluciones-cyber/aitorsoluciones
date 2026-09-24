@@ -1,0 +1,37 @@
+{% import "components/legal.njk" as lg %}
+{% macro leadForm(defaultServiceId, defaultLocation, legal) %}
+{% set serviceOptions = [
+  { id: "mantenimiento-jardines", label: "Jardinería / mantenimiento de jardines" },
+  { id: "desbroce-parcelas", label: "Desbroce de parcela o solar" },
+  { id: "poda-mantenimiento-exterior", label: "Poda y mantenimiento exterior" },
+  { id: "mantenimiento-propiedades", label: "Mantenimiento de propiedades" },
+  { id: "mantenimiento-segundas-residencias", label: "Segunda residencia" },
+  { id: "limpieza-viviendas", label: "Limpieza de viviendas" },
+  { id: "pintura", label: "Pintura" },
+  { id: "reparaciones-hogar", label: "Pequeñas reparaciones" },
+  { id: "otro", label: "Otro" }
+] %}
+<form name="presupuesto" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/gracias/">
+<input type="hidden" name="form-name" value="presupuesto">
+<input type="hidden" name="utm" value="">
+<input type="hidden" name="pagina" value="">
+<input type="hidden" name="fuente" value="web">
+<p hidden><label>No rellenar: <input name="bot-field"></label></p>
+<div class="form-grid"><div><label for="nombre">Nombre</label><input id="nombre" name="nombre" autocomplete="name" required></div><div><label for="telefono">Teléfono</label><input id="telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" required></div></div>
+<div class="form-grid"><div><label for="email">Email (opcional)</label><input id="email" name="email" type="email" autocomplete="email"></div><div><label for="zona">Localidad</label><input id="zona" name="zona" placeholder="Alcanar, Vinaròs..." value="{{ defaultLocation or '' }}" required></div></div>
+<div class="form-grid">
+<div><label for="tipo">Servicio</label><select id="tipo" name="tipo" required>
+<option value="" disabled {% if not defaultServiceId %}selected{% endif %}>Selecciona un servicio</option>
+{% for opt in serviceOptions %}<option value="{{ opt.label }}" {% if opt.id == defaultServiceId %}selected{% endif %}>{{ opt.label }}</option>{% endfor %}
+</select></div>
+<div><label for="metros">Metros aproximados (opcional)</label><input id="metros" name="metros" placeholder="Ej. 600 m²"></div>
+</div>
+<div class="form-grid"><div><label for="fecha">Fecha orientativa (opcional)</label><input id="fecha" name="fecha" placeholder="Ej. este mes, antes del verano..."></div><div><label for="restos">¿Qué hacemos con los restos? (opcional)</label><select id="restos" name="restos"><option>Agrupar dentro de la parcela</option><option>Retirar (se valora aparte)</option><option>No lo sé todavía</option></select></div></div>
+<label for="necesidad">¿Qué necesitas? (opcional)</label>
+<textarea id="necesidad" name="necesidad" placeholder="Cuéntanos brevemente qué necesitas..."></textarea>
+<label><input type="checkbox" name="prefiere-whatsapp" value="Sí" style="width:auto"> Prefiero enviar las fotos por WhatsApp</label>
+<label><input type="checkbox" name="acepta-privacidad" value="Sí" required style="width:auto"> Acepto la <a href="/politica-privacidad/">política de privacidad</a>.</label>
+{{ lg.collectionNotice(legal) }}
+<button class="btn btn-primary" type="submit">Enviar consulta</button>
+</form>
+{% endmacro %}

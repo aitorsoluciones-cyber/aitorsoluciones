@@ -1,0 +1,41 @@
+﻿{% macro homeHero(business, waLink, quickLinks) %}
+<section class="hero"><div class="container hero-grid">
+<div>
+<span class="eyebrow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg> Jardinería y mantenimiento de propiedades</span>
+<h1>Jardinería y mantenimiento de propiedades en Alcanar y alrededores</h1>
+<p class="lead">Mantenimiento de jardines, desbroce, poda y puesta a punto de exteriores. También segundas residencias, limpieza de viviendas, pintura y pequeñas reparaciones. Alcanar, La Ràpita, Amposta, Vinaròs, La Sénia y alrededores.</p>
+<div class="cta-row">
+<a class="btn btn-primary" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="home_hero">{{ business.ctaPrimaryLabel }}</a>
+<a class="btn btn-secondary" href="#servicios">Ver servicios</a>
+</div>
+{% if quickLinks %}<nav class="hero-links" aria-label="Servicios">
+{% for s in quickLinks %}<a class="hero-link{% if loop.index <= 3 %} is-main{% endif %}" href="{{ s.url }}">{{ s.navLabel }}</a>{% endfor %}
+</nav>{% endif %}
+<div class="trust-row">
+<span class="trust-pill">Trabajo local</span>
+<span class="trust-pill">Fotos reales</span>
+<span class="trust-pill">Presupuesto antes de empezar</span>
+<span class="trust-pill">Mantenimiento periódico</span>
+</div>
+</div>
+<div class="before-after" aria-label="Antes y después de una jardinería">
+<div class="before-after-grid">
+<figure><img src="/assets/img/hero-before.webp" alt="Jardín con hierba alta antes de la puesta a punto" width="800" height="1067" fetchpriority="high"><span class="label">ANTES</span></figure>
+<figure class="after"><img src="/assets/img/hero-after.webp" alt="Jardín limpio y cuidado después de la puesta a punto" width="800" height="1067" fetchpriority="high"><span class="label">DESPUÉS</span></figure>
+</div>
+<div class="result-card">Lo dejamos limpio, cuidado y más fácil de mantener.</div>
+</div>
+</div></section>
+{% endmacro %}
+
+{% macro pageHero(eyebrow, h1, intro, waLink, ctaSource) %}
+<section class="hero page-hero" style="padding:54px 0 44px"><div class="container">
+<span class="eyebrow">{{ eyebrow }}</span>
+<h1>{{ h1 }}</h1>
+<p class="lead">{{ intro }}</p>
+<div class="cta-row">
+<a class="btn btn-primary" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="{{ ctaSource }}_hero">Enviar fotos y ubicación</a>
+<a class="btn btn-secondary" href="#contacto">Ver formulario</a>
+</div>
+</div></section>
+{% endmacro %}

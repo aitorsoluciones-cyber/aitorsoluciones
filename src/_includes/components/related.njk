@@ -1,0 +1,27 @@
+{% macro relatedServices(ids, allServices, heading) %}
+{% if ids and ids.length %}
+<div class="zone-block">
+<h3>{{ heading or "Servicios relacionados" }}</h3>
+<div class="zone-chips">
+{% for id in ids %}
+{% set s = allServices | findById(id) %}
+{% if s %}<a href="{{ s.url }}" style="text-decoration:none"><span>{{ s.name }}</span></a>{% endif %}
+{% endfor %}
+</div>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro relatedLocations(ids, allLocations, heading) %}
+{% if ids and ids.length %}
+<div class="zone-block">
+<h3>{{ heading or "Zonas cercanas" }}</h3>
+<div class="zone-chips">
+{% for id in ids %}
+{% set loc = allLocations | findById(id) %}
+{% if loc %}{% if loc.hasLandingPage %}<a href="{{ loc.url }}" style="text-decoration:none"><span>{{ loc.name }}</span></a>{% else %}<span>{{ loc.name }}</span>{% endif %}{% endif %}
+{% endfor %}
+</div>
+</div>
+{% endif %}
+{% endmacro %}

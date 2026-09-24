@@ -1,0 +1,68 @@
+﻿---
+pagination:
+  data: publishedCases
+  size: 1
+  alias: case
+permalink: "/trabajos/{{ case.slug }}/"
+eleventyComputed:
+  title: "{{ case.title }} | Aitor Soluciones"
+  description: "{{ case.problem | truncate(150) }}"
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/media.njk" as mediac %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/related.njk" as relc %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set service = services | findById(case.serviceId) %}
+{% set location = locations | findById(case.locationId) %}
+{% set waMsg = "Hola Aitor, he visto el trabajo \"" + case.title + "\" en la web. Quiero valorar algo parecido. La ubicación es..." %}
+{% set waLinkCase = business.whatsapp | waLink(waMsg) %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Trabajos", url: "/trabajos/" }, { label: case.title, url: "/trabajos/" + case.slug + "/" }] %}
+{% set galleryImages = [{ name: case.before, caption: case.title + " - antes" }, { name: case.after, caption: case.title + " - después" }] %}
+{% if case.gallery and case.gallery.length %}{% for pair in case.gallery %}
+{% if pair.before %}{% set _ = galleryImages.push({ name: pair.before, caption: case.title + " - detalle antes" }) %}{% endif %}
+{% if pair.after %}{% set _ = galleryImages.push({ name: pair.after, caption: case.title + " - detalle después" }) %}{% endif %}
+{% endfor %}{% endif %}
+
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+<script type="application/ld+json">{{ ld.imageGallerySchema(business, galleryImages) | safe }}</script>
+
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+
+<section class="hero" style="padding:40px 0 44px"><div class="container">
+<span class="eyebrow">Trabajo real{% if location %} · {{ location.name }}{% endif %}</span>
+<h1>{{ case.title }}</h1>
+<p class="lead">{{ case.problem }}</p>
+</div></section>
+
+<section class="section"><div class="container">
+{{ mediac.beforeAfter(case.before, case.after, case.title + " antes", case.title + " después", "", true) }}
+</div></section>
+
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Qué hicimos</span><h2>Desarrollo del trabajo</h2><p>{{ case.whatWeDid }}</p>{% if case.conditions %}<p class="note">{{ case.conditions }}</p>{% endif %}</div>
+{% if case.gallery and case.gallery.length %}
+<div class="gallery">
+{% for pair in case.gallery %}
+<article class="work">
+<div class="work-pair">
+{% if pair.before %}<a href="/assets/img/{{ pair.before }}.webp" target="_blank" rel="noopener"><img src="/assets/img/{{ pair.before }}-sm.webp" alt="{{ case.title }} - detalle antes" loading="lazy" width="{{ pair.before | imgsmw }}" height="{{ pair.before | imgsmh }}"></a>{% endif %}
+{% if pair.after %}<a href="/assets/img/{{ pair.after }}.webp" target="_blank" rel="noopener"><img src="/assets/img/{{ pair.after }}-sm.webp" alt="{{ case.title }} - detalle después" loading="lazy" width="{{ pair.after | imgsmw }}" height="{{ pair.after | imgsmh }}" style="{% if not pair.before %}grid-column:1 / -1{% endif %}"></a>{% endif %}
+</div>
+</article>
+{% endfor %}
+</div>
+{% endif %}
+</div></section>
+
+<section class="section"><div class="container">
+{{ relc.relatedServices(case.relatedServiceIds, services, "Servicios relacionados con este trabajo") }}
+{% if service %}<p style="margin-top:18px"><a href="{{ service.url }}">Ver la página de {{ service.name | lower }} →</a></p>{% endif %}
+{% if location and location.hasLandingPage %}<p><a href="{{ location.url }}">Ver el servicio en {{ location.name }} →</a></p>{% endif %}
+</div></section>
+
+<section class="section section-dark"><div class="container"><h2>¿Quieres un resultado parecido?</h2><p class="lead">Envía fotos y la ubicación de tu jardín, parcela o finca. Te diremos cómo lo plantearíamos.</p>
+<div class="cta-row">{{ ctac.whatsappCta(waLinkCase, "Enviar fotos y ubicación", case.slug + "_final") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, case.slug + "_final") }}</div>
+</div></section>

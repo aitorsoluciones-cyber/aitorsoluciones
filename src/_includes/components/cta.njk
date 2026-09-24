@@ -1,0 +1,15 @@
+{% macro whatsappCta(waLink, label, source, extraClass) %}
+<a class="btn btn-whatsapp {{ extraClass }}" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="{{ source }}">{{ label }}</a>
+{% endmacro %}
+
+{% macro phoneCta(phone, phoneDisplay, source, label) %}
+<a class="btn btn-secondary" href="tel:{{ phone }}" data-lead="phone" data-source="{{ source }}">{{ label or ("Llamar · " + phoneDisplay) }}</a>
+{% endmacro %}
+
+{% macro maintenanceCta(waLink) %}
+<div class="quote">
+<strong>Lo ponemos a punto y podemos mantenerlo</strong>
+<p>Para que no vuelva a descontrolarse, podemos acordar visitas puntuales o periódicas después del primer trabajo.</p>
+<a class="btn btn-primary" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="maintenance_cta">Consultar mantenimiento periódico</a>
+</div>
+{% endmacro %}

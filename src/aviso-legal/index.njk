@@ -1,0 +1,44 @@
+﻿---
+title: "Aviso legal | Aitor Soluciones"
+description: "Aviso legal e información del titular del sitio web de Aitor Soluciones."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/legal.njk" as lg %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Aviso legal", url: "/aviso-legal/" }] %}
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+<section class="section legal-page"><div class="container">
+<h1>Aviso legal</h1>
+{{ lg.pendingBanner(legal) }}
+
+<h2>1. Identificación del titular</h2>
+<p>En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI), se informa de que este sitio web es titularidad de:</p>
+<ul>
+<li><strong>Nombre comercial:</strong> {{ legal.tradeName }}</li>
+<li><strong>Titular{% if legal.holderKind %} ({{ legal.holderKind }}){% endif %}:</strong> {{ lg.field(legal.holderName, "nombre y apellidos o razón social del titular") }}</li>
+<li><strong>{{ legal.taxIdLabel }}:</strong> {{ lg.field(legal.taxId, "NIF/CIF") }}</li>
+<li><strong>Dirección postal:</strong> {{ lg.field(legal.postalAddress, "dirección postal o profesional válida") }}</li>
+<li><strong>Correo electrónico:</strong> <a href="mailto:{{ legal.email }}">{{ legal.email }}</a></li>
+<li><strong>Teléfono:</strong> <a href="tel:{{ business.phone }}">{{ legal.phone }}</a></li>
+<li><strong>Zona de actividad:</strong> con base en {{ legal.base }} y servicio en Alcanar y alrededores.</li>
+</ul>
+<p>«{{ legal.tradeName }}» es el nombre comercial con el que el titular presta sus servicios. La atención se realiza por teléfono, WhatsApp, correo electrónico o formulario y, cuando hace falta valorar un trabajo, mediante visita acordada previamente.</p>
+
+<h2>2. Objeto y condiciones de uso</h2>
+<p>Este sitio ofrece información sobre los servicios del titular (jardinería, desbroce, poda, mantenimiento de propiedades, limpieza de viviendas, pintura y pequeñas reparaciones), así como medios de contacto para solicitar una valoración. Su uso atribuye la condición de usuario e implica el uso conforme a la ley, a la buena fe y a este aviso.</p>
+
+<h2>3. Información y presupuestos</h2>
+<p>Los contenidos del sitio tienen carácter informativo. Las descripciones de servicios y las fotografías de trabajos no constituyen una oferta vinculante; el alcance, el precio y las condiciones de cada trabajo se confirman por escrito en un presupuesto antes de empezar.</p>
+
+<h2>4. Propiedad intelectual</h2>
+<p>Los textos, el diseño, el logotipo y las fotografías de trabajos publicados en este sitio son del titular o se utilizan con autorización. Queda prohibida su reproducción o distribución con fines comerciales sin permiso previo.</p>
+
+<h2>5. Responsabilidad y enlaces externos</h2>
+<p>El titular procura mantener la información actualizada, pero no garantiza la ausencia de errores ni la disponibilidad continua del sitio. Los enlaces a servicios de terceros (WhatsApp, Google Maps y similares) se ofrecen por comodidad; el titular no es responsable de sus contenidos ni de sus políticas.</p>
+
+<h2>6. Protección de datos y almacenamiento en el dispositivo</h2>
+<p>El tratamiento de los datos personales se describe en la <a href="/politica-privacidad/">política de privacidad</a>. Este sitio no utiliza cookies publicitarias ni de seguimiento.</p>
+
+<h2>7. Legislación aplicable</h2>
+<p>Este aviso se rige por la legislación española. Para cualquier controversia serán competentes los juzgados y tribunales que correspondan conforme a la normativa aplicable y, si el usuario es consumidor, los de su domicilio.</p>
+</div></section>

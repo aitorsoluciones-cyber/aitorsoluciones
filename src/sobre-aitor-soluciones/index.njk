@@ -1,0 +1,36 @@
+﻿---
+title: "Sobre Aitor Soluciones | Jardinería y mantenimiento en Alcanar"
+description: "Aitor Soluciones: jardinería y mantenimiento de propiedades con base en Alcanar y Les Cases d'Alcanar. Trabajo local, trato directo y presupuesto claro."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/hero.njk" as heroc %}
+{% import "components/trust.njk" as trustc %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set waLinkSobre = business.whatsapp | waLink(business.waMessageDefault) %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Sobre Aitor Soluciones", url: "/sobre-aitor-soluciones/" }] %}
+
+<script type="application/ld+json">{{ ld.breadcrumbSchema(business, breadcrumbItems) | safe }}</script>
+
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+
+{{ heroc.pageHero("Sobre nosotros", "Jardinería y mantenimiento con base en " + business.base, "Trabajo local, trato directo y presupuesto claro antes de empezar. Atendemos Alcanar y un radio aproximado de " + business.serviceRadiusKm + " km.", waLinkSobre, "sobre") }}
+
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Cómo trabajamos</span><h2>Trabajo local y de cercanía</h2>
+<p>Aitor Soluciones trabaja desde {{ business.base }} en jardinería y mantenimiento de propiedades: mantenimiento de jardines, desbroce de parcelas, poda ligera y puesta a punto de exteriores. También nos ocupamos del mantenimiento de segundas residencias para propietarios que viven fuera de la zona, y ofrecemos limpieza de viviendas, pintura y pequeñas reparaciones.</p>
+<p>Priorizamos el trato directo: valoramos el trabajo con fotos y ubicación, cerramos un presupuesto claro antes de empezar y, cuando tiene sentido, proponemos un mantenimiento periódico para que el jardín o la parcela no vuelvan a descontrolarse.</p>
+</div>
+{{ trustc.trustBar(["Trabajo local", "Fotos reales", "Presupuesto antes de empezar", "Mantenimiento periódico"]) }}
+</div></section>
+
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Confianza</span><h2>Opiniones de clientes</h2></div>
+{{ trustc.reviewsTrust(business.googleMapsUrl) }}
+</div></section>
+
+<section class="section section-dark"><div class="container"><h2>Cuéntanos qué necesitas</h2><p class="lead">Envía fotos y la ubicación de tu jardín, parcela o propiedad.</p>
+<div class="cta-row">{{ ctac.whatsappCta(waLinkSobre, business.ctaPrimaryLabel, "sobre_final") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, "sobre_final") }}</div>
+</div></section>

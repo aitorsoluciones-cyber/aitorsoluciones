@@ -1,0 +1,13 @@
+---
+title: "Página no encontrada | Aitor Soluciones"
+description: "La página que buscas no existe."
+permalink: "/404.html"
+noindex: true
+layout: layouts/base.njk
+---
+{% set waLink404 = business.whatsapp | waLink(business.waMessageDefault) %}
+<section class="section"><div class="container">
+<h1>Página no encontrada</h1>
+<p class="lead">Vuelve al inicio o escríbenos por WhatsApp para pedir una valoración.</p>
+<div class="cta-row"><a class="btn btn-primary" href="/">Volver al inicio</a><a class="btn btn-whatsapp" href="{{ waLink404 }}" target="_blank" rel="noopener">Abrir WhatsApp</a></div>
+</div></section>

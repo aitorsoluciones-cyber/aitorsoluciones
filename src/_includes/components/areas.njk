@@ -1,0 +1,16 @@
+{% macro priorityAreas(locations) %}
+<div class="areas-grid">
+{% for loc in locations %}{% if loc.hasLandingPage %}
+<a class="area-card" href="{{ loc.url }}"><h3>{{ loc.name }}</h3><p>Jardinería, desbroce y mantenimiento.</p><span>Ver servicio →</span></a>
+{% endif %}{% endfor %}
+<a class="area-card" href="/en/property-maintenance/"><h3>Foreign property owners</h3><p>English information for owners living abroad.</p><span>View in English →</span></a>
+</div>
+{% endmacro %}
+
+{% macro provinceList(locations, province) %}
+<div class="zone-chips">
+{% for loc in locations %}{% if loc.province == province %}
+{% if loc.hasLandingPage %}<a href="{{ loc.url }}" style="text-decoration:none"><span>{{ loc.name }}</span></a>{% else %}<span>{{ loc.name }}</span>{% endif %}
+{% endif %}{% endfor %}
+</div>
+{% endmacro %}

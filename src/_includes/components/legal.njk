@@ -1,0 +1,11 @@
+{% macro field(value, label) %}{% if value %}{{ value }}{% else %}<mark class="legal-pending">[pendiente de facilitar por Aitor: {{ label }}]</mark>{% endif %}{% endmacro %}
+
+{% macro pendingBanner(legal) %}
+{% if not legal.complete %}
+<p class="legal-banner" role="note"><strong>Bloqueo de publicación legal (solo visible en previsualización):</strong> faltan datos del titular. Esta página no se publica en producción hasta completarlos.</p>
+{% endif %}
+{% endmacro %}
+
+{% macro collectionNotice(legal) %}
+<p class="form-legal"><strong>Información básica sobre protección de datos.</strong> Responsable: {% if legal.holderName %}{{ legal.holderName }} ({{ legal.tradeName }}){% else %}el titular de este sitio, {{ legal.tradeName }} (ver <a href="/aviso-legal/">Aviso legal</a>){% endif %}. Finalidad: atender tu consulta y preparar un presupuesto. Base jurídica: tu consentimiento y la aplicación de medidas precontractuales a petición tuya. Destinatarios: Netlify, Inc. (alojamiento y recepción del formulario, como encargado del tratamiento); no se ceden datos a otros terceros salvo obligación legal. Derechos: acceso, rectificación, supresión, oposición, limitación y portabilidad, escribiendo a {{ legal.email }}. Más información en la <a href="/politica-privacidad/">política de privacidad</a>.</p>
+{% endmacro %}

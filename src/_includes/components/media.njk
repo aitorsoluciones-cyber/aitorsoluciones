@@ -1,0 +1,29 @@
+{% macro beforeAfter(before, after, beforeAlt, afterAlt, resultText, compare) %}
+<div class="before-after"{% if compare %} data-compare{% endif %} aria-label="Antes y después">
+<div class="before-after-grid">
+<figure><img src="/assets/img/{{ before }}.webp" srcset="{{ before | imgsrcset }}" sizes="(max-width: 640px) 92vw, 560px" alt="{{ beforeAlt }}" width="{{ before | imgw }}" height="{{ before | imgh }}" loading="lazy"><span class="label">ANTES</span></figure>
+<figure class="after"><img src="/assets/img/{{ after }}.webp" srcset="{{ after | imgsrcset }}" sizes="(max-width: 640px) 92vw, 560px" alt="{{ afterAlt }}" width="{{ after | imgw }}" height="{{ after | imgh }}" loading="lazy"><span class="label">DESPUÉS</span></figure>
+</div>
+{% if resultText %}<div class="result-card">{{ resultText }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro workGallery(cases, locations) %}
+<div class="gallery">
+{% for c in cases %}
+{% set loc = locations | findById(c.locationId) %}
+<article class="work">
+<div class="work-pair">
+<img src="/assets/img/{{ c.before }}-sm.webp" alt="{{ c.title }} - antes" loading="lazy" width="{{ c.before | imgsmw }}" height="{{ c.before | imgsmh }}">
+<img src="/assets/img/{{ c.after }}-sm.webp" alt="{{ c.title }} - después" loading="lazy" width="{{ c.after | imgsmw }}" height="{{ c.after | imgsmh }}">
+</div>
+<div class="work-copy">
+{% if loc %}<strong>{{ loc.name }}</strong>{% endif %}
+<h3>{{ c.title }}</h3>
+<p>{{ c.whatWeDid }}</p>
+{% if c.hasPage %}<a href="/trabajos/{{ c.slug }}/">Ver el caso completo →</a>{% endif %}
+</div>
+</article>
+{% endfor %}
+</div>
+{% endmacro %}

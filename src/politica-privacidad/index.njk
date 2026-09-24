@@ -1,0 +1,53 @@
+﻿---
+title: "Política de privacidad | Aitor Soluciones"
+description: "Cómo trata Aitor Soluciones los datos personales que recibe por el formulario, el teléfono, el correo o WhatsApp."
+layout: layouts/base.njk
+---
+{% import "components/breadcrumbs.njk" as bc %}
+{% import "components/legal.njk" as lg %}
+{% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: "Política de privacidad", url: "/politica-privacidad/" }] %}
+<div class="container">{{ bc.breadcrumbs(breadcrumbItems) }}</div>
+<section class="section legal-page"><div class="container">
+<h1>Política de privacidad</h1>
+{{ lg.pendingBanner(legal) }}
+
+<h2>1. Responsable del tratamiento</h2>
+<ul>
+<li><strong>Responsable:</strong> {{ lg.field(legal.holderName, "nombre y apellidos o razón social del titular") }}, que actúa bajo el nombre comercial {{ legal.tradeName }}.</li>
+<li><strong>{{ legal.taxIdLabel }}:</strong> {{ lg.field(legal.taxId, "NIF/CIF") }}</li>
+<li><strong>Dirección postal:</strong> {{ lg.field(legal.postalAddress, "dirección postal o profesional válida") }}</li>
+<li><strong>Contacto:</strong> <a href="mailto:{{ legal.email }}">{{ legal.email }}</a> · <a href="tel:{{ business.phone }}">{{ legal.phone }}</a></li>
+</ul>
+
+<h2>2. Qué datos tratamos y de dónde proceden</h2>
+<p>Tratamos los datos que nos facilitas tú al usar el formulario de contacto (nombre, teléfono, correo electrónico opcional, localidad, servicio, metros, fecha orientativa, descripción y preferencias), o al escribirnos por WhatsApp, correo electrónico o teléfono, incluidas las fotografías y la ubicación que envíes. El formulario registra además, de forma automática, la página desde la que se envía y los parámetros de campaña de la visita (UTM), para saber de dónde procede la consulta.</p>
+<p>Te recomendamos enviar solo imágenes del inmueble o de la parcela, evitando que aparezcan personas o datos que no sean necesarios.</p>
+
+<h2>3. Para qué los usamos y con qué base jurídica</h2>
+<ul>
+<li><strong>Atender tu consulta y preparar un presupuesto.</strong> Base jurídica: tu consentimiento (art. 6.1.a RGPD), que prestas al marcar la casilla del formulario, y la aplicación de medidas precontractuales a petición tuya (art. 6.1.b RGPD).</li>
+<li><strong>Ejecutar el trabajo contratado, facturar y cumplir obligaciones legales</strong> (fiscales y contables), si llegas a contratar. Base jurídica: ejecución del contrato y obligación legal (art. 6.1.b y 6.1.c RGPD).</li>
+<li><strong>Conocer el origen de las consultas</strong> (página y campaña). Base jurídica: interés legítimo en medir el funcionamiento de la web (art. 6.1.f RGPD), sin perfilar a las personas.</li>
+</ul>
+<p>No se toman decisiones automatizadas ni se elaboran perfiles.</p>
+
+<h2>4. Destinatarios y encargados del tratamiento</h2>
+<p>No cedemos tus datos a terceros salvo obligación legal. Para prestar el servicio intervienen proveedores que acceden a los datos solo para ese fin:</p>
+<ul>
+<li><strong>Netlify, Inc.</strong>: alojamiento de la web y recepción de las entradas del formulario (Netlify Forms), como encargado del tratamiento.</li>
+<li><strong>Google (Gmail)</strong>: si nos escribes al correo electrónico, o si las notificaciones del formulario se reciben en esa cuenta.</li>
+<li><strong>Meta (WhatsApp)</strong>: si nos escribes por WhatsApp, la comunicación se rige además por las condiciones y la política de privacidad de WhatsApp.</li>
+</ul>
+
+<h2>5. Transferencias internacionales</h2>
+<p>Algunos de estos proveedores tienen sede en Estados Unidos, por lo que puede producirse una transferencia internacional de datos. Se apoya en las garantías adecuadas que cada proveedor ofrece conforme al RGPD (por ejemplo, cláusulas contractuales tipo o su adhesión al Marco de Privacidad de Datos UE-EE. UU.), que puedes consultar en la documentación de cada proveedor.</p>
+
+<h2>6. Cuánto tiempo conservamos los datos</h2>
+<p>Conservamos los datos de tu consulta mientras sea necesario para atenderla y preparar el presupuesto. Si contratas un trabajo, los conservamos durante los plazos que exijan la normativa fiscal y mercantil y la prescripción de posibles responsabilidades. Cuando dejen de ser necesarios, se suprimen o se bloquean conforme a la ley.</p>
+
+<h2>7. Tus derechos</h2>
+<p>Puedes ejercer los derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad, y retirar tu consentimiento en cualquier momento, escribiendo a <a href="mailto:{{ legal.email }}">{{ legal.email }}</a> e indicando el derecho que quieres ejercer. Si consideras que no hemos tratado tus datos correctamente, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener">www.aepd.es</a>).</p>
+
+<h2>8. Cookies y almacenamiento en tu dispositivo</h2>
+<p>Este sitio no utiliza cookies publicitarias ni de seguimiento y no tiene activada ninguna herramienta de analítica. Guarda de forma temporal en tu navegador (sessionStorage) los parámetros de campaña de tu visita y utiliza una caché técnica (service worker) para que la web cargue mejor y pueda mostrar una página sin conexión. Si en el futuro se activara una herramienta de analítica, se actualizará esta política y se solicitará tu consentimiento cuando corresponda.</p>
+</div></section>

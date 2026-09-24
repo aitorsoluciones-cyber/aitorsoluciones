@@ -1,0 +1,20 @@
+---
+permalink: "/sitemap.xml"
+eleventyExcludeFromCollections: true
+---
+{%- set staticUrls = ["/", "/trabajos/", "/zonas/", "/contacto/", "/sobre-aitor-soluciones/", "/en/property-maintenance/", "/aviso-legal/", "/politica-privacidad/"] -%}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for url in staticUrls %}
+<url><loc>{{ business.domain }}{{ url }}</loc></url>
+{%- endfor %}
+{%- for s in activeServices %}
+<url><loc>{{ business.domain }}{{ s.url }}</loc></url>
+{%- endfor %}
+{%- for loc in landingLocations %}
+<url><loc>{{ business.domain }}{{ loc.url }}</loc></url>
+{%- endfor %}
+{%- for c in publishedCases %}
+<url><loc>{{ business.domain }}/trabajos/{{ c.slug }}/</loc></url>
+{%- endfor %}
+</urlset>

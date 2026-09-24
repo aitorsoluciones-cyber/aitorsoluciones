@@ -1,0 +1,93 @@
+﻿---
+title: "Jardinería y mantenimiento de propiedades en Alcanar | Aitor Soluciones"
+description: "Jardinería, desbroce, poda y mantenimiento de propiedades en Alcanar, La Ràpita, Amposta, Vinaròs y La Sénia. Envía fotos por WhatsApp y recibe una valoración clara."
+hreflangEs: "/"
+hreflangEn: "/en/property-maintenance/"
+layout: layouts/base.njk
+---
+{% import "components/hero.njk" as heroc %}
+{% import "components/cards.njk" as cardsc %}
+{% import "components/media.njk" as mediac %}
+{% import "components/trust.njk" as trustc %}
+{% import "components/faq.njk" as faqc %}
+{% import "components/cta.njk" as ctac %}
+{% import "components/areas.njk" as areasc %}
+{% import "components/form.njk" as formc %}
+{% import "components/jsonld.njk" as ld %}
+
+{% set waLinkHome = business.whatsapp | waLink(business.waMessageDefault) %}
+{% set jardineria = services | findById("jardineria") %}
+{% set mantProp = services | findById("mantenimiento-propiedades") %}
+{% set homeFaqIds = ["fotos-precio", "restos-incluidos", "info-enviar", "mantenimiento-posterior", "vive-lejos"] %}
+{% set homeFaqs = homeFaqIds | pickByIds(faqs) %}
+
+<script type="application/ld+json">{{ ld.faqSchema(homeFaqs) | safe }}</script>
+
+{% set quickLinks = ["jardineria", "desbroce-parcelas", "poda-mantenimiento-exterior", "mantenimiento-segundas-residencias", "limpieza-viviendas", "pintura", "reparaciones-hogar"] | pickByIds(services) %}
+{{ heroc.homeHero(business, waLinkHome, quickLinks) }}
+
+<section class="section" id="servicios"><div class="container">
+<div class="section-head"><span class="eyebrow">Servicio principal</span><h2>Jardinería: mantenimiento, desbroce y poda</h2><p>El eje principal de Aitor Soluciones. Nos centramos en los trabajos que más necesitas para recuperar y mantener un jardín, una parcela o una finca.</p></div>
+<div class="services-grid">
+{% for childId in jardineria.childServiceIds %}{% set child = services | findById(childId) %}{{ cardsc.serviceCard(child) }}{% endfor %}
+</div>
+<p style="margin-top:18px"><a href="/jardineria/">Ver toda la jardinería →</a></p>
+</div></section>
+
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Antes y después</span><h2>Lo que más convence es ver el cambio</h2><p>Fotografías reales de antes y después. Sin imágenes de stock para simular resultados.</p></div>
+{{ mediac.beforeAfter("jardin-olivos-antes", "jardin-olivos-despues", "Jardín con olivos antes de la puesta a punto", "Jardín con olivos después de la puesta a punto", "Lo dejamos cuidado y más fácil de mantener.", true) }}
+</div></section>
+
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">El problema</span><h2>Cuando lo vas dejando, el trabajo se hace cada vez mayor</h2><p>La mayoría de clientes nos escriben porque el jardín o la finca se les ha ido de las manos, viven lejos o no tienen tiempo ni maquinaria para recuperarla.</p></div>
+<div class="problem-grid">
+<div class="card"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V9"/><path d="M12 13c0-4-2.5-6.5-6-7 0 4 2.5 6.5 6 7Z"/><path d="M12 11c0-3.5 2.2-5.7 5.5-6.2 0 3.6-2.2 5.7-5.5 6.2Z"/></svg></div><h3>Jardín descontrolado</h3><p>Hierba y maleza alta que rodea árboles y hace que la propiedad parezca abandonada.</p></div>
+<div class="card"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3>Falta de tiempo</h3><p>La propiedad necesita atención, pero no puedes dedicarle días enteros.</p></div>
+<div class="card"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><h3>Vives lejos</h3><p>Segundas residencias, fincas familiares o propiedades que no puedes vigilar.</p></div>
+<div class="card"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><h3>Sin medios adecuados</h3><p>No tienes remolque, maquinaria o forma de gestionar los restos.</p></div>
+</div>
+</div></section>
+
+<section class="section section-dark"><div class="container">
+<div class="section-head"><span class="eyebrow">Mantenimiento periódico</span><h2>Lo ponemos a punto y podemos mantenerlo</h2><p>Para que no vuelva a descontrolarse, acordamos visitas puntuales o periódicas después del primer trabajo.</p></div>
+{{ trustc.process(business.defaultProcessSteps) }}
+</div></section>
+
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Vivienda y propiedades</span><h2>{{ mantProp.name }}</h2><p>{{ mantProp.intro }}</p></div>
+<div class="services-grid">
+{% for child in mantProp.childServiceIds | pickByIds(services) %}{{ cardsc.serviceCard(child) }}{% endfor %}
+</div>
+<p style="margin-top:18px"><a href="{{ mantProp.url }}">Ver mantenimiento de propiedades →</a></p>
+</div></section>
+
+<section class="section section-soft" id="trabajos"><div class="container">
+<div class="section-head"><span class="eyebrow">Trabajos reales</span><h2>Fotografías reales de trabajos realizados</h2><p>Una selección de antes y después. Puedes ver más en la página de trabajos.</p></div>
+{{ mediac.workGallery(publishedCases, locations) }}
+<div class="cta-row"><a class="btn btn-primary" href="/trabajos/">Ver todos los trabajos →</a></div>
+</div></section>
+
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Confianza</span><h2>Comprueba cómo trabajamos antes de contratar</h2><p>El perfil de Google muestra las opiniones publicadas por clientes, fotografías y los datos de contacto del negocio.</p></div>
+{{ trustc.reviewsTrust(business.googleMapsUrl) }}
+</div></section>
+
+<section class="section section-soft" id="zonas"><div class="container">
+<div class="section-head"><span class="eyebrow">Servicio local</span><h2>Trabajamos cerca para responder mejor</h2><p>Base en {{ business.base }} y desplazamientos normalmente dentro de un radio aproximado de {{ business.serviceRadiusKm }} km.</p></div>
+{{ areasc.priorityAreas(locations) }}
+<p style="margin-top:18px"><a href="/zonas/">Ver todas las zonas atendidas →</a></p>
+</div></section>
+
+<section class="section"><div class="container">
+<div class="section-head"><span class="eyebrow">Preguntas frecuentes</span><h2>Lo que necesitas saber antes de pedir presupuesto</h2></div>
+{{ faqc.faqList(homeFaqs) }}
+</div></section>
+
+<section class="section section-soft" id="contacto"><div class="container contact-box">
+<div>
+<span class="eyebrow">Pide valoración</span><h2>{{ business.ctaSupportMessage }}</h2>
+<div class="cta-row">{{ ctac.whatsappCta(waLinkHome, "Abrir WhatsApp", "home_final") }}{{ ctac.phoneCta(business.phone, business.phoneDisplay, "home_final") }}</div>
+</div>
+{{ formc.leadForm("", "", legal) }}
+</div></section>
