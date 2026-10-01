@@ -10,7 +10,8 @@
     "images": "node tools/convert-images.mjs && node tools/make-thumbnails.mjs",
     "linkcheck": "node tools/check-links.mjs",
     "check": "node tools/check-links.mjs && node tools/check-jsonld.mjs && node tools/check-seo.mjs",
-    "check:legal": "node tools/check-legal.mjs"
+    "check:legal": "node tools/check-legal.mjs",
+    "serve:prod-equiv": "node tools/prod-equiv-server.mjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",

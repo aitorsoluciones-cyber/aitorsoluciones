@@ -113,3 +113,18 @@ Faltan tres datos que solo puede facilitar Aitor y que **no se han inventado**:
 
 ### Servicios de vivienda (2026-09-23)
 Limpieza de viviendas (/limpieza-viviendas/), pintura (/pintura/) y pequeñas reparaciones (/reparaciones-hogar/) están activas en src/_data/services.json con contenido mínimo y sin precios, fotos ni reseñas inventados (lean: true). Los servicios que siguen como draft (apartamentos turísticos, montajes, pladur) no se publican.
+
+### Herramienta de QA: servidor equivalente a producción (2026-10-01)
+
+`npm run serve:prod-equiv` levanta `tools/prod-equiv-server.mjs`, que sirve
+`_site` en `http://localhost:5055` aplicando las cabeceras reales de
+`src/_headers` (CSP, seguridad, caché) tal cual las vería un visitante en
+`aitorsoluciones.com`. A diferencia de `npm run serve` (servidor de
+desarrollo de Eleventy, con su propio script de recarga en vivo) y de un
+Deploy Preview de Netlify (que añade su script de colaboración y
+`X-Robots-Tag: noindex`, ambos exclusivos de preview), este servidor no
+añade ni quita nada: es el build real con las cabeceras reales, sin
+artefactos de entorno. Úsalo para auditorías de Lighthouse/Best
+Practices/SEO que no se quieran contaminar con herramientas propias del
+flujo de desarrollo o de Netlify Preview. Requiere haber ejecutado antes
+`npm run build`.

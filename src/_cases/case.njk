@@ -11,6 +11,7 @@ layout: layouts/base.njk
 ---
 {% import "components/breadcrumbs.njk" as bc %}
 {% import "components/media.njk" as mediac %}
+{% import "components/cards.njk" as cardsc %}
 {% import "components/cta.njk" as ctac %}
 {% import "components/related.njk" as relc %}
 {% import "components/jsonld.njk" as ld %}
@@ -38,7 +39,10 @@ layout: layouts/base.njk
 </div></section>
 
 <section class="section"><div class="container">
+<div class="proof-pair">
 {{ mediac.beforeAfter(case.before, case.after, case.title + " antes", case.title + " después", "", true) }}
+{{ cardsc.workSheet(case, location, false) }}
+</div>
 </div></section>
 
 <section class="section section-soft"><div class="container">
