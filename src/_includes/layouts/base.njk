@@ -22,6 +22,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Aitor Soluciones">
 <meta name="mobile-web-app-capable" content="yes">
+<link rel="preload" href="/assets/fonts/barlow-semicondensed-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/sourcesans3-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/styles.css?v={{ assetVersion.css }}" as="style">
 <link rel="stylesheet" href="/assets/styles.css?v={{ assetVersion.css }}">
 <meta property="og:type" content="website">
@@ -44,13 +46,13 @@
 <main id="contenido" tabindex="-1">
 {{ content | safe }}
 </main>
-{{ navc.siteFooterEn(business, waLink or (business.whatsapp | waLink(business.waMessageDefaultEn))) }}
+{{ navc.siteFooterEn(business, waLink or (business.whatsapp | waLink(business.waMessageDefaultEn)), locations) }}
 {% else %}
 {{ navc.siteHeader(business, services, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}
 <main id="contenido" tabindex="-1">
 {{ content | safe }}
 </main>
-{{ navc.siteFooter(business, waLink or (business.whatsapp | waLink(business.waMessageDefault))) }}
+{{ navc.siteFooter(business, waLink or (business.whatsapp | waLink(business.waMessageDefault)), locations) }}
 {% endif %}
 <script src="/assets/script.js?v={{ assetVersion.js }}" defer></script>
 </body>

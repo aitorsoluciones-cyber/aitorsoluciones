@@ -98,6 +98,24 @@ document.querySelectorAll("form[name]").forEach(f => {
   f.addEventListener("submit", () => leadEvent("form_submit", f.getAttribute("name")));
 });
 
+// CTA sticky "Enviar fotos" en movil: aparece tras el primer scroll, discreto,
+// no ocupa el primer viewport (sustituye a la barra inferior fija doble).
+const mobileCta = document.querySelector('.mobile-cta');
+if (mobileCta) {
+  let ticking = false;
+  const THRESHOLD = Math.min(420, Math.round(window.innerHeight * 0.6));
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      mobileCta.classList.toggle('is-visible', window.scrollY > THRESHOLD);
+      ticking = false;
+    });
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/service-worker.js", { scope: "/" })

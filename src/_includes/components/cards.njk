@@ -7,6 +7,20 @@
 </article>
 {% endmacro %}
 
+{% macro serviceIndex(items) %}
+<ol class="service-index">
+{% for service in items %}
+<li class="service-index-row">
+<a href="{{ service.url }}">
+<span class="service-index-num">{{ "0" + loop.index if loop.index < 10 else loop.index }}</span>
+<span class="service-index-body"><strong>{{ service.name }}</strong><span>{{ service.metaDescription or service.problem }}</span></span>
+<span class="service-index-arrow" aria-hidden="true">→</span>
+</a>
+</li>
+{% endfor %}
+</ol>
+{% endmacro %}
+
 {% macro locationCard(location) %}
 {% if location.hasLandingPage %}
 <a class="area-card" href="{{ location.url }}"><h3>{{ location.name }}</h3><p>Zona de servicio</p><span>Ver zona →</span></a>
