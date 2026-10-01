@@ -6,6 +6,9 @@
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
+import zlib from "node:zlib";
+
+const COMPRESSIBLE = new Set([".html", ".css", ".js", ".svg", ".xml", ".txt", ".webmanifest"]);
 
 const ROOT = path.resolve("_site");
 const PORT = process.env.PORT || 5055;
@@ -78,8 +81,21 @@ const server = http.createServer((req, res) => {
       for (const [k, v] of rule.headers) headers[k] = v;
     }
   }
-  res.writeHead(200, headers);
-  res.end(fs.readFileSync(filePath));
+  const body = fs.readFileSync(filePath);
+  // gzip para texto cuando el cliente lo acepta, igual que la CDN de Netlify
+  // en real: evita que la falta de compresion en este servidor de prueba
+  // local distorsione metricas de rendimiento frente a produccion.
+  const acceptsGzip = (req.headers["accept-encoding"] || "").includes("gzip");
+  if (COMPRESSIBLE.has(ext) && acceptsGzip) {
+    headers["Content-Encoding"] = "gzip";
+    headers["Vary"] = "Accept-Encoding";
+    res.writeHead(200, headers);
+    res.end(zlib.gzipSync(body));
+  } else {
+    res.writeHead(200, headers);
+    res.end(body);
+  }
 });
+server.keepAliveTimeout = 5000;
 
 server.listen(PORT, () => console.log("prod-equiv server on http://localhost:" + PORT));
