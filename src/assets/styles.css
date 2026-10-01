@@ -222,6 +222,8 @@ footer h3{font-family:var(--font-display);font-weight:700;letter-spacing:.01em}
 .footer-legal{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-top:38px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);font-size:.86rem;color:#9fb0c2}
 .footer-legal a{color:#c3d2e2;text-decoration:none}
 .footer-legal a:hover{color:#fff}
+.footer-cookie-btn{background:none;border:0;padding:0;margin:0;color:#c3d2e2;font-size:.86rem;font-family:inherit;text-decoration:underline;cursor:pointer}
+.footer-cookie-btn:hover{color:#fff}
 .mobile-bar{display:none}
 .mobile-cta{display:none}
 .lang-link{font-size:.86rem;padding:8px 11px;border:1px solid var(--line);border-radius:999px}
@@ -452,4 +454,25 @@ footer h3{color:#fff}
   .page-hero h1{font-size:1.5rem}
   .local-hero h1{font-size:1.6rem}
   .local-hero .eyebrow{display:none}
+}
+
+/* Aviso de cookies: franja inferior, misma prioridad visual para aceptar/rechazar */
+.cookie-banner{position:fixed;left:0;right:0;bottom:0;z-index:90;background:var(--navy);color:#fff;padding:16px 0;box-shadow:0 -8px 24px rgba(0,0,0,.2)}
+.cookie-banner[hidden]{display:none}
+.cookie-banner-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.cookie-banner-inner p{margin:0;font-size:.92rem;line-height:1.5;color:#dce6f0}
+.cookie-banner-inner a{color:#fff;text-decoration:underline}
+.cookie-banner-actions{display:flex;gap:10px;flex:0 0 auto}
+.cookie-banner-actions .btn{padding:11px 18px;font-size:.86rem}
+.cookie-banner-actions .btn-secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
+.cookie-banner-actions .btn-secondary:hover{background:rgba(255,255,255,.12)}
+body.has-cookie-banner .mobile-cta{display:none!important}
+@media(max-width:720px){
+  .cookie-banner-inner{flex-direction:column;align-items:stretch;text-align:left}
+  .cookie-banner-actions{justify-content:flex-end}
+}
+@media(max-width:380px){
+  .cookie-banner{padding:14px 0}
+  .cookie-banner-actions{gap:8px}
+  .cookie-banner-actions .btn{flex:1 1 0;padding:11px 10px}
 }

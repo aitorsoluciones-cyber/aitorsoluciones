@@ -32,29 +32,48 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
 });
 
 /* ============================================================
-   MEDICIÓN DE CONVERSIÓN
-   Pega aquí tu ID cuando lo tengas (GA4 "G-XXXXXXXXXX" o
-   GTM "GTM-XXXXXXX"). Con el campo vacío no se carga nada
-   externo: los eventos quedan disponibles en window.dataLayer.
+   MEDICIÓN DE CONVERSIÓN + CONSENTIMIENTO (Google Consent Mode v2)
+   GA4 (o GTM) solo se carga si el visitante acepta el aviso de
+   cookies. Sin esa aceptación no se añade ningún script externo,
+   no se guarda ninguna cookie de analítica y los eventos se quedan
+   solo en window.dataLayer (array en memoria, sin seguimiento).
    ============================================================ */
-const MEASUREMENT_ID = "";
+const MEASUREMENT_ID = "G-WSJYEMQTR7";
+const CONSENT_KEY = "cookie-consent";
 
 window.dataLayer = window.dataLayer || [];
-if (MEASUREMENT_ID.indexOf("G-") === 0) {
-  const tag = document.createElement("script");
-  tag.async = true;
-  tag.src = "https://www.googletagmanager.com/gtag/js?id=" + MEASUREMENT_ID;
-  document.head.appendChild(tag);
-  window.gtag = function () { window.dataLayer.push(arguments); };
-  gtag("js", new Date());
-  gtag("config", MEASUREMENT_ID);
-} else if (MEASUREMENT_ID.indexOf("GTM-") === 0) {
-  window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
-  const tag = document.createElement("script");
-  tag.async = true;
-  tag.src = "https://www.googletagmanager.com/gtm.js?id=" + MEASUREMENT_ID;
-  document.head.appendChild(tag);
+window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+gtag("consent", "default", {
+  ad_storage: "denied",
+  ad_user_data: "denied",
+  ad_personalization: "denied",
+  analytics_storage: "denied"
+});
+
+let analyticsLoaded = false;
+function loadAnalyticsTag() {
+  if (analyticsLoaded || !MEASUREMENT_ID) return;
+  analyticsLoaded = true;
+  gtag("consent", "update", { analytics_storage: "granted" });
+  if (MEASUREMENT_ID.indexOf("G-") === 0) {
+    const tag = document.createElement("script");
+    tag.async = true;
+    tag.src = "https://www.googletagmanager.com/gtag/js?id=" + MEASUREMENT_ID;
+    document.head.appendChild(tag);
+    gtag("js", new Date());
+    gtag("config", MEASUREMENT_ID);
+  } else if (MEASUREMENT_ID.indexOf("GTM-") === 0) {
+    window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
+    const tag = document.createElement("script");
+    tag.async = true;
+    tag.src = "https://www.googletagmanager.com/gtm.js?id=" + MEASUREMENT_ID;
+    document.head.appendChild(tag);
+  }
 }
+
+let storedConsent = null;
+try { storedConsent = localStorage.getItem(CONSENT_KEY); } catch (e) { storedConsent = null; }
+if (storedConsent === "granted") loadAnalyticsTag();
 
 // UTM: se capturan al aterrizar y sobreviven a la navegación interna
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
@@ -76,7 +95,7 @@ function leadEvent(eventName, source) {
     page_path: location.pathname
   }, storedUtm);
   window.dataLayer.push(data);
-  if (typeof gtag === "function") {
+  if (analyticsLoaded && typeof gtag === "function") {
     gtag("event", eventName, Object.assign({ source: source || "", page_path: location.pathname }, storedUtm));
   }
 }
@@ -127,6 +146,30 @@ if (mobileCta) {
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+}
+
+// Aviso de cookies: GA4 solo se activa tras un clic explícito en "Aceptar".
+const cookieBanner = document.getElementById('cookie-banner');
+if (cookieBanner) {
+  const showBanner = () => {
+    cookieBanner.hidden = false;
+    document.body.classList.add('has-cookie-banner');
+  };
+  const hideBanner = () => {
+    cookieBanner.hidden = true;
+    document.body.classList.remove('has-cookie-banner');
+  };
+  if (!storedConsent) showBanner();
+  cookieBanner.querySelectorAll('[data-cookie-accept]').forEach(btn => btn.addEventListener('click', () => {
+    try { localStorage.setItem(CONSENT_KEY, 'granted'); } catch (e) {}
+    loadAnalyticsTag();
+    hideBanner();
+  }));
+  cookieBanner.querySelectorAll('[data-cookie-reject]').forEach(btn => btn.addEventListener('click', () => {
+    try { localStorage.setItem(CONSENT_KEY, 'denied'); } catch (e) {}
+    hideBanner();
+  }));
+  document.querySelectorAll('[data-cookie-settings]').forEach(btn => btn.addEventListener('click', showBanner));
 }
 
 if ("serviceWorker" in navigator) {

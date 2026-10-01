@@ -1,5 +1,6 @@
 ﻿{% import "components/nav.njk" as navc %}
 {% import "components/jsonld.njk" as ld %}
+{% import "components/consent.njk" as consentc %}
 <!doctype html>
 <html lang="{{ lang or 'es' }}">
 <head>
@@ -47,12 +48,14 @@
 {{ content | safe }}
 </main>
 {{ navc.siteFooterEn(business, waLink or (business.whatsapp | waLink(business.waMessageDefaultEn)), locations) }}
+{{ consentc.cookieBannerEn() }}
 {% else %}
 {{ navc.siteHeader(business, services, waLink or (business.whatsapp | waLink(business.waMessageDefault)), page.url) }}
 <main id="contenido" tabindex="-1">
 {{ content | safe }}
 </main>
 {{ navc.siteFooter(business, waLink or (business.whatsapp | waLink(business.waMessageDefault)), locations) }}
+{{ consentc.cookieBanner() }}
 {% endif %}
 <script src="/assets/script.js?v={{ assetVersion.js }}" defer></script>
 </body>
