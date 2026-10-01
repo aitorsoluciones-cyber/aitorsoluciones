@@ -103,12 +103,25 @@ document.querySelectorAll("form[name]").forEach(f => {
 const mobileCta = document.querySelector('.mobile-cta');
 if (mobileCta) {
   let ticking = false;
+  let shown = false;
   const THRESHOLD = Math.min(420, Math.round(window.innerHeight * 0.6));
+  const setShown = (visible) => {
+    if (visible === shown) return;
+    shown = visible;
+    mobileCta.classList.toggle('is-visible', visible);
+    if (visible) {
+      mobileCta.removeAttribute('aria-hidden');
+      mobileCta.removeAttribute('tabindex');
+    } else {
+      mobileCta.setAttribute('aria-hidden', 'true');
+      mobileCta.setAttribute('tabindex', '-1');
+    }
+  };
   const onScroll = () => {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      mobileCta.classList.toggle('is-visible', window.scrollY > THRESHOLD);
+      setShown(window.scrollY > THRESHOLD);
       ticking = false;
     });
   };

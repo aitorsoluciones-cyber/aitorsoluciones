@@ -46,10 +46,8 @@ layout: layouts/base.njk
 
 <section class="section"><div class="container">
 <div class="section-head"><span class="eyebrow">Qué resolvemos</span><h2>{{ lp.introHeading }}</h2><p>{{ lp.introText }}</p></div>
-<div class="services-grid">
-{% for s in relatedServiceObjs %}{{ cardsc.serviceCard(s) }}{% endfor %}
-</div>
-<div class="zone-block"><h3>{{ lp.zoneHeading }}</h3><p>{{ lp.zoneText }}</p>
+{{ cardsc.serviceIndex(relatedServiceObjs) }}
+<div class="zone-block" style="margin-top:34px"><h3>{{ lp.zoneHeading }}</h3><p>{{ lp.zoneText }}</p>
 <div class="zone-chips">{% for chip in lp.zoneChips %}<span>{{ chip }}</span>{% endfor %}</div></div>
 {{ relc.relatedServices(["mantenimiento-segundas-residencias", "limpieza-viviendas", "pintura", "reparaciones-hogar"], services, "También ofrecemos") }}
 </div></section>

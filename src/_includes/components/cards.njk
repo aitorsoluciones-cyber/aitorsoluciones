@@ -28,3 +28,24 @@
 <div class="area-card" style="cursor:default"><h3>{{ location.name }}</h3><p>Zona atendida · {{ location.province }}</p></div>
 {% endif %}
 {% endmacro %}
+
+{% macro localStrip(locations) %}
+<div class="local-strip">
+{% for loc in locations %}
+{% if loc.hasLandingPage %}<a class="local-strip-item" href="{{ loc.url }}">{{ loc.name }}<span aria-hidden="true">→</span></a>
+{% else %}<span class="local-strip-item is-plain">{{ loc.name }}</span>{% endif %}
+{% endfor %}
+</div>
+{% endmacro %}
+
+{% macro workSheet(item, location, showLink=true) %}
+<aside class="worksheet">
+<span class="worksheet-tag">Ficha de intervención</span>
+<dl>
+<div><dt>Trabajo</dt><dd>{{ item.title }}</dd></div>
+{% if location %}<div><dt>Localidad</dt><dd>{{ location.name }}</dd></div>{% endif %}
+{% if item.whatWeDid %}<div><dt>Qué se hizo</dt><dd>{{ item.whatWeDid }}</dd></div>{% endif %}
+</dl>
+{% if showLink and item.hasPage %}<a class="worksheet-link" href="/trabajos/{{ item.slug }}/">Ver el caso completo →</a>{% endif %}
+</aside>
+{% endmacro %}

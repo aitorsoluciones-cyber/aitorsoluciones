@@ -1,5 +1,5 @@
 {% macro faqList(items) %}
-<div class="faq">
+<div class="faq faq-field">
 {% for f in items %}
 <details><summary>{{ f.question }}</summary><p>{{ f.answer }}</p></details>
 {% endfor %}

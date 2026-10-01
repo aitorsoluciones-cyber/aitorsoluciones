@@ -1,49 +1,55 @@
-{% macro siteHeader(business, services, waLink) %}
+{% macro siteHeader(business, services, waLink, currentUrl) %}
 <div class="topbar"><div class="container topbar-inner">
 <span>{{ business.base }} · Servicio local hasta {{ business.serviceRadiusKm }} km</span>
 <a href="tel:{{ business.phone }}" data-lead="phone" data-source="topbar">{{ business.phoneDisplay }}</a>
 </div></div>
 <header class="site-header"><div class="container nav">
-<a class="logo" href="/" aria-label="{{ business.name }}, inicio"><img src="{{ business.logo }}" alt="{{ business.name }}" width="500" height="154"></a>
+<a class="logo" href="/" aria-label="{{ business.name }}, inicio">
+<img src="{{ business.logo }}" alt="{{ business.name }}" width="500" height="154">
+<span class="logo-tag">Jardinería y propiedades<br>{{ business.base }}</span>
+</a>
 <button class="menu-toggle" aria-label="Abrir menú" aria-expanded="false"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 <nav class="nav-links" aria-label="Navegación principal">
-<a href="/">Inicio</a>
+<a href="/"{% if currentUrl == "/" %} class="is-active" aria-current="page"{% endif %}>Inicio</a>
 <div class="nav-dropdown">
-<a href="/jardineria/">Jardinería</a>
+<a href="/jardineria/"{% if currentUrl == "/jardineria/" %} class="is-active" aria-current="page"{% endif %}>Jardinería</a>
 <div class="nav-dropdown-panel">
 {% for s in services %}{% if s.parentId == "jardineria" %}<a href="{{ s.url }}">{{ s.navLabel }}</a>{% endif %}{% endfor %}
 </div>
 </div>
 <div class="nav-dropdown">
-<a href="/mantenimiento-propiedades/">Servicios</a>
+<a href="/mantenimiento-propiedades/"{% if currentUrl == "/mantenimiento-propiedades/" %} class="is-active" aria-current="page"{% endif %}>Servicios</a>
 <div class="nav-dropdown-panel">
 <a href="/mantenimiento-propiedades/">Mantenimiento de propiedades</a>
 {% for s in services %}{% if s.parentId == "mantenimiento-propiedades" and s.status == "active" %}<a href="{{ s.url }}">{{ s.navLabel }}</a>{% endif %}{% endfor %}
 </div>
 </div>
-<a href="/zonas/">Zonas</a>
-<a href="/trabajos/">Trabajos</a>
-<a href="/contacto/">Contacto</a>
+<a href="/zonas/"{% if currentUrl == "/zonas/" %} class="is-active" aria-current="page"{% endif %}>Zonas</a>
+<a href="/trabajos/"{% if currentUrl == "/trabajos/" %} class="is-active" aria-current="page"{% endif %}>Trabajos</a>
+<a href="/contacto/"{% if currentUrl == "/contacto/" %} class="is-active" aria-current="page"{% endif %}>Contacto</a>
 <a class="lang-link" href="/en/property-maintenance/">EN</a>
-<a class="btn btn-primary" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="header">{{ business.ctaPrimaryLabel }}</a>
+<a class="btn btn-header" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="header">{{ business.ctaPrimaryLabel }}</a>
 </nav>
 </div></header>
 {% endmacro %}
 
-{% macro siteHeaderEn(business, services, waLink) %}
+{% macro siteHeaderEn(business, services, waLink, currentUrl) %}
 <div class="topbar"><div class="container topbar-inner">
 <span>{{ business.base }} · Local service up to {{ business.serviceRadiusKm }} km</span>
 <a href="tel:{{ business.phone }}" data-lead="phone" data-source="topbar">{{ business.phoneDisplay }}</a>
 </div></div>
 <header class="site-header"><div class="container nav">
-<a class="logo" href="/en/property-maintenance/" aria-label="{{ business.name }}, home"><img src="{{ business.logo }}" alt="{{ business.name }}" width="500" height="154"></a>
+<a class="logo" href="/en/property-maintenance/" aria-label="{{ business.name }}, home">
+<img src="{{ business.logo }}" alt="{{ business.name }}" width="500" height="154">
+<span class="logo-tag">Gardens &amp; properties<br>{{ business.base }}</span>
+</a>
 <button class="menu-toggle" aria-label="Open menu" aria-expanded="false"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 <nav class="nav-links" aria-label="Main navigation">
 <a href="/en/property-maintenance/#services">Services</a>
 <a href="/en/property-maintenance/#results">Results</a>
 <a href="/en/property-maintenance/#faq">FAQ</a>
 <a class="lang-link" href="/">ES</a>
-<a class="btn btn-primary" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="header">Send photos on WhatsApp</a>
+<a class="btn btn-header" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="header">Send photos on WhatsApp</a>
 </nav>
 </div></header>
 {% endmacro %}

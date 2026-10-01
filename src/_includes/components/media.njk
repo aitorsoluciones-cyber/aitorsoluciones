@@ -18,7 +18,7 @@
 <img src="/assets/img/{{ c.after }}-sm.webp" alt="{{ c.title }} - después" loading="lazy" width="{{ c.after | imgsmw }}" height="{{ c.after | imgsmh }}">
 </div>
 <div class="work-copy">
-{% if loc %}<strong>{{ loc.name }}</strong>{% endif %}
+<span class="work-tag">Trabajo real{% if loc %} · {{ loc.name }}{% endif %}</span>
 <h3>{{ c.title }}</h3>
 <p>{{ c.whatWeDid }}</p>
 {% if c.hasPage %}<a href="/trabajos/{{ c.slug }}/">Ver el caso completo →</a>{% endif %}
