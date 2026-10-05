@@ -218,7 +218,9 @@ footer{background:#031428;color:#dce6f0;padding:0 0 46px;position:relative}
 .site-footer::before{content:"";display:block;width:72px;height:5px;margin:0 0 46px max(16px,calc((100% - 1180px) / 2 + 16px));background:var(--orange);clip-path:polygon(0 0,100% 0,84% 100%,0 100%)}
 .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:34px}
 footer a{color:#fff}
-footer h3{font-family:var(--font-display);font-weight:700;letter-spacing:.01em}
+footer h3,.footer-title{font-family:var(--font-display);font-weight:700;letter-spacing:.01em}
+.footer-title{font-size:1.3rem;line-height:1.05;margin:0 0 16px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .footer-logo{background:#fff;border-radius:14px;padding:8px;width:240px;height:auto;aspect-ratio:500/154;box-sizing:content-box}
 .footer-legal{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-top:38px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);font-size:.86rem;color:#9fb0c2}
 .footer-legal a{color:#c3d2e2;text-decoration:none}
@@ -406,7 +408,7 @@ mark.legal-pending{background:#fff4cc;color:#4a3b00;padding:1px 5px;border-radiu
 
 /* Correcciones de contraste detectadas en la revision */
 .nav-links a.btn-primary,.nav-links a.btn-primary:hover{color:#fff}
-footer h3{color:#fff}
+footer h3,.footer-title{color:#fff}
 .section-dark .lead{color:#d8e2ee}
 
 /* Menu movil: que la barra inferior (Llamar/WhatsApp) no tape las ultimas opciones */
