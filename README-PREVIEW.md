@@ -49,7 +49,7 @@ publicará cuando se apruebe el despliegue).
   `trabajo-parcela.jpg` por ser imágenes generadas por IA, no trabajos
   reales.
 - **WhatsApp/formulario/analítica**: se reutiliza `assets/script.js`
-  (UTM, `whatsapp_click`, `phone_click`, `form_submit`, service worker),
+  (UTM, `whatsapp_click`, `phone_click`, `generate_lead`, service worker),
   formulario con Netlify Forms igual que la versión actual.
 
 ## Comprobado
@@ -136,3 +136,14 @@ flujo de desarrollo o de Netlify Preview. Requiere haber ejecutado antes
 - Sin consentimiento: no se carga ningún script de Google, no hay cookies `_ga*`, no se registra ni encola ningún evento (`leadEvent` sale sin hacer nada) y los UTM solo se leen de la URL actual (no se guardan en `sessionStorage`).
 - "Aceptar": se carga `gtag.js` una vez, se persisten los UTM durante la sesión.
 - "Rechazar" tras haber aceptado (desde "Configurar cookies"): `consent update denied`, bloqueo `ga-disable-<ID>`, borrado de `_ga`/`_ga_*`/`_gid`/`_gat*` (host y dominios padre) y de los UTM, y recarga.
+
+#### Eventos GA4 (arquitectura final)
+
+| Evento | Cuándo | Parámetros |
+|---|---|---|
+| `page_view` | Automático al cargar GA4 (con consentimiento), uno por página | — |
+| `whatsapp_click` | Clic en un enlace `data-lead="whatsapp"` | `lead_source` (ubicación del botón), `page_path`, UTM |
+| `phone_click` | Clic en un enlace `data-lead="phone"` | ídem |
+| `generate_lead` | Una vez por envío de formulario **completado**: al enviar (con consentimiento) se guarda un flag de sesión (`pending-lead`) y solo al llegar a `/gracias/` (Netlify ya aceptó el POST) se dispara y se borra el flag; las visitas directas o recargas de `/gracias/` no lo disparan | `lead_source` (nombre del formulario), `origin_page`, `page_path`, UTM |
+
+`form_submit` ya no lo envía el código; si la Medición mejorada de la propiedad lo genera, es el evento automático de GA4. Evento clave del negocio: `generate_lead`. Los parámetros personalizados (`lead_source`, `origin_page`) solo aparecen en informes si se registran como dimensiones personalizadas de evento.

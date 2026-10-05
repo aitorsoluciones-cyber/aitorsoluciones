@@ -40,6 +40,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
    ============================================================ */
 const MEASUREMENT_ID = "G-WSJYEMQTR7";
 const CONSENT_KEY = "cookie-consent";
+const PENDING_LEAD_KEY = "pending-lead";
 // Única fuente de verdad de la caducidad de _ga/_ga_*: 395 días (~13 meses),
 // el plazo que declara /politica-privacidad/#cookies. GA4 usa 2 años por defecto.
 const GA_COOKIE_EXPIRES_SECONDS = 395 * 24 * 60 * 60;
@@ -94,7 +95,7 @@ function revokeAnalytics() {
   window["ga-disable-" + MEASUREMENT_ID] = true;
   gtag("consent", "update", { analytics_storage: "denied" });
   clearAnalyticsCookies();
-  try { sessionStorage.removeItem("utm"); } catch (e) {}
+  try { sessionStorage.removeItem("utm"); sessionStorage.removeItem(PENDING_LEAD_KEY); } catch (e) {}
 }
 
 let storedConsent = null;
@@ -118,14 +119,13 @@ try {
   else sessionStorage.removeItem("utm");
 } catch (e) { storedUtm = {}; }
 
-function leadEvent(eventName, source) {
+// Eventos de analítica: solo con consentimiento (analyticsLoaded). Sin él no se registra ni encola nada.
+function leadEvent(eventName, source, extra) {
   if (!analyticsLoaded) return;
-  window.dataLayer.push(Object.assign({
-    event: eventName,
-    lead_source: source || "",
-    page_path: location.pathname
-  }, storedUtm));
-  gtag("event", eventName, Object.assign({ source: source || "", page_path: location.pathname }, storedUtm));
+  const params = Object.assign({ lead_source: source || "", page_path: location.pathname }, extra, storedUtm);
+  // Un solo canal por tipo de ID: gtag() con G-, objeto {event} con GTM- (evita duplicados).
+  if (MEASUREMENT_ID.indexOf("GTM-") === 0) window.dataLayer.push(Object.assign({ event: eventName }, params));
+  else gtag("event", eventName, params);
 }
 
 // Clics en WhatsApp y teléfono (elementos con data-lead)
@@ -137,13 +137,26 @@ document.querySelectorAll("[data-lead]").forEach(el => {
   });
 });
 
-// Formulario: atribución en campos ocultos + evento form_submit al enviar
+// Formulario: atribución en campos ocultos. La conversión (generate_lead) no se cuenta al
+// enviar, sino al llegar a /gracias/ (Netlify ya aceptó el envío): al enviar, y solo con
+// consentimiento, se deja un flag de sesión que /gracias/ consume una única vez.
 const utmText = UTM_KEYS.map(k => storedUtm[k]).filter(Boolean).join(" / ");
 document.querySelectorAll('input[name="utm"]').forEach(i => i.value = utmText);
 document.querySelectorAll('input[name="pagina"]').forEach(i => i.value = location.pathname);
 document.querySelectorAll("form[name]").forEach(f => {
-  f.addEventListener("submit", () => leadEvent("form_submit", f.getAttribute("name")));
+  f.addEventListener("submit", () => {
+    if (!analyticsLoaded) return;
+    try { sessionStorage.setItem(PENDING_LEAD_KEY, JSON.stringify({ form: f.getAttribute("name"), page: location.pathname })); } catch (e) {}
+  });
 });
+if (location.pathname.replace(/\/+$/, "") === "/gracias") {
+  let pending = null;
+  try {
+    pending = JSON.parse(sessionStorage.getItem(PENDING_LEAD_KEY) || "null");
+    sessionStorage.removeItem(PENDING_LEAD_KEY);
+  } catch (e) { pending = null; }
+  if (pending && pending.form) leadEvent("generate_lead", pending.form, { origin_page: pending.page });
+}
 
 // CTA sticky "Enviar fotos" en movil: aparece tras el primer scroll, discreto,
 // no ocupa el primer viewport (sustituye a la barra inferior fija doble).

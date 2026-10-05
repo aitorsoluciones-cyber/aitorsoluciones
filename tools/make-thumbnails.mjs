@@ -23,6 +23,12 @@ const BASE_NAMES = [
   "solar-urbano-antes", "solar-urbano-despues", "solar-urbano-despues-amplio",
 ];
 
+// Fotos de 800 px que van de LCP/comparador en movil: variante intermedia de 700 px
+// (cubre 380 px CSS a DPR 1,75 con ~45% menos bytes que la de 800 px).
+const MID_700 = ["rapita-antes", "rapita-despues"];
+// Foto LCP de la pagina en ingles: ademas AVIF (480/700/800 px) para <picture>.
+const AVIF_HERO = ["rapita-despues"];
+
 const meta = {};
 
 for (const name of BASE_NAMES) {
@@ -44,8 +50,16 @@ for (const name of BASE_NAMES) {
   if (info.width > 800) {
     const mdInfo = await sharp(buffer).resize({ width: 800 }).webp({ quality: 74 }).toFile(mdPath);
     entry.md = { w: mdInfo.width, h: mdInfo.height };
+  } else if (MID_700.includes(name)) {
+    const mdInfo = await sharp(buffer).resize({ width: 700 }).webp({ quality: 76, effort: 6 }).toFile(mdPath);
+    entry.md = { w: mdInfo.width, h: mdInfo.height };
   } else {
     await fs.rm(mdPath, { force: true });
+  }
+  if (AVIF_HERO.includes(name)) {
+    await sharp(buffer).resize({ width: 480 }).avif({ quality: 50, effort: 6 }).toFile(path.join(DIR, `${name}-sm.avif`));
+    await sharp(buffer).resize({ width: 700 }).avif({ quality: 45, effort: 6 }).toFile(path.join(DIR, `${name}-md.avif`));
+    await sharp(buffer).resize({ width: 800 }).avif({ quality: 45, effort: 6 }).toFile(path.join(DIR, `${name}.avif`));
   }
   meta[name] = entry;
   const kb = async (p) => Math.round((await fs.stat(p)).size / 1024);

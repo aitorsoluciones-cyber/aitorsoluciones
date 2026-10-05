@@ -28,7 +28,7 @@ layout: layouts/base.njk
 <div class="cta-row"><a class="btn btn-primary" href="{{ waLinkEn }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="english_hero">Send photos on WhatsApp</a><a class="btn btn-secondary" href="tel:{{ business.phone }}" data-lead="phone" data-source="english_hero">Call</a></div>
 <div class="kpi-row"><div class="kpi">Real photos</div><div class="kpi">Clear quotes</div><div class="kpi">Direct contact</div></div>
 </div>
-<div class="local-photo"><img src="/assets/img/rapita-despues.webp" alt="Cleared and accessible plot after vegetation clearance in La Ràpita" width="800" height="1067" fetchpriority="high"></div>
+<div class="local-photo"><picture><source type="image/avif" srcset="/assets/img/rapita-despues-sm.avif 480w, /assets/img/rapita-despues-md.avif 700w, /assets/img/rapita-despues.avif 800w" sizes="(max-width: 1150px) 92vw, 540px"><img src="/assets/img/rapita-despues.webp" srcset="{{ 'rapita-despues' | imgsrcset }}" sizes="(max-width: 1150px) 92vw, 540px" alt="Cleared and accessible plot after vegetation clearance in La Ràpita" width="{{ 'rapita-despues' | imgw }}" height="{{ 'rapita-despues' | imgh }}" fetchpriority="high"></picture></div>
 </div></section>
 
 <section class="section" id="services"><div class="container">
