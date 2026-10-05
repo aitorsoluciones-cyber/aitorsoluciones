@@ -69,6 +69,9 @@ for (const name of BASE_NAMES) {
   const smAvif = path.join(DIR, `${name}-sm.avif`);
   await sharp(buffer).resize({ width: 480, withoutEnlargement: true }).avif({ quality: 50 + dq, effort: 6 }).toFile(smAvif);
   await sharp(buffer).resize({ width: 400, withoutEnlargement: true }).avif({ quality: 50 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-xs.avif`));
+  // Marcador de posicion borroso (16 px, ~300 bytes en linea) para el comparador: mejora el Speed Index sin cambiar el resultado final.
+  const lq = await sharp(buffer).resize({ width: 16 }).webp({ quality: 40 }).toBuffer();
+  entry.lqip = `data:image/webp;base64,${lq.toString("base64")}`;
   entry.smAvif = true;
   if (AVIF_NAMES.includes(name)) {
     await sharp(buffer).resize({ width: 630 }).avif({ quality: 45 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-xm.avif`));

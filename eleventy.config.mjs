@@ -22,6 +22,7 @@ export default function (eleventyConfig) {
     return `/assets/img/${name}-sm.avif 480w, /assets/img/${name}-xm.avif 630w, /assets/img/${name}-md.avif 700w, /assets/img/${name}-lg.avif ${m.avif.lg}w`;
   });
   eleventyConfig.addFilter("hassmavif", (name) => !!(imageMeta[name] && imageMeta[name].smAvif));
+  eleventyConfig.addFilter("lqip", (name) => (imageMeta[name] && imageMeta[name].lqip) || "");
   eleventyConfig.addFilter("hassq", (name) => !!(imageMeta[name] && imageMeta[name].avif && imageMeta[name].avif.sq));
   eleventyConfig.addFilter("avifsqsrcset", (name) => {
     const m = imageMeta[name];
