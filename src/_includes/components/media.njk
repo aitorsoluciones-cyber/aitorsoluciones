@@ -1,16 +1,20 @@
 {# ProofPair: comparador antes/despues, firma visual transversal de la marca #}
-{% macro beforeAfter(before, after, beforeAlt, afterAlt, resultText, compare) %}
+{# eager: comparador visible al cargar (sin lazy). lcp: "before" o "after" recibe fetchpriority=high. #}
+{% macro beforeAfter(before, after, beforeAlt, afterAlt, resultText, compare, eager, lcp) %}
 <div class="before-after"{% if compare %} data-compare{% endif %} aria-label="Antes y después">
 <div class="before-after-grid">
-<figure><picture>{% if before | hasavif %}<source type="image/avif" srcset="{{ before | avifsrcset }}" sizes="(max-width: 640px) 92vw, 560px">{% endif %}<img src="/assets/img/{{ before }}.webp" srcset="{{ before | imgsrcset }}" sizes="(max-width: 640px) 92vw, 560px" alt="{{ beforeAlt }}" width="{{ before | imgw }}" height="{{ before | imgh }}" loading="lazy"></picture><span class="label">ANTES</span></figure>
-<figure class="after"><picture>{% if after | hasavif %}<source type="image/avif" srcset="{{ after | avifsrcset }}" sizes="(max-width: 640px) 92vw, 560px">{% endif %}<img src="/assets/img/{{ after }}.webp" srcset="{{ after | imgsrcset }}" sizes="(max-width: 640px) 92vw, 560px" alt="{{ afterAlt }}" width="{{ after | imgw }}" height="{{ after | imgh }}" loading="lazy"></picture><span class="label">DESPUÉS</span></figure>
+<figure><picture>{% if before | hasavif %}<source type="image/avif" srcset="{{ before | avifsrcset }}" sizes="(max-width: 640px) calc(100vw - 56px), 560px">{% endif %}<img src="/assets/img/{{ before }}.webp" srcset="{{ before | imgsrcset }}" sizes="(max-width: 640px) calc(100vw - 56px), 560px" alt="{{ beforeAlt }}" width="{{ before | imgw }}" height="{{ before | imgh }}"{% if lcp == "before" %} fetchpriority="high"{% endif %}{% if not eager %} loading="lazy"{% endif %}></picture><span class="label">ANTES</span></figure>
+<figure class="after"><picture>{% if after | hasavif %}<source type="image/avif" srcset="{{ after | avifsrcset }}" sizes="(max-width: 640px) calc(100vw - 56px), 560px">{% endif %}<img src="/assets/img/{{ after }}.webp" srcset="{{ after | imgsrcset }}" sizes="(max-width: 640px) calc(100vw - 56px), 560px" alt="{{ afterAlt }}" width="{{ after | imgw }}" height="{{ after | imgh }}"{% if lcp == "after" %} fetchpriority="high"{% endif %}{% if not eager %} loading="lazy"{% endif %}></picture><span class="label">DESPUÉS</span></figure>
 </div>
 {% if resultText %}<div class="result-card">{{ resultText }}</div>{% endif %}
 </div>
 {% endmacro %}
 
+{# Miniatura de galeria (diferida): AVIF si existe, WebP como alternativa #}
+{% macro thumb(name, alt, style) %}<picture>{% if name | hassmavif %}<source type="image/avif" srcset="/assets/img/{{ name }}-xs.avif 400w, /assets/img/{{ name }}-sm.avif 480w" sizes="225px">{% endif %}<img src="/assets/img/{{ name }}-sm.webp" alt="{{ alt }}" loading="lazy" width="{{ name | imgsmw }}" height="{{ name | imgsmh }}"{% if style %} style="{{ style }}"{% endif %}></picture>{% endmacro %}
+
 {# Foto principal (LCP) de una pagina: AVIF si existe, WebP como alternativa #}
-{% macro heroPhoto(name, alt, sizes) %}<picture>{% if name | hasavif %}<source type="image/avif" srcset="{{ name | avifsrcset }}" sizes="{{ sizes }}">{% endif %}<img src="/assets/img/{{ name }}.webp" srcset="{{ name | imgsrcset }}" sizes="{{ sizes }}" alt="{{ alt }}" width="{{ name | imgw }}" height="{{ name | imgh }}" fetchpriority="high"></picture>{% endmacro %}
+{% macro heroPhoto(name, alt, sizes) %}<picture>{% if name | hassq %}<source type="image/avif" media="(min-width: 412px)" srcset="{{ name | avifsqsrcset }}" sizes="{{ sizes }}">{% endif %}{% if name | hasavif %}<source type="image/avif" srcset="{{ name | avifsrcset }}" sizes="{{ sizes }}">{% endif %}<img src="/assets/img/{{ name }}.webp" srcset="{{ name | imgsrcset }}" sizes="{{ sizes }}" alt="{{ alt }}" width="{{ name | imgw }}" height="{{ name | imgh }}" fetchpriority="high"></picture>{% endmacro %}
 
 {% macro workGallery(cases, locations) %}
 <div class="gallery">
@@ -18,8 +22,8 @@
 {% set loc = locations | findById(c.locationId) %}
 <article class="work">
 <div class="work-pair">
-<img src="/assets/img/{{ c.before }}-sm.webp" alt="{{ c.title }} - antes" loading="lazy" width="{{ c.before | imgsmw }}" height="{{ c.before | imgsmh }}">
-<img src="/assets/img/{{ c.after }}-sm.webp" alt="{{ c.title }} - después" loading="lazy" width="{{ c.after | imgsmw }}" height="{{ c.after | imgsmh }}">
+{{ thumb(c.before, c.title + " - antes") }}
+{{ thumb(c.after, c.title + " - después") }}
 </div>
 <div class="work-copy">
 <span class="work-tag">Trabajo real{% if loc %} · {{ loc.name }}{% endif %}</span>
