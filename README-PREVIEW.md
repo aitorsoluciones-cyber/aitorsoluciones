@@ -128,3 +128,11 @@ artefactos de entorno. Úsalo para auditorías de Lighthouse/Best
 Practices/SEO que no se quieran contaminar con herramientas propias del
 flujo de desarrollo o de Netlify Preview. Requiere haber ejecutado antes
 `npm run build`.
+
+### Analítica (GA4) y consentimiento (2026-10-05)
+
+`src/assets/script.js` es la única fuente de verdad: `MEASUREMENT_ID` (GA4 `G-WSJYEMQTR7`) y `GA_COOKIE_EXPIRES_SECONDS` (395 días ≈ 13 meses, enviado como `cookie_expires` en `gtag("config")`; GA4 usa 2 años por defecto). Ese plazo es el que declara `/politica-privacidad/#cookies`: si se cambia uno, hay que cambiar el otro. La retención de datos en el panel de GA4 es un ajuste distinto, de la propiedad.
+
+- Sin consentimiento: no se carga ningún script de Google, no hay cookies `_ga*`, no se registra ni encola ningún evento (`leadEvent` sale sin hacer nada) y los UTM solo se leen de la URL actual (no se guardan en `sessionStorage`).
+- "Aceptar": se carga `gtag.js` una vez, se persisten los UTM durante la sesión.
+- "Rechazar" tras haber aceptado (desde "Configurar cookies"): `consent update denied`, bloqueo `ga-disable-<ID>`, borrado de `_ga`/`_ga_*`/`_gid`/`_gat*` (host y dominios padre) y de los UTM, y recarga.

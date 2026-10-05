@@ -35,11 +35,14 @@ document.querySelectorAll('a[href^="#"]').forEach(a=>{
    MEDICIÓN DE CONVERSIÓN + CONSENTIMIENTO (Google Consent Mode v2)
    GA4 (o GTM) solo se carga si el visitante acepta el aviso de
    cookies. Sin esa aceptación no se añade ningún script externo,
-   no se guarda ninguna cookie de analítica y los eventos se quedan
-   solo en window.dataLayer (array en memoria, sin seguimiento).
+   no se guarda ninguna cookie ni dato de analítica (ni UTM entre
+   páginas) y no se registra ni encola ningún evento analítico.
    ============================================================ */
 const MEASUREMENT_ID = "G-WSJYEMQTR7";
 const CONSENT_KEY = "cookie-consent";
+// Única fuente de verdad de la caducidad de _ga/_ga_*: 395 días (~13 meses),
+// el plazo que declara /politica-privacidad/#cookies. GA4 usa 2 años por defecto.
+const GA_COOKIE_EXPIRES_SECONDS = 395 * 24 * 60 * 60;
 
 window.dataLayer = window.dataLayer || [];
 window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
@@ -61,7 +64,7 @@ function loadAnalyticsTag() {
     tag.src = "https://www.googletagmanager.com/gtag/js?id=" + MEASUREMENT_ID;
     document.head.appendChild(tag);
     gtag("js", new Date());
-    gtag("config", MEASUREMENT_ID);
+    gtag("config", MEASUREMENT_ID, { cookie_expires: GA_COOKIE_EXPIRES_SECONDS });
   } else if (MEASUREMENT_ID.indexOf("GTM-") === 0) {
     window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
     const tag = document.createElement("script");
@@ -71,33 +74,58 @@ function loadAnalyticsTag() {
   }
 }
 
+// Elimina _ga, _ga_* (y restos _gid/_gat) en el host y en sus dominios padre.
+function clearAnalyticsCookies() {
+  const names = document.cookie.split(";").map(c => c.split("=")[0].trim()).filter(n => /^(_ga|_gid|_gat)/.test(n));
+  const parts = location.hostname.split(".");
+  const domains = [""];
+  for (let i = 0; i < parts.length - 1; i++) {
+    const d = parts.slice(i).join(".");
+    domains.push(d, "." + d);
+  }
+  names.forEach(n => domains.forEach(d => {
+    document.cookie = n + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/" + (d ? ";domain=" + d : "");
+  }));
+}
+
+// Revocación: bloquea ya nuevos eventos, deniega consentimiento y borra cookies y UTM.
+function revokeAnalytics() {
+  analyticsLoaded = false;
+  window["ga-disable-" + MEASUREMENT_ID] = true;
+  gtag("consent", "update", { analytics_storage: "denied" });
+  clearAnalyticsCookies();
+  try { sessionStorage.removeItem("utm"); } catch (e) {}
+}
+
 let storedConsent = null;
 try { storedConsent = localStorage.getItem(CONSENT_KEY); } catch (e) { storedConsent = null; }
 if (storedConsent === "granted") loadAnalyticsTag();
 
-// UTM: se capturan al aterrizar y sobreviven a la navegación interna
+// UTM: se leen de la URL actual; solo se conservan entre páginas con consentimiento analítico
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
 let storedUtm = {};
+function persistUtm() {
+  try { if (Object.keys(storedUtm).length) sessionStorage.setItem("utm", JSON.stringify(storedUtm)); } catch (e) {}
+}
 try {
   const params = new URLSearchParams(location.search);
   if (UTM_KEYS.some(k => params.has(k))) {
     UTM_KEYS.forEach(k => { if (params.has(k)) storedUtm[k] = params.get(k); });
-    sessionStorage.setItem("utm", JSON.stringify(storedUtm));
-  } else {
+  } else if (storedConsent === "granted") {
     storedUtm = JSON.parse(sessionStorage.getItem("utm") || "{}");
   }
+  if (storedConsent === "granted") persistUtm();
+  else sessionStorage.removeItem("utm");
 } catch (e) { storedUtm = {}; }
 
 function leadEvent(eventName, source) {
-  const data = Object.assign({
+  if (!analyticsLoaded) return;
+  window.dataLayer.push(Object.assign({
     event: eventName,
     lead_source: source || "",
     page_path: location.pathname
-  }, storedUtm);
-  window.dataLayer.push(data);
-  if (analyticsLoaded && typeof gtag === "function") {
-    gtag("event", eventName, Object.assign({ source: source || "", page_path: location.pathname }, storedUtm));
-  }
+  }, storedUtm));
+  gtag("event", eventName, Object.assign({ source: source || "", page_path: location.pathname }, storedUtm));
 }
 
 // Clics en WhatsApp y teléfono (elementos con data-lead)
@@ -163,11 +191,17 @@ if (cookieBanner) {
   cookieBanner.querySelectorAll('[data-cookie-accept]').forEach(btn => btn.addEventListener('click', () => {
     try { localStorage.setItem(CONSENT_KEY, 'granted'); } catch (e) {}
     loadAnalyticsTag();
+    persistUtm();
     hideBanner();
   }));
   cookieBanner.querySelectorAll('[data-cookie-reject]').forEach(btn => btn.addEventListener('click', () => {
+    const wasActive = analyticsLoaded;
     try { localStorage.setItem(CONSENT_KEY, 'denied'); } catch (e) {}
     hideBanner();
+    if (wasActive) {
+      revokeAnalytics();
+      location.reload();
+    }
   }));
   document.querySelectorAll('[data-cookie-settings]').forEach(btn => btn.addEventListener('click', showBanner));
 }
