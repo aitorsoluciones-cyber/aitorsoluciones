@@ -2,12 +2,15 @@
 {% macro beforeAfter(before, after, beforeAlt, afterAlt, resultText, compare) %}
 <div class="before-after"{% if compare %} data-compare{% endif %} aria-label="Antes y después">
 <div class="before-after-grid">
-<figure><img src="/assets/img/{{ before }}.webp" srcset="{{ before | imgsrcset }}" sizes="(max-width: 640px) 92vw, 560px" alt="{{ beforeAlt }}" width="{{ before | imgw }}" height="{{ before | imgh }}" loading="lazy"><span class="label">ANTES</span></figure>
-<figure class="after"><img src="/assets/img/{{ after }}.webp" srcset="{{ after | imgsrcset }}" sizes="(max-width: 640px) 92vw, 560px" alt="{{ afterAlt }}" width="{{ after | imgw }}" height="{{ after | imgh }}" loading="lazy"><span class="label">DESPUÉS</span></figure>
+<figure><picture>{% if before | hasavif %}<source type="image/avif" srcset="{{ before | avifsrcset }}" sizes="(max-width: 640px) 92vw, 560px">{% endif %}<img src="/assets/img/{{ before }}.webp" srcset="{{ before | imgsrcset }}" sizes="(max-width: 640px) 92vw, 560px" alt="{{ beforeAlt }}" width="{{ before | imgw }}" height="{{ before | imgh }}" loading="lazy"></picture><span class="label">ANTES</span></figure>
+<figure class="after"><picture>{% if after | hasavif %}<source type="image/avif" srcset="{{ after | avifsrcset }}" sizes="(max-width: 640px) 92vw, 560px">{% endif %}<img src="/assets/img/{{ after }}.webp" srcset="{{ after | imgsrcset }}" sizes="(max-width: 640px) 92vw, 560px" alt="{{ afterAlt }}" width="{{ after | imgw }}" height="{{ after | imgh }}" loading="lazy"></picture><span class="label">DESPUÉS</span></figure>
 </div>
 {% if resultText %}<div class="result-card">{{ resultText }}</div>{% endif %}
 </div>
 {% endmacro %}
+
+{# Foto principal (LCP) de una pagina: AVIF si existe, WebP como alternativa #}
+{% macro heroPhoto(name, alt, sizes) %}<picture>{% if name | hasavif %}<source type="image/avif" srcset="{{ name | avifsrcset }}" sizes="{{ sizes }}">{% endif %}<img src="/assets/img/{{ name }}.webp" srcset="{{ name | imgsrcset }}" sizes="{{ sizes }}" alt="{{ alt }}" width="{{ name | imgw }}" height="{{ name | imgh }}" fetchpriority="high"></picture>{% endmacro %}
 
 {% macro workGallery(cases, locations) %}
 <div class="gallery">

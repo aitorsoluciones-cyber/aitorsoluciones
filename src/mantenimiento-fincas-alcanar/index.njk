@@ -6,6 +6,7 @@ layout: layouts/base.njk
 ---
 {% import "components/breadcrumbs.njk" as bc %}
 {% import "components/cta.njk" as ctac %}
+{% import "components/media.njk" as mediac %}
 {% import "components/jsonld.njk" as ld %}
 
 {% set waLinkMant = business.whatsapp | waLink("Hola Aitor, quiero información sobre mantenimiento de finca. Está en...") %}
@@ -20,7 +21,7 @@ layout: layouts/base.njk
 <p class="note">Este contenido se ha ampliado en nuestra página de <a href="/mantenimiento-jardines/">mantenimiento de jardines</a>, que reúne toda la información sobre mantenimiento periódico.</p>
 <div class="cta-row">{{ ctac.whatsappCta(waLinkMant, "Consultar mantenimiento", "maintenance_hero") }}</div>
 </div>
-<div class="local-photo"><img src="/assets/img/jardin-olivos-despues.webp" alt="Jardín con olivos mantenido y con vegetación controlada" width="800" height="1067"></div>
+<div class="local-photo">{{ mediac.heroPhoto("jardin-olivos-despues", "Jardín con olivos mantenido y con vegetación controlada", "(max-width: 1150px) 92vw, 540px") }}</div>
 </div></section>
 
 <section class="section"><div class="container">

@@ -41,7 +41,7 @@ layout: layouts/base.njk
 </div>
 <div class="kpi-row"><div class="kpi">Fotos reales</div><div class="kpi">Precio claro</div><div class="kpi">Trato directo</div></div>
 </div>
-<div class="local-photo"><img src="/assets/img/{{ lp.heroImage }}.webp" srcset="{{ lp.heroImage | imgsrcset }}" sizes="(max-width: 1150px) 92vw, 540px" alt="{{ lp.heroImageAlt }}" width="{{ lp.heroImage | imgw }}" height="{{ lp.heroImage | imgh }}" fetchpriority="high"></div>
+<div class="local-photo">{{ mediac.heroPhoto(lp.heroImage, lp.heroImageAlt, "(max-width: 1150px) 92vw, 540px") }}</div>
 </div></section>
 
 <section class="section"><div class="container">

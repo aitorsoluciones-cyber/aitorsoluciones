@@ -16,6 +16,11 @@ export default function (eleventyConfig) {
     parts.push(`/assets/img/${name}.webp ${m.w}w`);
     return parts.join(", ");
   });
+  eleventyConfig.addFilter("hasavif", (name) => !!(imageMeta[name] && imageMeta[name].avif));
+  eleventyConfig.addFilter("avifsrcset", (name) => {
+    const m = imageMeta[name];
+    return `/assets/img/${name}-sm.avif 480w, /assets/img/${name}-md.avif 700w, /assets/img/${name}-lg.avif ${m.avif.lg}w`;
+  });
   eleventyConfig.addFilter("imgw", (name) => (imageMeta[name] ? imageMeta[name].w : 800));
   eleventyConfig.addFilter("imgh", (name) => (imageMeta[name] ? imageMeta[name].h : 1067));
   eleventyConfig.addFilter("imgsmw", (name) => (imageMeta[name] ? imageMeta[name].sm.w : 480));

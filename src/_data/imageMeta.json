@@ -15,7 +15,10 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "avif": {
+      "lg": 800
+    }
   },
   "rapita-antes": {
     "w": 800,
@@ -27,6 +30,9 @@
     "md": {
       "w": 700,
       "h": 934
+    },
+    "avif": {
+      "lg": 800
     }
   },
   "rapita-despues": {
@@ -39,6 +45,9 @@
     "md": {
       "w": 700,
       "h": 934
+    },
+    "avif": {
+      "lg": 800
     }
   },
   "rapita-campo-antes": {
@@ -93,7 +102,10 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "avif": {
+      "lg": 800
+    }
   },
   "work2-before": {
     "w": 800,
@@ -141,6 +153,9 @@
     "md": {
       "w": 800,
       "h": 1067
+    },
+    "avif": {
+      "lg": 1000
     }
   },
   "jardin-olivos-despues": {
@@ -153,6 +168,9 @@
     "md": {
       "w": 800,
       "h": 1067
+    },
+    "avif": {
+      "lg": 1000
     }
   },
   "jardin-olivos-terraza-antes": {
@@ -249,6 +267,9 @@
     "md": {
       "w": 800,
       "h": 1067
+    },
+    "avif": {
+      "lg": 1000
     }
   },
   "solar-urbano-despues": {
@@ -261,6 +282,9 @@
     "md": {
       "w": 800,
       "h": 1067
+    },
+    "avif": {
+      "lg": 1000
     }
   },
   "solar-urbano-despues-amplio": {

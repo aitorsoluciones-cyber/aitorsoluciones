@@ -32,6 +32,7 @@
 html{scroll-padding-top:110px;scroll-padding-bottom:96px}
 body{margin:0;font-family:var(--font-body);color:var(--ink);background:#fff;line-height:1.55}
 img{max-width:100%;display:block}
+picture{display:contents}
 a{color:inherit}
 button,input,select,textarea{font:inherit}
 .container{width:min(calc(100% - 32px),var(--max));margin-inline:auto}
