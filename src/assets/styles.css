@@ -195,7 +195,7 @@ details p{color:var(--muted)}
 
 /* Ficha de intervencion (WorkSheet) junto al comparador antes/despues */
 .proof-pair{display:grid;grid-template-columns:1.3fr .7fr;gap:28px;align-items:start}
-.proof-pair .before-after.is-compare{max-width:none;margin-inline:0}
+.proof-pair .before-after[data-compare]{max-width:none;margin-inline:0}
 .worksheet{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
 .worksheet-tag{display:inline-block;font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:.76rem;color:var(--orange-text);margin-bottom:14px}
 .worksheet dl{margin:0;display:grid;gap:14px}
@@ -370,12 +370,13 @@ details[open]>p{animation:fadeIn .3s ease}
 }
 
 /* Comparador antes/despues (mejora progresiva: sin JS se ven las dos fotos) */
-.before-after.is-compare{max-width:560px;margin-inline:auto}
-.is-compare .before-after-grid{display:block;position:relative;aspect-ratio:3/4;min-height:0;overflow:hidden}
-.is-compare figure{position:absolute;inset:0}
-.is-compare figure.after{clip-path:inset(0 0 0 var(--pos,50%))}
-.is-compare figure.after .label{left:auto;right:16px}
-.is-compare .result-card{pointer-events:none}
+/* [data-compare] (no solo .is-compare): misma maqueta antes y despues de que el JS anada el control, para evitar saltos de layout */
+.before-after[data-compare]{max-width:560px;margin-inline:auto}
+[data-compare] .before-after-grid{display:block;position:relative;aspect-ratio:3/4;min-height:0;overflow:hidden}
+[data-compare] figure{position:absolute;inset:0}
+[data-compare] figure.after{clip-path:inset(0 0 0 var(--pos,50%))}
+[data-compare] figure.after .label{left:auto;right:16px}
+[data-compare] .result-card{pointer-events:none}
 .ba-range{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;opacity:0;cursor:ew-resize;touch-action:pan-y;-webkit-appearance:none;appearance:none;background:transparent;z-index:3}
 .ba-range::-webkit-slider-thumb{-webkit-appearance:none;width:48px;height:100vh}
 .ba-range::-moz-range-thumb{width:48px;height:100%;border:0;background:transparent}
@@ -383,6 +384,7 @@ details[open]>p{animation:fadeIn .3s ease}
 .ba-handle::after{content:"";position:absolute;top:50%;left:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23071e3b' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M9 7l-5 5 5 5M15 7l5 5-5 5'/></svg>") center/26px no-repeat;box-shadow:0 4px 14px rgba(7,30,59,.35)}
 .ba-range:focus-visible~.ba-handle::after{outline:3px solid var(--orange);outline-offset:3px}
 .ba-hint{margin:12px 0 0;text-align:center;font-size:.9rem;color:var(--muted)}
+.before-after:not(.is-compare)+.ba-hint{visibility:hidden}
 
 /* Textos legales y aviso de recogida de datos */
 .legal-page h2{font-size:1.4rem;margin:34px 0 10px;letter-spacing:-.01em}
@@ -403,7 +405,7 @@ mark.legal-pending{background:#fff4cc;color:#4a3b00;padding:1px 5px;border-radiu
   .hero .cta-row{margin-top:18px}
   .hero .cta-row .btn{flex:1 1 100%}
   .hero .trust-row{margin-top:16px}
-  .is-compare .before-after-grid{aspect-ratio:3/4}
+  [data-compare] .before-after-grid{aspect-ratio:3/4}
 }
 
 /* Correcciones de contraste detectadas en la revision */

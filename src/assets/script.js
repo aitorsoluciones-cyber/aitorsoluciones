@@ -252,8 +252,7 @@ document.querySelectorAll('[data-compare]').forEach((box, i) => {
   grid.appendChild(handle);
   box.classList.add('is-compare');
   update();
-  const hint = document.createElement('p');
-  hint.className = 'ba-hint';
-  hint.textContent = 'Desliza para comparar el antes y el después.';
-  box.insertAdjacentElement('afterend', hint);
+  // El aviso viene ya renderizado (oculto hasta aqui) para no desplazar el contenido siguiente.
+  const hint = box.nextElementSibling;
+  if (hint && hint.classList.contains('ba-hint') && document.documentElement.lang === 'en') hint.textContent = 'Drag to compare before and after.';
 });
