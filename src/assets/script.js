@@ -226,6 +226,22 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+/* Imagenes diferidas del comparador de los casos: se cargan al acercarse (100 px) para que no compitan con la foto principal. Sin JS: <noscript>. */
+document.querySelectorAll('[data-defer]').forEach((box) => {
+  const load = () => {
+    box.querySelectorAll('source[data-srcset]').forEach((s) => { s.srcset = s.dataset.srcset; s.removeAttribute('data-srcset'); });
+    box.querySelectorAll('img[data-src]').forEach((i) => { if (i.dataset.srcset) i.srcset = i.dataset.srcset; i.src = i.dataset.src; i.removeAttribute('data-src'); i.removeAttribute('data-srcset'); });
+  };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { load(); io.disconnect(); }
+    }, { rootMargin: (box.dataset.deferMargin || 100) + 'px 0px' });
+    io.observe(box);
+  } else {
+    load();
+  }
+});
+
 /* Comparador antes/despues: mejora progresiva accesible (teclado y tactil).
    Sin JS se siguen viendo las dos fotografias una junto a otra. */
 document.querySelectorAll('[data-compare]').forEach((box, i) => {

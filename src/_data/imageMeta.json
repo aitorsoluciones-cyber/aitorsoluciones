@@ -313,7 +313,8 @@
     },
     "smAvif": true,
     "avif": {
-      "lg": 1000
+      "lg": 1000,
+      "sq": true
     }
   },
   "solar-urbano-despues-amplio": {

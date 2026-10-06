@@ -196,13 +196,19 @@ details p{color:var(--muted)}
 /* Ficha de intervencion (WorkSheet) junto al comparador antes/despues */
 .proof-pair{display:grid;grid-template-columns:1.3fr .7fr;gap:28px;align-items:start}
 .proof-pair .before-after[data-compare]{max-width:none;margin-inline:0}
+/* Caso: ficha junto al comparador en escritorio; en movil, foto final + ficha y el comparador debajo */
+.proof-pair.is-case{grid-template-areas:"compare sheet"}
+.proof-pair.is-case .proof-compare{grid-area:compare}
+.proof-pair.is-case .worksheet{grid-area:sheet}
+.result-photo{display:none;grid-area:photo;position:relative}
 .worksheet{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
 .worksheet-tag{display:inline-block;font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:.76rem;color:var(--orange-text);margin-bottom:14px}
 .worksheet dl{margin:0;display:grid;gap:14px}
 .worksheet dt{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700}
 .worksheet dd{margin:3px 0 0;color:var(--navy);font-weight:700}
 .worksheet-link{display:inline-block;margin-top:16px;color:var(--orange-text);font-weight:800;text-decoration:none}
-@media(max-width:900px){.proof-pair{grid-template-columns:1fr}}
+@media(max-width:900px){.proof-pair{grid-template-columns:1fr}.proof-pair.is-case{grid-template-areas:"compare" "sheet"}}
+@media(max-width:640px){.proof-pair.is-case{grid-template-areas:"photo" "sheet" "compare"}.result-photo{display:block}}
 
 /* FAQ practico (FieldFAQ): lista con divisores, no caja de acordeon pesada */
 .faq-field{gap:0;border-top:1px solid var(--line)}

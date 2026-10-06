@@ -32,7 +32,7 @@ const AVIF_NAMES = ["rapita-antes", "rapita-despues", "jardin-olivos-antes", "ja
 
 // Heros de paginas locales/EN: ademas recorte cuadrado (-sq-*) para viewports >= 412 px, donde el
 // contenedor es >= 1:1 y object-fit:cover solo muestra la banda central: mismos pixeles visibles, ~28% menos bytes.
-const AVIF_SQUARE = ["alcanar-platja-despues", "hero-after", "rapita-despues", "jardin-olivos-despues"];
+const AVIF_SQUARE = ["alcanar-platja-despues", "hero-after", "rapita-despues", "jardin-olivos-despues", "solar-urbano-despues"];
 
 // Fotos muy detalladas (hierba/hojas): -3 de calidad AVIF (SSIM 0,977 -> 0,970 a tamano real, indistinguible a 1:1).
 const AVIF_QDELTA = { "jardin-olivos-antes": -3, "jardin-olivos-despues": -3 };
