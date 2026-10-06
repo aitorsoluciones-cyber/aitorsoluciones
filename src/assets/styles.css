@@ -149,6 +149,8 @@ h3{font-size:1.3rem;font-weight:700}
 .work{background:#fff;border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
 .work-pair{display:grid;grid-template-columns:1fr 1fr;height:300px}
 .work-pair img{width:100%;height:100%;object-fit:cover}
+.work-pair picture{display:block;min-width:0;height:100%}
+.work-pair picture img{display:block;width:100%;height:100%;object-fit:cover}
 .work-copy{padding:20px}
 .work-copy strong{color:var(--orange-text)}
 .work-tag{display:inline-block;font-family:var(--font-display);font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:.72rem;color:var(--orange-text);margin-bottom:6px}
