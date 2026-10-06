@@ -23,6 +23,20 @@ const BASE_NAMES = [
   "solar-urbano-antes", "solar-urbano-despues", "solar-urbano-despues-amplio",
 ];
 
+// Fotos de 800 px que van de LCP/comparador en movil: variante intermedia de 700 px
+// (cubre 380 px CSS a DPR 1,75 con ~45% menos bytes que la de 800 px).
+const MID_700 = ["rapita-antes", "rapita-despues"];
+// Fotos que son LCP (hero de paginas locales/EN y comparadores de casos): ademas AVIF
+// de 480, 630 (nativo a DPR 1,75 en el comparador movil), 700 y hasta 1000 px (-sm/-xm/-md/-lg) para <picture>; imageMeta.avif = true.
+const AVIF_NAMES = ["rapita-antes", "rapita-despues", "jardin-olivos-antes", "jardin-olivos-despues", "solar-urbano-antes", "solar-urbano-despues", "alcanar-platja-despues", "hero-after"];
+
+// Heros de paginas locales/EN: ademas recorte cuadrado (-sq-*) para viewports >= 412 px, donde el
+// contenedor es >= 1:1 y object-fit:cover solo muestra la banda central: mismos pixeles visibles, ~28% menos bytes.
+const AVIF_SQUARE = ["alcanar-platja-despues", "hero-after", "rapita-despues", "jardin-olivos-despues", "solar-urbano-despues"];
+
+// Fotos muy detalladas (hierba/hojas): -3 de calidad AVIF (SSIM 0,977 -> 0,970 a tamano real, indistinguible a 1:1).
+const AVIF_QDELTA = { "jardin-olivos-antes": -3, "jardin-olivos-despues": -3 };
+
 const meta = {};
 
 for (const name of BASE_NAMES) {
@@ -44,8 +58,32 @@ for (const name of BASE_NAMES) {
   if (info.width > 800) {
     const mdInfo = await sharp(buffer).resize({ width: 800 }).webp({ quality: 74 }).toFile(mdPath);
     entry.md = { w: mdInfo.width, h: mdInfo.height };
+  } else if (MID_700.includes(name)) {
+    const mdInfo = await sharp(buffer).resize({ width: 700 }).webp({ quality: 76, effort: 6 }).toFile(mdPath);
+    entry.md = { w: mdInfo.width, h: mdInfo.height };
   } else {
     await fs.rm(mdPath, { force: true });
+  }
+  const dq = AVIF_QDELTA[name] || 0;
+  // Miniatura AVIF (480 px, mismo recorte que la WebP) para las galerias: ~45% menos bytes.
+  const smAvif = path.join(DIR, `${name}-sm.avif`);
+  await sharp(buffer).resize({ width: 480, withoutEnlargement: true }).avif({ quality: 50 + dq, effort: 6 }).toFile(smAvif);
+  await sharp(buffer).resize({ width: 400, withoutEnlargement: true }).avif({ quality: 50 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-xs.avif`));
+  entry.smAvif = true;
+  if (AVIF_NAMES.includes(name)) {
+    await sharp(buffer).resize({ width: 630 }).avif({ quality: 45 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-xm.avif`));
+    await sharp(buffer).resize({ width: 700 }).avif({ quality: 45 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-md.avif`));
+    const lg = await sharp(buffer).resize({ width: 1000, withoutEnlargement: true }).avif({ quality: 45 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-lg.avif`));
+    entry.avif = { lg: lg.width };
+    if (AVIF_SQUARE.includes(name)) {
+      const side = Math.min(info.width, info.height);
+      const sq = await sharp(buffer).extract({ left: Math.round((info.width - side) / 2), top: Math.round((info.height - side) / 2), width: side, height: side }).toBuffer();
+      await sharp(sq).resize({ width: 480 }).avif({ quality: 50 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-sq-sm.avif`));
+      await sharp(sq).resize({ width: 668 }).avif({ quality: 45 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-sq-xm.avif`));
+      await sharp(sq).resize({ width: 700 }).avif({ quality: 45 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-sq-md.avif`));
+      await sharp(sq).resize({ width: 1000, withoutEnlargement: true }).avif({ quality: 45 + dq, effort: 6 }).toFile(path.join(DIR, `${name}-sq-lg.avif`));
+      entry.avif.sq = true;
+    }
   }
   meta[name] = entry;
   const kb = async (p) => Math.round((await fs.stat(p)).size / 1024);

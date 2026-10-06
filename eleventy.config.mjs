@@ -16,6 +16,17 @@ export default function (eleventyConfig) {
     parts.push(`/assets/img/${name}.webp ${m.w}w`);
     return parts.join(", ");
   });
+  eleventyConfig.addFilter("hasavif", (name) => !!(imageMeta[name] && imageMeta[name].avif));
+  eleventyConfig.addFilter("avifsrcset", (name) => {
+    const m = imageMeta[name];
+    return `/assets/img/${name}-sm.avif 480w, /assets/img/${name}-xm.avif 630w, /assets/img/${name}-md.avif 700w, /assets/img/${name}-lg.avif ${m.avif.lg}w`;
+  });
+  eleventyConfig.addFilter("hassmavif", (name) => !!(imageMeta[name] && imageMeta[name].smAvif));
+  eleventyConfig.addFilter("hassq", (name) => !!(imageMeta[name] && imageMeta[name].avif && imageMeta[name].avif.sq));
+  eleventyConfig.addFilter("avifsqsrcset", (name) => {
+    const m = imageMeta[name];
+    return `/assets/img/${name}-sq-sm.avif 480w, /assets/img/${name}-sq-xm.avif 668w, /assets/img/${name}-sq-md.avif 700w, /assets/img/${name}-sq-lg.avif ${Math.min(m.w, 1000)}w`;
+  });
   eleventyConfig.addFilter("imgw", (name) => (imageMeta[name] ? imageMeta[name].w : 800));
   eleventyConfig.addFilter("imgh", (name) => (imageMeta[name] ? imageMeta[name].h : 1067));
   eleventyConfig.addFilter("imgsmw", (name) => (imageMeta[name] ? imageMeta[name].sm.w : 480));

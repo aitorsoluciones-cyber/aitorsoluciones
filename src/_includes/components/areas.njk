@@ -1,9 +1,9 @@
 {% macro priorityAreas(locations) %}
-<div class="areas-grid">
+<div class="local-strip">
 {% for loc in locations %}{% if loc.hasLandingPage %}
-<a class="area-card" href="{{ loc.url }}"><h3>{{ loc.name }}</h3><p>Jardinería, desbroce y mantenimiento.</p><span>Ver servicio →</span></a>
+<a class="local-strip-item" href="{{ loc.url }}">{{ loc.name }}<span aria-hidden="true">→</span></a>
 {% endif %}{% endfor %}
-<a class="area-card" href="/en/property-maintenance/"><h3>Foreign property owners</h3><p>English information for owners living abroad.</p><span>View in English →</span></a>
+<a class="local-strip-item" href="/en/property-maintenance/">Foreign property owners<span aria-hidden="true">→</span></a>
 </div>
 {% endmacro %}
 

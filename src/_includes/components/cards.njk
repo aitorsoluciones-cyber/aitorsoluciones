@@ -7,10 +7,45 @@
 </article>
 {% endmacro %}
 
+{% macro serviceIndex(items) %}
+<ol class="service-index">
+{% for service in items %}
+<li class="service-index-row">
+<a href="{{ service.url }}">
+<span class="service-index-num">{{ "0" + loop.index if loop.index < 10 else loop.index }}</span>
+<span class="service-index-body"><strong>{{ service.name }}</strong><span>{{ service.metaDescription or service.problem }}</span></span>
+<span class="service-index-arrow" aria-hidden="true">→</span>
+</a>
+</li>
+{% endfor %}
+</ol>
+{% endmacro %}
+
 {% macro locationCard(location) %}
 {% if location.hasLandingPage %}
 <a class="area-card" href="{{ location.url }}"><h3>{{ location.name }}</h3><p>Zona de servicio</p><span>Ver zona →</span></a>
 {% else %}
 <div class="area-card" style="cursor:default"><h3>{{ location.name }}</h3><p>Zona atendida · {{ location.province }}</p></div>
 {% endif %}
+{% endmacro %}
+
+{% macro localStrip(locations) %}
+<div class="local-strip">
+{% for loc in locations %}
+{% if loc.hasLandingPage %}<a class="local-strip-item" href="{{ loc.url }}">{{ loc.name }}<span aria-hidden="true">→</span></a>
+{% else %}<span class="local-strip-item is-plain">{{ loc.name }}</span>{% endif %}
+{% endfor %}
+</div>
+{% endmacro %}
+
+{% macro workSheet(item, location, showLink=true) %}
+<aside class="worksheet">
+<span class="worksheet-tag">Ficha de intervención</span>
+<dl>
+<div><dt>Trabajo</dt><dd>{{ item.title }}</dd></div>
+{% if location %}<div><dt>Localidad</dt><dd>{{ location.name }}</dd></div>{% endif %}
+{% if item.whatWeDid %}<div><dt>Qué se hizo</dt><dd>{{ item.whatWeDid }}</dd></div>{% endif %}
+</dl>
+{% if showLink and item.hasPage %}<a class="worksheet-link" href="/trabajos/{{ item.slug }}/">Ver el caso completo →</a>{% endif %}
+</aside>
 {% endmacro %}

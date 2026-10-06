@@ -24,6 +24,9 @@ layout: layouts/base.njk
 {% set waLinkService = business.whatsapp | waLink(waMsg) %}
 {% set parentService = services | findById(service.parentId) %}
 {% set faqEntries = service.faqIds | pickByIds(faqs) %}
+{% set relatedCases = workCases | casesByService(service.id) %}
+{% set featuredCase = relatedCases[0] %}
+{% set featuredCaseLocation = locations | findById(featuredCase.locationId) if featuredCase else null %}
 {% if service.isHub %}
 {% set breadcrumbItems = [{ label: "Inicio", url: "/" }, { label: service.name, url: service.url }] %}
 {% else %}
@@ -43,9 +46,7 @@ layout: layouts/base.njk
 {% if service.isHub %}
 <section class="section"><div class="container">
 <div class="section-head"><span class="eyebrow">Servicios</span><h2>Accesos principales</h2></div>
-<div class="services-grid">
-{% for child in service.childServiceIds | pickByIds(services) %}{{ cardsc.serviceCard(child) }}{% endfor %}
-</div>
+{{ cardsc.serviceIndex(service.childServiceIds | pickByIds(services)) }}
 </div></section>
 {% if service.images and service.images.before %}
 <section class="section section-soft"><div class="container">
@@ -75,11 +76,19 @@ layout: layouts/base.njk
 </div></section>
 {% endif %}
 
-{% if service.images and service.images.before %}
+{% if featuredCase %}
+<section class="section section-soft"><div class="container">
+<div class="section-head"><span class="eyebrow">Trabajo real</span><h2>Antes y después</h2></div>
+<div class="proof-pair">
+{{ mediac.beforeAfter(featuredCase.before, featuredCase.after, service.name + " antes", service.name + " después") }}
+{{ cardsc.workSheet(featuredCase, featuredCaseLocation) }}
+</div>
+{% if service.images.process %}<p class="note" style="margin-top:16px;text-align:center">Proceso de trabajo en la misma parcela.</p>{% endif %}
+</div></section>
+{% elif service.images and service.images.before %}
 <section class="section section-soft"><div class="container">
 <div class="section-head"><span class="eyebrow">Trabajo real</span><h2>Antes y después</h2></div>
 {{ mediac.beforeAfter(service.images.before, service.images.after, service.name + " antes", service.name + " después") }}
-{% if service.images.process %}<p class="note" style="margin-top:16px;text-align:center">Proceso de trabajo en la misma parcela.</p>{% endif %}
 </div></section>
 {% endif %}
 
@@ -97,13 +106,11 @@ layout: layouts/base.njk
 
 <section class="section{% if service.isHub %} section-soft{% endif %}"><div class="container">
 <div class="section-head"><span class="eyebrow">Zonas</span><h2>Dónde trabajamos este servicio</h2><p>Base en {{ business.base }}, con desplazamiento habitual hasta {{ business.serviceRadiusKm }} km.</p></div>
-<div class="areas-grid">
-{% for loc in locations %}{% if loc.hasLandingPage %}{{ cardsc.locationCard(loc) }}{% endif %}{% endfor %}
-</div>
+{% set landingLocs = [] %}{% for loc in locations %}{% if loc.hasLandingPage %}{% set _ = landingLocs.push(loc) %}{% endif %}{% endfor %}
+{{ cardsc.localStrip(landingLocs) }}
 <p style="margin-top:18px"><a href="/zonas/">Ver todas las zonas atendidas →</a></p>
 </div></section>
 
-{% set relatedCases = workCases | casesByService(service.id) %}
 {% if relatedCases.length %}
 <section class="section"><div class="container">
 <div class="section-head"><span class="eyebrow">Trabajos reales</span><h2>Casos relacionados</h2></div>

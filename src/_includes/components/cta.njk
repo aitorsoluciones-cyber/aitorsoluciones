@@ -7,9 +7,10 @@
 {% endmacro %}
 
 {% macro maintenanceCta(waLink) %}
-<div class="quote">
-<strong>Lo ponemos a punto y podemos mantenerlo</strong>
-<p>Para que no vuelva a descontrolarse, podemos acordar visitas puntuales o periódicas después del primer trabajo.</p>
+<div class="maintenance-band">
+<span class="maintenance-band-tag">Mantenimiento</span>
+<p class="maintenance-band-title"><strong>Lo ponemos a punto</strong><span class="maintenance-band-arrow" aria-hidden="true">→</span><strong>lo mantenemos</strong></p>
+<p class="maintenance-band-note">Para que no vuelva a descontrolarse, podemos acordar visitas puntuales o periódicas después del primer trabajo.</p>
 <a class="btn btn-primary" href="{{ waLink }}" target="_blank" rel="noopener" data-lead="whatsapp" data-source="maintenance_cta">Consultar mantenimiento periódico</a>
 </div>
 {% endmacro %}

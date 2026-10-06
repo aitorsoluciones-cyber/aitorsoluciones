@@ -49,7 +49,7 @@ publicará cuando se apruebe el despliegue).
   `trabajo-parcela.jpg` por ser imágenes generadas por IA, no trabajos
   reales.
 - **WhatsApp/formulario/analítica**: se reutiliza `assets/script.js`
-  (UTM, `whatsapp_click`, `phone_click`, `form_submit`, service worker),
+  (UTM, `whatsapp_click`, `phone_click`, `generate_lead`, service worker),
   formulario con Netlify Forms igual que la versión actual.
 
 ## Comprobado
@@ -113,3 +113,37 @@ Faltan tres datos que solo puede facilitar Aitor y que **no se han inventado**:
 
 ### Servicios de vivienda (2026-09-23)
 Limpieza de viviendas (/limpieza-viviendas/), pintura (/pintura/) y pequeñas reparaciones (/reparaciones-hogar/) están activas en src/_data/services.json con contenido mínimo y sin precios, fotos ni reseñas inventados (lean: true). Los servicios que siguen como draft (apartamentos turísticos, montajes, pladur) no se publican.
+
+### Herramienta de QA: servidor equivalente a producción (2026-10-01)
+
+`npm run serve:prod-equiv` levanta `tools/prod-equiv-server.mjs`, que sirve
+`_site` en `http://localhost:5055` aplicando las cabeceras reales de
+`src/_headers` (CSP, seguridad, caché) tal cual las vería un visitante en
+`aitorsoluciones.com`. A diferencia de `npm run serve` (servidor de
+desarrollo de Eleventy, con su propio script de recarga en vivo) y de un
+Deploy Preview de Netlify (que añade su script de colaboración y
+`X-Robots-Tag: noindex`, ambos exclusivos de preview), este servidor no
+añade ni quita nada: es el build real con las cabeceras reales, sin
+artefactos de entorno. Úsalo para auditorías de Lighthouse/Best
+Practices/SEO que no se quieran contaminar con herramientas propias del
+flujo de desarrollo o de Netlify Preview. Requiere haber ejecutado antes
+`npm run build`.
+
+### Analítica (GA4) y consentimiento (2026-10-05)
+
+`src/assets/script.js` es la única fuente de verdad: `MEASUREMENT_ID` (GA4 `G-WSJYEMQTR7`) y `GA_COOKIE_EXPIRES_SECONDS` (395 días ≈ 13 meses, enviado como `cookie_expires` en `gtag("config")`; GA4 usa 2 años por defecto). Ese plazo es el que declara `/politica-privacidad/#cookies`: si se cambia uno, hay que cambiar el otro. La retención de datos en el panel de GA4 es un ajuste distinto, de la propiedad.
+
+- Sin consentimiento: no se carga ningún script de Google, no hay cookies `_ga*`, no se registra ni encola ningún evento (`leadEvent` sale sin hacer nada) y los UTM solo se leen de la URL actual (no se guardan en `sessionStorage`).
+- "Aceptar": se carga `gtag.js` una vez, se persisten los UTM durante la sesión.
+- "Rechazar" tras haber aceptado (desde "Configurar cookies"): `consent update denied`, bloqueo `ga-disable-<ID>`, borrado de `_ga`/`_ga_*`/`_gid`/`_gat*` (host y dominios padre) y de los UTM, y recarga.
+
+#### Eventos GA4 (arquitectura final)
+
+| Evento | Cuándo | Parámetros |
+|---|---|---|
+| `page_view` | Automático al cargar GA4 (con consentimiento), uno por página | — |
+| `whatsapp_click` | Clic en un enlace `data-lead="whatsapp"` | `lead_source` (ubicación del botón), `page_path`, UTM |
+| `phone_click` | Clic en un enlace `data-lead="phone"` | ídem |
+| `generate_lead` | Una vez por envío de formulario **completado**: al enviar (con consentimiento) se guarda un flag de sesión (`pending-lead`) y solo al llegar a `/gracias/` (Netlify ya aceptó el POST) se dispara y se borra el flag; las visitas directas o recargas de `/gracias/` no lo disparan | `lead_source` (nombre del formulario), `origin_page`, `page_path`, UTM |
+
+`form_submit` ya no lo envía el código; si la Medición mejorada de la propiedad lo genera, es el evento automático de GA4. Evento clave del negocio: `generate_lead`. Los parámetros personalizados (`lead_source`, `origin_page`) solo aparecen en informes si se registran como dimensiones personalizadas de evento.

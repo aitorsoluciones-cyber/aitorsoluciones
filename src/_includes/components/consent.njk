@@ -1,0 +1,23 @@
+{% macro cookieBanner() %}
+<div class="cookie-banner" id="cookie-banner" role="dialog" aria-label="Preferencias de cookies" hidden>
+<div class="container cookie-banner-inner">
+<p>Usamos Google Analytics para saber cuántas visitas recibe la web y qué funciona, pero solo si lo aceptas. Sin tu aceptación no se carga ni guarda ninguna cookie de analítica. Consulta la <a href="/politica-privacidad/#cookies">política de cookies</a>.</p>
+<div class="cookie-banner-actions">
+<button type="button" class="btn btn-secondary" data-cookie-reject>Rechazar</button>
+<button type="button" class="btn btn-primary" data-cookie-accept>Aceptar</button>
+</div>
+</div>
+</div>
+{% endmacro %}
+
+{% macro cookieBannerEn() %}
+<div class="cookie-banner" id="cookie-banner" role="dialog" aria-label="Cookie preferences" hidden>
+<div class="container cookie-banner-inner">
+<p>We use Google Analytics to see how the site is used, but only if you accept. Without your acceptance, no analytics cookie is loaded or stored. See the <a href="/politica-privacidad/#cookies">cookie policy (ES)</a>.</p>
+<div class="cookie-banner-actions">
+<button type="button" class="btn btn-secondary" data-cookie-reject>Reject</button>
+<button type="button" class="btn btn-primary" data-cookie-accept>Accept</button>
+</div>
+</div>
+</div>
+{% endmacro %}

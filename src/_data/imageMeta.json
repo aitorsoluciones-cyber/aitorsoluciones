@@ -6,7 +6,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "hero-after": {
     "w": 800,
@@ -15,7 +16,12 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true,
+    "avif": {
+      "lg": 800,
+      "sq": true
+    }
   },
   "rapita-antes": {
     "w": 800,
@@ -24,7 +30,14 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": {
+      "w": 700,
+      "h": 934
+    },
+    "smAvif": true,
+    "avif": {
+      "lg": 800
+    }
   },
   "rapita-despues": {
     "w": 800,
@@ -33,7 +46,15 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": {
+      "w": 700,
+      "h": 934
+    },
+    "smAvif": true,
+    "avif": {
+      "lg": 800,
+      "sq": true
+    }
   },
   "rapita-campo-antes": {
     "w": 800,
@@ -42,7 +63,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "rapita-campo-despues": {
     "w": 800,
@@ -51,7 +73,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "rapita-olivo-antes": {
     "w": 800,
@@ -60,7 +83,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "rapita-olivo-despues": {
     "w": 800,
@@ -69,7 +93,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "alcanar-platja-antes": {
     "w": 800,
@@ -78,7 +103,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "alcanar-platja-despues": {
     "w": 800,
@@ -87,7 +113,12 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true,
+    "avif": {
+      "lg": 800,
+      "sq": true
+    }
   },
   "work2-before": {
     "w": 800,
@@ -96,7 +127,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "work2-after": {
     "w": 800,
@@ -105,7 +137,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "work3-before": {
     "w": 800,
@@ -114,7 +147,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "work3-after": {
     "w": 800,
@@ -123,7 +157,8 @@
       "w": 480,
       "h": 640
     },
-    "md": null
+    "md": null,
+    "smAvif": true
   },
   "jardin-olivos-antes": {
     "w": 1200,
@@ -135,6 +170,10 @@
     "md": {
       "w": 800,
       "h": 1067
+    },
+    "smAvif": true,
+    "avif": {
+      "lg": 1000
     }
   },
   "jardin-olivos-despues": {
@@ -147,6 +186,11 @@
     "md": {
       "w": 800,
       "h": 1067
+    },
+    "smAvif": true,
+    "avif": {
+      "lg": 1000,
+      "sq": true
     }
   },
   "jardin-olivos-terraza-antes": {
@@ -159,7 +203,8 @@
     "md": {
       "w": 800,
       "h": 1067
-    }
+    },
+    "smAvif": true
   },
   "jardin-olivos-terraza-despues": {
     "w": 1200,
@@ -171,7 +216,8 @@
     "md": {
       "w": 800,
       "h": 1067
-    }
+    },
+    "smAvif": true
   },
   "jardin-olivos-caseta-antes": {
     "w": 1200,
@@ -183,7 +229,8 @@
     "md": {
       "w": 800,
       "h": 1067
-    }
+    },
+    "smAvif": true
   },
   "jardin-olivos-caseta-despues": {
     "w": 1200,
@@ -195,7 +242,8 @@
     "md": {
       "w": 800,
       "h": 1067
-    }
+    },
+    "smAvif": true
   },
   "parcela-agricola-antes": {
     "w": 1200,
@@ -207,7 +255,8 @@
     "md": {
       "w": 800,
       "h": 1067
-    }
+    },
+    "smAvif": true
   },
   "parcela-agricola-despues": {
     "w": 1200,
@@ -219,7 +268,8 @@
     "md": {
       "w": 800,
       "h": 1067
-    }
+    },
+    "smAvif": true
   },
   "parcela-agricola-proceso": {
     "w": 1200,
@@ -231,7 +281,8 @@
     "md": {
       "w": 800,
       "h": 1067
-    }
+    },
+    "smAvif": true
   },
   "solar-urbano-antes": {
     "w": 1200,
@@ -243,6 +294,10 @@
     "md": {
       "w": 800,
       "h": 1067
+    },
+    "smAvif": true,
+    "avif": {
+      "lg": 1000
     }
   },
   "solar-urbano-despues": {
@@ -255,6 +310,11 @@
     "md": {
       "w": 800,
       "h": 1067
+    },
+    "smAvif": true,
+    "avif": {
+      "lg": 1000,
+      "sq": true
     }
   },
   "solar-urbano-despues-amplio": {
@@ -267,6 +327,7 @@
     "md": {
       "w": 800,
       "h": 600
-    }
+    },
+    "smAvif": true
   }
 }
