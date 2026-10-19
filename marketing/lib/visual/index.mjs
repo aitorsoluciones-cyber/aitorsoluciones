@@ -11,7 +11,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { home, ensureDir } from "../paths.mjs";
 import { runBrief } from "./engine.mjs";
-import { load, save, findById } from "../store.mjs";
+import { load, save, findById, nowIso } from "../store.mjs";
+import { locations, norm } from "../places.mjs";
 import { config } from "../paths.mjs";
 
 // Variables desde <estado>/.env (fuera de git) si no estan ya definidas en el entorno.
@@ -43,7 +44,8 @@ export async function runBriefQueue(ctx = {}) {
   return results;
 }
 
-// Vincula material visual (graficos/generados, nunca fotos reales) a una pieza evergreen; anade la etiqueta de transparencia.
+// Vincula material visual (graficos/generados, nunca fotos reales) a una pieza evergreen. La transparencia ya va en la propia imagen
+// (etiqueta "Ilustracion" solo cuando la imagen generada puede confundirse con una fotografia); aqui se registra el resumen.
 export function attachToPiece(pieceId, assetIds) {
   const pieces = load("pieces"), assets = load("assets");
   const p = findById(pieces, pieceId);
@@ -51,16 +53,46 @@ export function attachToPiece(pieceId, assetIds) {
   if (p.kind === "work") throw new Error("Las piezas de trabajo real usan sus fotos reales; no se les adjunta imagen generada");
   const chosen = assetIds.map((id) => findById(assets, id));
   chosen.forEach((a, i) => { if (!a) throw new Error(`Material inexistente: ${assetIds[i]}`); if (a.origin === "real") throw new Error(`${a.id} es una foto real: no se adjunta a piezas evergreen`); if (a.status !== "READY") throw new Error(`${a.id} no esta READY`); });
-  p.visual = { assetIds, formats: Object.fromEntries(chosen.filter((a) => ["feed", "story", "gbp"].includes(a.format)).map((a) => [a.format, a.id])) };
-  const note = config().imageEngine.disclosure.generated;
-  if (chosen.some((a) => a.origin === "generated")) {
-    for (const ch of Object.keys(p.copy.captions)) {
-      const cap = p.copy.captions[ch];
-      if (cap.includes(note)) continue;
-      const at = cap.lastIndexOf("\n\n#");
-      p.copy.captions[ch] = at > -1 ? cap.slice(0, at) + "\n\n" + note + cap.slice(at) : cap + "\n\n" + note;
-    }
-  }
+  const gen = chosen.filter((a) => a.aiGenerated);
+  p.visual = {
+    assetIds, formats: Object.fromEntries(chosen.filter((a) => ["feed", "story", "gbp"].includes(a.format)).map((a) => [a.format, a.id])),
+    aiGenerated: gen.length > 0, models: [...new Set(gen.map((a) => a.model).filter(Boolean))], labelApplied: gen.some((a) => a.labelApplied), attachedAt: nowIso()
+  };
   save("pieces", pieces);
   return p;
+}
+
+// Aprobacion humana de un activo que no paso por el critico visual (autoPublish:false). Deja constancia de quien y cuando.
+export function approveAsset(assetId, who = "humano") {
+  const assets = load("assets");
+  const a = findById(assets, assetId);
+  if (!a) throw new Error(`Material inexistente: ${assetId}`);
+  a.autoPublish = true; a.humanApproved = { by: who, at: nowIso() };
+  save("assets", assets);
+  return a;
+}
+
+// Brief para una pieza evergreen del plan: material/banco -> brief. El titular y el CTA son los de la pieza; nada se inventa.
+export function briefFromPiece(piece, overrides = {}) {
+  if (!piece || piece.kind === "work") throw new Error("briefFromPiece: solo piezas evergreen");
+  const ig = (piece.channels || []).includes("instagram");
+  const channel = ig ? "instagram" : (piece.channels || [])[0] || "facebook";
+  const zone = (piece.copy?.zones || []).find((z) => locations().some((l) => l.isPriority && norm(l.name) === norm(z)));
+  return {
+    campaign: String(piece.id).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 60),
+    type: "editorial", source_images: [], channel, aspect_ratio: channel === "gbp" ? "4:3" : "4:5",
+    headline: piece.copy.headline, cta: config().brand.cta, location: zone || null, use_real_work: false, pieceId: piece.id, ...overrides
+  };
+}
+
+// material/banco -> brief -> imagen -> pieza: genera la imagen de una pieza evergreen y la adjunta si el resultado es valido.
+export async function runForPiece(pieceId, overrides = {}, ctx = {}) {
+  const piece = findById(load("pieces"), pieceId);
+  if (!piece) throw new Error(`Pieza no encontrada: ${pieceId}`);
+  const r = await runBrief(briefFromPiece(piece, overrides), ctx);
+  if (r.ok && !ctx.dryRun) {
+    const assets = load("assets");
+    attachToPiece(pieceId, r.assetIds.filter((id) => ["feed", "story", "gbp"].includes(findById(assets, id)?.format)));
+  }
+  return r;
 }

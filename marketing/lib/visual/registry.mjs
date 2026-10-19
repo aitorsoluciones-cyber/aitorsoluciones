@@ -35,7 +35,7 @@ export async function registerAsset(file, meta = {}) {
     prompt: meta.prompt ?? null, source: meta.source ?? "openai", model: meta.model ?? null, timestamp: nowIso(), campaign: meta.campaign ?? null,
     type: meta.type ?? null, format: meta.format ?? null, channel: meta.channel ?? null, published: false,
     ...(meta.derivedFrom ? { derivedFrom: meta.derivedFrom } : {}), ...(meta.briefId ? { briefId: meta.briefId } : {}), ...(meta.score != null ? { score: meta.score } : {}),
-    ...(meta.review ? { review: meta.review } : {}), ...(meta.reasons ? { reasons: meta.reasons } : {}), ...(meta.edited ? { edited: true } : {}), ...(meta.fidelity != null ? { fidelity: meta.fidelity } : {})
+    ...(meta.review ? { review: meta.review } : {}), ...(meta.reasons ? { reasons: meta.reasons } : {}), ...(meta.edited ? { edited: true } : {}), ...(meta.fidelity != null ? { fidelity: meta.fidelity } : {}), ...(meta.extra || {})
   };
   assets.push(asset);
   save("assets", assets);

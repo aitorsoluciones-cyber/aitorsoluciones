@@ -44,12 +44,17 @@ export async function neonImage(width = 1088, height = 1360) {
   return sharp(Buffer.from(svg)).png().toBuffer();
 }
 
-// fetch simulado de la API de imagenes: cola de respuestas (Buffers) por endpoint.
-export function mockOpenAI({ generations = [], edits = [], failWith } = {}) {
+// fetch simulado de la API de imagenes y del critico (Responses): colas de respuestas por endpoint.
+export const CRITIC_OK = { score: 90, ai_look: 2, brand_fit: 8, commercial_appeal: 8, visual_errors: [], composition_breathes: true, text_placement_ok: true, mobile_legible: true, publishable: true, flags: [], notes: "ok" };
+export function mockOpenAI({ generations = [], edits = [], responses = [], failWith } = {}) {
   const calls = [];
   const fetchImpl = async (url, init = {}) => {
     calls.push({ url, init });
     if (failWith) return { ok: false, status: failWith.status, json: async () => ({ error: failWith.error }) };
+    if (url.endsWith("/responses")) {
+      const r = responses.length ? responses.shift() : CRITIC_OK;
+      return { ok: true, status: 200, json: async () => ({ output_text: typeof r === "string" ? r : JSON.stringify(r) }) };
+    }
     const queue = url.endsWith("/images/generations") ? generations : edits;
     const item = queue.shift();
     const buf = typeof item === "function" ? await item(init) : item;

@@ -4,6 +4,7 @@ import { config } from "../paths.mjs";
 import { load, findById } from "../store.mjs";
 import { locations, locationById, norm } from "../places.mjs";
 import { lintCopy } from "../guardrails.mjs";
+import { style, isPhotoreal } from "./prompts.mjs";
 
 export const TYPES = ["editorial", "illustration", "background", "infographic", "carousel", "real_work"];
 export const CHANNELS = ["instagram", "facebook", "gbp", "web"];
@@ -29,6 +30,7 @@ export function normalizeBrief(raw, { assets = load("assets"), jobs = load("jobs
     use_real_work: raw.use_real_work === true,
     points: raw.points || [],
     slides: raw.slides || null,
+    elements: [...(raw.elements || [])],
     tag: raw.tag || "",
     template: raw.template || null,
     style_notes: raw.style_notes || "",
@@ -43,6 +45,12 @@ export function normalizeBrief(raw, { assets = load("assets"), jobs = load("jobs
   if (!RATIOS.includes(b.aspect_ratio)) problems.push(`aspect_ratio debe ser uno de ${RATIOS.join(", ")}`);
   if (!b.headline) problems.push("headline obligatorio");
   if (!["cheap", "low", "medium", "high"].includes(b.quality) && b.quality !== "auto") problems.push("quality: low|medium|high|auto");
+  // Elementos editoriales (herramientas, manos, siluetas, maquinaria): solo en ilustracion; en fotorrealismo se podria confundir con un trabajo real.
+  const known = Object.keys(style().elements);
+  for (const e of b.elements) {
+    if (!known.includes(e)) problems.push(`elements: "${e}" no existe (${known.join(", ")})`);
+    else if (e !== "vegetacion" && b.type && b.type !== "real_work" && isPhotoreal(b.type)) problems.push(`elements: "${e}" solo en ilustracion (type illustration/infographic/carousel), no en fotorrealismo`);
+  }
   b.variants = Math.max(1, Math.min(Number(b.variants) || 1, cfg.imageEngine.defaults.maxVariants));
 
   // Material de entrada: foto real solo con use_real_work; para generar solo material de marca/grafico/generado.

@@ -111,14 +111,24 @@ export async function edit({ prompt, images, mask, size, quality = "medium", n =
   return { images: decode(data), model };
 }
 
-// Critico visual opcional (OPENAI_VISION_MODEL). Devuelve { score, flags, notes } o null si no esta configurado.
+// Critico visual (OPENAI_VISION_MODEL). Devuelve la rubrica normalizada o null si no hay modelo de vision configurado.
 export async function critique(buf, criteriaPrompt, { fetchImpl = fetch, env = process.env, wait } = {}) {
   const { key, visionModel } = readEnv(env);
   if (!visionModel) return null;
-  const body = { model: visionModel, input: [{ role: "user", content: [{ type: "input_text", text: criteriaPrompt }, { type: "input_image", image_url: `data:image/png;base64,${buf.toString("base64")}` }] }] };
+  const mime = buf[0] === 0xff ? "image/jpeg" : "image/png";
+  const body = { model: visionModel, input: [{ role: "user", content: [{ type: "input_text", text: criteriaPrompt }, { type: "input_image", image_url: `data:${mime};base64,${buf.toString("base64")}` }] }] };
   const data = await call(`${API}/responses`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }, { fetchImpl, key, wait });
   const text = data.output_text || (data.output || []).flatMap((o) => o.content || []).map((c) => c.text || "").join("");
   const m = text.match(/\{[\s\S]*\}/);
-  if (!m) return null;
-  try { const j = JSON.parse(m[0]); return { score: Number(j.score) || 0, flags: Array.isArray(j.flags) ? j.flags : [], notes: String(j.notes || "") }; } catch { return null; }
+  if (!m) return { error: "respuesta del critico sin JSON" };
+  try {
+    const j = JSON.parse(m[0]);
+    const n = (v) => (Number.isFinite(Number(v)) ? Number(v) : null);
+    return {
+      model: visionModel, score: n(j.score) ?? 0, aiLook: n(j.ai_look), brandFit: n(j.brand_fit), commercialAppeal: n(j.commercial_appeal),
+      visualErrors: Array.isArray(j.visual_errors) ? j.visual_errors.map(String) : [], compositionBreathes: j.composition_breathes !== false,
+      textPlacementOk: j.text_placement_ok === undefined ? null : j.text_placement_ok !== false, mobileLegible: j.mobile_legible === undefined ? null : j.mobile_legible !== false,
+      publishable: j.publishable === true, flags: Array.isArray(j.flags) ? j.flags.map(String) : [], notes: String(j.notes || "")
+    };
+  } catch { return { error: "JSON del critico no valido" }; }
 }

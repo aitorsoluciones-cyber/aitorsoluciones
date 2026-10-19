@@ -1,22 +1,41 @@
 {
-  "_comment": "Biblia visual del motor de imagen. Los prompts se construyen SIEMPRE desde aqui: estilo base + escena por tipo + restricciones. Nunca se pide texto, logotipo ni marcas al modelo: eso se compone despues con codigo.",
+  "_comment": "Biblia visual del motor de imagen. Los prompts se construyen SIEMPRE desde aqui: estilo base + escena por tipo + elementos permitidos + restricciones. Nunca se pide texto, logotipo ni marcas al modelo: eso se compone despues con codigo.",
   "base": "Fotografia editorial documental realista, luz natural mediterranea suave (Terres de l'Ebre, costa de Tarragona), colores naturales y contenidos (verde olivo, tierra, cal blanca, cielo claro), grano fino natural, profundidad de campo creible, composicion sencilla y limpia con zonas despejadas para colocar texto despues.",
-  "constraints": [
+  "baseIllustrated": "Ilustracion editorial de revista, claramente ilustrada (no fotografia): trazo limpio, formas simplificadas, paleta reducida (azul marino profundo, naranja tierra, crema y verdes apagados), composicion sencilla con zonas despejadas para colocar texto despues.",
+  "photoreal": ["editorial", "background"],
+  "constraintsAlways": [
     "sin texto, sin letras, sin numeros, sin carteles, sin rotulos",
     "sin logotipos, sin marcas, sin matriculas, sin sellos",
-    "sin personas en primer plano ni rostros visibles",
-    "sin herramientas ni maquinaria visibles",
+    "sin personas presentadas como clientes ni como operarios concretos; nadie que pueda pasar por Aitor",
+    "sin trabajos ni resultados inventados: no es un antes/despues ni una obra real",
+    "maquinaria y herramientas plausibles y mecanicamente coherentes; si no se pueden dibujar bien, no aparecen",
     "vegetacion botanicamente creible, plantas y arboles propios del Mediterraneo (olivo, algarrobo, pino carrasco, romero, lavanda, aloe)",
+    "saturacion moderada, sin neones, sin degradados de moda, sin estetica corporativa ni tecnologica"
+  ],
+  "constraintsPhotoreal": [
+    "sin personas ni rostros visibles ni manos: en fotorrealismo no se representan personas",
+    "sin herramientas ni maquinaria visibles",
     "paisaje cotidiano y verosimil, nada de postal perfecta ni escenario de videojuego",
-    "saturacion moderada, sin neones, sin degradados de moda, sin estetica corporativa ni tecnologica",
     "no parecer una imagen generada por IA: sin piel plastica, sin simetria perfecta, sin brillo artificial"
   ],
+  "constraintsIllustrated": [
+    "figuras humanas solo como siluetas o manos sin rasgos, nunca rostros",
+    "herramientas y maquinaria simplificadas y con proporciones reales (desbrozadora, tijeras de podar, cortacesped, carretilla)",
+    "que se vea de inmediato que es una ilustracion, sin fotorrealismo"
+  ],
+  "elements": {
+    "herramientas": "herramientas de jardineria representadas de forma editorial y simplificada (tijeras de podar, rastrillo, desbrozadora)",
+    "manos": "manos sin rasgos trabajando la planta o la herramienta (solo en ilustracion)",
+    "siluetas": "siluetas de una persona trabajando, sin rostro ni rasgos identificables (solo en ilustracion)",
+    "maquinaria": "maquinaria simplificada y verosimil (cortacesped, desbrozadora, carretilla)",
+    "vegetacion": "elementos vegetales mediterraneos en primer plano"
+  },
   "types": {
     "editorial": "Escena exterior de una vivienda o finca mediterranea bien cuidada: jardin ordenado, caminos despejados, setos recortados, olivos y plantas autoctonas, tranquilidad.",
-    "illustration": "Ilustracion editorial plana, trazo limpio y paleta reducida (azul marino profundo, naranja tierra, crema y verdes apagados), motivos de jardineria y casa mediterranea, aspecto de ilustracion de revista, no de icono tecnologico.",
+    "illustration": "Escena de jardineria o mantenimiento de una finca mediterranea ilustrada con motivos de jardin, casa y olivos; puede explicar el servicio con herramientas, manos o siluetas editoriales.",
     "background": "Fondo suave y ligeramente desenfocado de jardin mediterraneo al atardecer o a media manana, tonos tierra y verde, zona central tranquila para texto.",
     "infographic": "Fondo ilustrado discreto de linea fina botanica (hojas de olivo, ramas, romero) sobre color liso, mucho espacio vacio, sin elementos que compitan con el texto.",
-    "carousel": "Serie coherente de escenas de jardin y exterior mediterraneo con la misma luz y paleta en cada imagen."
+    "carousel": "Serie coherente de escenas ilustradas de jardin y exterior mediterraneo con la misma paleta en cada imagen."
   },
   "variantHints": [
     "plano general a la altura de los ojos, luz de media manana",
@@ -24,14 +43,15 @@
     "plano detalle con primer plano de plantas y fondo desenfocado de la vivienda"
   ],
   "rejectCriteria": [
-    "personas deformadas",
-    "herramientas irreales",
+    "personas deformadas o con rasgos de persona real",
+    "herramientas o maquinaria irreales",
     "paisajes demasiado artificiales",
     "vegetacion imposible",
     "logotipos inventados",
     "texto defectuoso",
     "estetica de IA evidente",
     "exceso de saturacion",
-    "look corporativo o tecnologico"
+    "look corporativo o tecnologico",
+    "podria confundirse con un trabajo real"
   ]
 }

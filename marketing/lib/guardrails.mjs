@@ -60,10 +60,13 @@ export function lintPiece(piece, { assets = load("assets"), jobs = load("jobs") 
       const a = findById(assets, id);
       if (a && a.origin === "real") problems.push(`pieza ${piece.kind} con foto real ${id}: solo graficos o imagenes generadas (no se presentan fotos como trabajos)`);
     }
-    // Transparencia: toda pieza con imagen generada por IA lo dice en cada canal.
-    if (ids.some((id) => findById(assets, id)?.origin === "generated")) {
-      const note = config().imageEngine?.disclosure?.generated;
-      for (const ch of piece.channels || []) if (note && !(piece.copy?.captions?.[ch] || "").includes(note)) problems.push(`${ch}: falta la etiqueta de imagen generada ("${note}")`);
+    // Transparencia sin deteriorar el marketing: solo la imagen generada que puede parecer una fotografia lleva etiqueta DENTRO de la imagen.
+    // Automatizacion completa: la imagen generada debe haber pasado el critico visual (o la aprobacion humana).
+    for (const id of ids) {
+      const a = findById(assets, id);
+      if (!a?.aiGenerated) continue;
+      if (a.disclosure && !a.labelApplied) problems.push(`el activo ${id} necesita la etiqueta "${a.disclosure}" dentro de la imagen`);
+      if (config().imageEngine?.critic?.requireForAuto !== false && a.autoPublish === false) problems.push(`el activo ${id} no paso el critico visual: requiere aprobacion humana (mk visual approve ${id})`);
     }
     if (piece.copy?.zones) allowed.push(...piece.copy.zones);
   }

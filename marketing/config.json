@@ -262,8 +262,17 @@
       "minContrast": 28,
       "minScore": 60
     },
+    "critic": {
+      "_comment": "Critico visual (OPENAI_VISION_MODEL). Se ejecuta sobre el fondo y sobre la pieza ya compuesta. Sin critico la pieza queda con autoPublish:false (solo revision humana).",
+      "requireForAuto": true,
+      "minScore": 70,
+      "maxAiLook": 6,
+      "costUsdPerCall": 0.003
+    },
     "disclosure": {
-      "generated": "Imagen ilustrativa creada con IA."
+      "_comment": "Transparencia sin deteriorar el marketing: foto real y composicion/ilustracion evidente no llevan etiqueta; la imagen generada que pueda confundirse con una fotografia lleva 'Ilustracion' discreta dentro de la imagen. Siempre se registra aiGenerated, modelo, prompt y fecha.",
+      "label": "Ilustración",
+      "extended": "Ampliada con IA"
     }
   }
 }

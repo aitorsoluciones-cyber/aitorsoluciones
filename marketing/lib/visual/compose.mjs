@@ -54,6 +54,15 @@ export async function applyLogo(buf, { width, height, format = "feed" } = {}) {
   return sharp(buf).composite([layer(plate.buf, padX, height - logoZone + (logoZone - plate.h) / 2 - (story ? 120 : 8))]).toBuffer();
 }
 
+// Etiqueta de transparencia discreta (p. ej. "Ilustración") en la esquina inferior derecha, fuera de la zona del logotipo y de la interfaz de Stories.
+export async function applyDisclosureLabel(buf, { width, height, label, format = "feed" } = {}) {
+  if (!label) return buf;
+  const size = Math.round(width * 0.022), w = Math.round(label.length * size * 0.62 + size * 1.6), h = Math.round(size * 1.9);
+  const x = width - w - Math.round(width * 0.04), y = height - h - (format === "story" ? 270 : 34);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${Math.round(h / 2)}" fill="#0b1b33" fill-opacity="0.55"/><text x="${x + w / 2}" y="${y + h / 2 + size * 0.35}" text-anchor="middle" font-family="${FONT}" font-size="${size}" font-weight="600" fill="#ffffff" fill-opacity="0.92">${esc(label)}</text></svg>`;
+  return sharp(buf).composite([layer(Buffer.from(svg), 0, 0)]).toBuffer();
+}
+
 // Pieza final: fondo + velo + texto + logotipo en el formato dado. format: feed | story | gbp | web
 export async function composeFinal(background, brief, format = "feed") {
   const [w, h] = config().imageEngine.targets[format];
@@ -61,6 +70,7 @@ export async function composeFinal(background, brief, format = "feed") {
   img = await applyBrandOverlay(img, { width: w, height: h, mode: format === "story" ? "both" : "bottom" });
   img = await applyText(img, { width: w, height: h, headline: brief.headline, cta: brief.cta, location: brief.location, format });
   img = await applyLogo(img, { width: w, height: h, format });
+  img = await applyDisclosureLabel(img, { width: w, height: h, label: brief.label, format });
   return img;
 }
 

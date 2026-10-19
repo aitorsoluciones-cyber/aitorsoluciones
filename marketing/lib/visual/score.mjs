@@ -56,9 +56,26 @@ export function scoreMetrics(mt) {
   return { score: Math.max(0, Math.round(score)), reasons };
 }
 
-// opts: { width, height, critic: { fetchImpl, env } | null }. ok = sin rechazos duros ni flags del critico y score >= minimo.
+// Veredicto del critico segun la rubrica: aprueba solo si es publicable, puntua alto y no parece IA ni tiene errores.
+export function criticVerdict(c, stage) {
+  const k = config().imageEngine.critic;
+  const reasons = [];
+  if (!c || c.error) return { reasons, pass: null };
+  if (c.score < k.minScore) reasons.push(`critico: puntuacion ${c.score} < ${k.minScore}`);
+  if (c.aiLook != null && c.aiLook > k.maxAiLook) reasons.push(`critico: parece imagen de IA (${c.aiLook}/10)`);
+  if (c.visualErrors.length) reasons.push(...c.visualErrors.map((e) => `critico: ${e}`));
+  if (!c.compositionBreathes) reasons.push("critico: la composicion no respira");
+  if (stage === "final") { if (c.textPlacementOk === false) reasons.push("critico: texto mal situado"); if (c.mobileLegible === false) reasons.push("critico: no se entiende bien en movil"); }
+  reasons.push(...c.flags.map((f) => `critico: ${f}`));
+  if (!c.publishable && !reasons.length) reasons.push("critico: no la considera publicable");
+  return { reasons, pass: reasons.length === 0 };
+}
+
+// opts: { width, height, stage: "background"|"final", critic: { fetchImpl, env } | null }. ok = sin rechazos duros, sin reparos del critico y score >= minimo.
+// Con critico la nota final es la del critico (juicio visual) acotada por las metricas; sin critico la revision queda "programmatic-only".
 export async function validateImage(buf, opts = {}) {
   const t = config().imageEngine.thresholds;
+  const stage = opts.stage || "background";
   const reasons = [];
   const meta = await sharp(buf).metadata();
   if (opts.width && opts.height && (meta.width < opts.width * 0.5 || meta.height < opts.height * 0.5)) reasons.push(`resolucion insuficiente (${meta.width}x${meta.height})`);
@@ -68,12 +85,23 @@ export async function validateImage(buf, opts = {}) {
   reasons.push(...sc.reasons.filter((r) => r.startsWith("hard:")).map((r) => r.slice(5)));
   let criticResult = null;
   if (opts.critic) {
-    try { criticResult = await critique(buf, criticPrompt(style().rejectCriteria), opts.critic); } catch (e) { criticResult = { error: e.message }; }
+    try { criticResult = await critique(buf, criticPrompt(style().rejectCriteria, stage), opts.critic); } catch (e) { criticResult = { error: e.message }; }
     if (criticResult && !criticResult.error) {
       score = Math.round((score + criticResult.score) / 2);
-      reasons.push(...criticResult.flags);
+      reasons.push(...criticVerdict(criticResult, stage).reasons);
     }
   }
   if (score < t.minScore) reasons.push(`puntuacion ${score} < ${t.minScore}`);
-  return { ok: reasons.length === 0, score, reasons: [...new Set(reasons)], metrics: mt, soft: sc.reasons.filter((r) => !r.startsWith("hard:")), critic: criticResult, reviewed: criticResult && !criticResult.error ? "critic" : "programmatic-only" };
+  const reviewed = criticResult && !criticResult.error ? "critic" : "programmatic-only";
+  return { ok: reasons.length === 0, score, reasons: [...new Set(reasons)], metrics: mt, soft: sc.reasons.filter((r) => !r.startsWith("hard:")), critic: criticResult, reviewed, stage };
+}
+
+// Revision critica de la pieza ya compuesta (texto/CTA/logotipo por codigo). Sin critico devuelve null.
+export async function reviewFinal(buf, critic) {
+  if (!critic) return null;
+  let c;
+  try { c = await critique(buf, criticPrompt(style().rejectCriteria, "final"), critic); } catch (e) { c = { error: e.message }; }
+  if (!c || c.error) return { critic: c, reasons: [], pass: null, score: null };
+  const v = criticVerdict(c, "final");
+  return { critic: c, reasons: v.reasons.map((r) => "pieza final: " + r), pass: v.pass, score: c.score };
 }

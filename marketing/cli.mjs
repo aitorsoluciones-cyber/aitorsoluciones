@@ -15,7 +15,7 @@ import { addMetric, importCsv, recordResult, summary as reportSummary, METRICS }
 import { exportAll, drivePlan } from "./lib/exporter.mjs";
 import { proposeCase } from "./lib/web.mjs";
 import { runQa } from "./lib/qa.mjs";
-import { runBrief, runBriefQueue, loadEnvFile, attachToPiece, readEnv, estimateCost, spentThisMonth, BriefError } from "./lib/visual/index.mjs";
+import { runBrief, runBriefQueue, loadEnvFile, attachToPiece, approveAsset, runForPiece, readEnv, estimateCost, spentThisMonth, BriefError } from "./lib/visual/index.mjs";
 
 function parse(argv) {
   const pos = [], flags = {};
@@ -136,7 +136,7 @@ const COMMANDS = {
       if (r.dryRun) { out(`DRY-RUN brief ${r.briefId} · modo ${r.mode} · modelo ${r.model || "(sin definir)"} · tamano ${r.size ? r.size.join("x") : "-"} · ${r.plan?.variants ?? 0} variantes · coste estimado ${r.plan?.costUsd ?? 0} $`); (r.prompts || []).forEach((p, i) => out(`--- prompt variante ${i + 1} ---\n${p}`)); return; }
       out(`${r.ok ? "OK" : "FALLO"} brief ${r.briefId} · ${r.mode}${r.operation ? "/" + r.operation : ""} · coste ${r.costUsd ?? 0} $${r.error ? " · " + r.error : ""}`);
       for (const [k, v] of Object.entries(r.outputs || {})) out(`  ${k}: ${Array.isArray(v) ? v.length + " diapositivas" : v}`);
-      if (r.disclosure) out(`  transparencia: anade "${r.disclosure}" al texto`);
+      out(`  IA: ${r.aiGenerated ? "si" : "no"}${r.disclosure ? ` · etiqueta "${r.disclosure}" dentro de la imagen` : " · sin etiqueta"} · revision ${r.selected?.critic ? "critico visual (nota " + r.selected.critic.score + ")" : "solo programatica"} · autoPublish ${r.autoPublish}`);
       for (const d of r.discarded || []) out(`  descartada: ${path.basename(d.file)} (${d.reasons.join("; ")})`);
       if (!r.ok) process.exitCode = 2;
     };
@@ -148,11 +148,14 @@ const COMMANDS = {
         return out(`Gasto este mes: ${spentThisMonth().toFixed(2)} $ de ${b.monthlyBudgetUsd} $ (maximo por brief ${b.perBriefBudgetUsd} $)`);
       }
       if (sub === "cost" && !arg) { const b = config().imageEngine; return out(`Gasto este mes: ${spentThisMonth().toFixed(4)} $ de ${b.monthlyBudgetUsd} $ (maximo por brief ${b.perBriefBudgetUsd} $)`); }
-      if (sub === "run" || sub === "cost") return show(await runBrief(JSON.parse(fs.readFileSync(arg, "utf8")), { ...ctx, dryRun: ctx.dryRun || sub === "cost" }));
+      if (sub === "approve") { const a = approveAsset(arg, flags.by || "humano"); return out(`${a.id}: aprobado para autoPublish`); }
+      const over = { ...(flags.quality ? { quality: flags.quality } : {}), ...(flags.variants ? { variants: Number(flags.variants) } : {}) };
+      if (sub === "for-piece") return show(await runForPiece(arg, over, ctx));
+      if (sub === "run" || sub === "cost") return show(await runBrief({ ...JSON.parse(fs.readFileSync(arg, "utf8")), ...over }, { ...ctx, dryRun: ctx.dryRun || sub === "cost" }));
       if (sub === "batch") { for (const r of await runBriefQueue(ctx)) out(`${r.ok ? "OK   " : "FALLO"} ${r.brief} ${r.error || ""}`); return; }
       if (sub === "attach") { const p = attachToPiece(arg, pos.slice(2)); return out(`${p.id}: imagen adjunta (${Object.keys(p.visual.formats).join(", ") || "sin formatos"})`); }
       if (sub === "estimate") { const [w, h] = String(arg).split("x").map(Number); return out(`${estimateCost({ quality: flags.quality || "medium", width: w, height: h, n: Number(flags.n) || 1 })} $`); }
-      throw new Error("Uso: visual env | run <brief.json> [--dry-run] [--no-critic] | cost <brief.json> | batch | attach <pieceId> <assetId..> | estimate WxH --quality q");
+      throw new Error("Uso: visual env | run <brief.json> [--dry-run] [--no-critic] | cost <brief.json> | batch | attach <pieceId> <assetId..> | for-piece <pieceId> [--quality low --variants 2] | approve <assetId> | estimate WxH --quality q");
     } catch (e) {
       if (e instanceof BriefError) { out("ERROR " + e.message); process.exitCode = 1; } else throw e;
     }

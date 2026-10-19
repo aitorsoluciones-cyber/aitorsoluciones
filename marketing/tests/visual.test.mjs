@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
-import { tmpHome, fakePhoto, naturalImage, neonImage, mockOpenAI } from "./helpers.mjs";
+import { tmpHome, fakePhoto, naturalImage, neonImage, mockOpenAI, CRITIC_OK } from "./helpers.mjs";
 
 let dir;
 const ENV = { OPENAI_API_KEY: "sk-test-SECRET-123", OPENAI_IMAGE_MODEL: "gpt-image-test" };
@@ -73,7 +73,7 @@ test("generateEditorialImage: 2 variantes, puntua, selecciona la valida, guarda 
   assert.match(r.outputs.feed, /assets[\\/]marketing[\\/]2026[\\/]10[\\/]feed/);
   assert.ok(fs.existsSync(r.outputs.composed));
   assert.equal(r.discarded.length, 1); assert.match(r.discarded[0].file, /rejected/); assert.ok(r.discarded[0].reasons.some((x) => /saturacion|tecnologico/.test(x)));
-  assert.ok(r.disclosure.includes("IA"));
+  assert.equal(r.disclosure, "Ilustración"); assert.equal(r.disclosureClass, "D-photoreal"); assert.equal(r.aiGenerated, true); assert.equal(r.autoPublish, false);
   // registro por activo
   const assets = load("assets").filter((a) => a.briefId === r.briefId);
   const feed = assets.find((a) => a.format === "feed");
@@ -91,9 +91,9 @@ test("generateEditorialImage: 2 variantes, puntua, selecciona la valida, guarda 
 
 test("sin ninguna variante valida: falla, no compone y deja todo en rejected", async () => {
   const { generateEditorialImage } = await import("../lib/visual/index.mjs");
-  const mock = mockOpenAI({ generations: [await neonImage(), await neonImage()] });
+  const mock = mockOpenAI({ generations: [await neonImage(), await neonImage(), await neonImage()] });
   const r = await generateEditorialImage({ ...BRIEF, campaign: "solo_neon" }, { fetchImpl: mock.fetchImpl, env: ENV, now: NOW });
-  assert.equal(r.ok, false); assert.equal(r.discarded.length, 2); assert.deepEqual(r.outputs, {});
+  assert.equal(r.ok, false); assert.equal(r.discarded.length, 3, "2 pedidas + 1 extra dentro del limite"); assert.deepEqual(r.outputs, {});
 });
 
 test("dry-run: no llama a la API, devuelve prompts y coste estimado", async () => {
@@ -160,7 +160,7 @@ test("foto real + ampliar lienzo: el modelo solo rellena margenes; si toca la fo
   };
   const good = mockOpenAI({ edits: [fill(false)] });
   const r = await editRealWorkImage(brief, { fetchImpl: good.fetchImpl, env: ENV, now: NOW });
-  assert.equal(r.ok, true, JSON.stringify(r)); assert.ok(r.fidelity < 10); assert.equal(r.aiGenerated, true); assert.match(r.disclosure, /IA/);
+  assert.equal(r.ok, true, JSON.stringify(r)); assert.ok(r.fidelity < 10); assert.equal(r.aiGenerated, true); assert.equal(r.disclosure, "Ampliada con IA");
   assert.match(good.calls[0].url, /images\/edits/);
   const bad = mockOpenAI({ edits: [fill(true)] });
   const r2 = await editRealWorkImage({ ...brief, campaign: "ampliar2" }, { fetchImpl: bad.fetchImpl, env: ENV, now: NOW });
@@ -202,11 +202,19 @@ test("adjuntar a una pieza: solo imagen generada/grafica, con etiqueta de transp
   assert.throws(() => attachToPiece("p_work", [feedAsset.id]), /trabajo real/);
   assert.throws(() => attachToPiece("p_ev", ["realA"]), /foto real/);
   const p = attachToPiece("p_ev", [feedAsset.id]);
-  assert.match(p.copy.captions.facebook, /Imagen ilustrativa creada con IA\./);
-  assert.ok(p.copy.captions.instagram.indexOf("creada con IA") < p.copy.captions.instagram.indexOf("#AitorSoluciones"));
-  assert.deepEqual(lintPiece(load("pieces").find((x) => x.id === "p_ev"), { assets: load("assets"), jobs: load("jobs") }).filter((x) => /etiqueta/.test(x)), []);
-  const stripped = { ...p, copy: { ...p.copy, captions: { instagram: "sin etiqueta", facebook: "sin etiqueta" } } };
-  assert.ok(lintPiece(stripped, { assets: load("assets"), jobs: load("jobs") }).some((x) => /etiqueta de imagen generada/.test(x)));
+  // la transparencia va dentro de la imagen, no en el texto: el pie no se toca
+  assert.ok(!/creada con IA/.test(p.copy.captions.facebook));
+  assert.equal(p.visual.aiGenerated, true); assert.equal(p.visual.labelApplied, true); assert.deepEqual(p.visual.models, ["gpt-image-test"]);
+  const ctx = () => ({ assets: load("assets"), jobs: load("jobs") });
+  // sin critico visual la imagen no es autoPublish: exige aprobacion humana
+  assert.ok(lintPiece(load("pieces").find((x) => x.id === "p_ev"), ctx()).some((x) => /no paso el critico visual/.test(x)));
+  const { approveAsset } = await import("../lib/visual/index.mjs");
+  approveAsset(feedAsset.id, "aitor");
+  assert.deepEqual(lintPiece(load("pieces").find((x) => x.id === "p_ev"), ctx()).filter((x) => /etiqueta|critico/.test(x)), []);
+  // una imagen generada fotorrealista cuya etiqueta no se aplico es un error
+  const assets = load("assets"); assets.find((a) => a.id === feedAsset.id).labelApplied = false; save("assets", assets);
+  assert.ok(lintPiece(load("pieces").find((x) => x.id === "p_ev"), ctx()).some((x) => /necesita la etiqueta "Ilustración"/.test(x)));
+  assets.find((a) => a.id === feedAsset.id).labelApplied = true; save("assets", assets);
   const r = await renderPiece(load("pieces").find((x) => x.id === "p_ev"), { root: path.join(dir, "render-visual") });
   const feed = r.files.find((f) => f.format === "feed");
   assert.deepEqual([feed.width, feed.height], [1080, 1350]); assert.match(feed.file, /feed\.jpg$/);
@@ -228,4 +236,96 @@ test("cola de briefs (task runner): procesa, mueve a done/failed y la cola de In
   const q = await buildQueue({ today: "2026-10-19", ahead: 1 });
   const post = JSON.parse(fs.readFileSync(path.join(q[0].dir, "post.json"), "utf8"));
   assert.ok(post.files.every((f) => /\.jpg$/.test(f)), JSON.stringify(post.files));
+});
+
+// ---------- critico visual, transparencia y direccion visual ----------
+const VENV = { ...ENV, OPENAI_VISION_MODEL: "vision-test" };
+const bad = (extra = {}) => ({ ...CRITIC_OK, score: 45, publishable: false, ai_look: 8, visual_errors: ["manos deformes"], ...extra });
+
+test("critico visual: pasa el fondo y la pieza final; autoPublish true, notas guardadas y coste del critico en el ledger", async () => {
+  const { generateEditorialImage } = await import("../lib/visual/index.mjs");
+  const { load } = await import("../lib/store.mjs");
+  const mock = mockOpenAI({ generations: [await naturalImage(41), await naturalImage(42)] });
+  const r = await generateEditorialImage({ ...BRIEF, campaign: "critico_ok" }, { fetchImpl: mock.fetchImpl, env: VENV, now: NOW });
+  assert.equal(r.ok, true, JSON.stringify(r));
+  assert.equal(r.autoPublish, true); assert.equal(r.selected.reviewed, "critic"); assert.equal(r.selected.critic.model, "vision-test");
+  const crit = mock.calls.filter((c) => c.url.endsWith("/responses"));
+  assert.equal(crit.length, 4, "fondo + pieza final por variante");
+  const bodies = crit.map((c) => JSON.parse(c.init.body));
+  assert.ok(bodies.every((b) => b.model === "vision-test"));
+  assert.ok(bodies.some((b) => /pieza FINAL ya compuesta/.test(b.input[0].content[0].text)), "revisa la pieza compuesta");
+  assert.ok(bodies.some((b) => /solo el fondo generado/.test(b.input[0].content[0].text)));
+  assert.ok(bodies.every((b) => b.input[0].content[1].image_url.startsWith("data:image/")));
+  const feed = load("assets").find((a) => a.briefId === r.briefId && a.format === "feed");
+  assert.equal(feed.autoPublish, true); assert.equal(feed.critic.score, 90); assert.equal(feed.aiGenerated, true); assert.equal(feed.labelApplied, true);
+  assert.ok(load("ledger").some((l) => l.op === "critic-final" && l.briefId === r.briefId));
+});
+
+test("critico visual: si rechaza una variante la descarta con los motivos y elige la otra", async () => {
+  const { generateEditorialImage } = await import("../lib/visual/index.mjs");
+  const mock = mockOpenAI({ generations: [await naturalImage(51), await naturalImage(52)], responses: [bad(), CRITIC_OK, CRITIC_OK] });
+  const r = await generateEditorialImage({ ...BRIEF, campaign: "critico_descarta" }, { fetchImpl: mock.fetchImpl, env: VENV, now: NOW });
+  assert.equal(r.ok, true, JSON.stringify(r));
+  assert.equal(r.discarded.length, 1);
+  assert.ok(r.discarded[0].reasons.some((x) => /manos deformes/.test(x)) && r.discarded[0].reasons.some((x) => /parece imagen de IA/.test(x)));
+  assert.match(r.discarded[0].file, /rejected/);
+});
+
+test("critico visual: si fallan las 2 variantes genera una tercera dentro del limite y, si tampoco, falla sin componer", async () => {
+  const { generateEditorialImage } = await import("../lib/visual/index.mjs");
+  const m1 = mockOpenAI({ generations: [await naturalImage(61), await naturalImage(62), await naturalImage(63)], responses: [bad(), bad(), CRITIC_OK, CRITIC_OK] });
+  const r1 = await generateEditorialImage({ ...BRIEF, campaign: "critico_extra" }, { fetchImpl: m1.fetchImpl, env: VENV, now: NOW });
+  assert.equal(r1.ok, true, JSON.stringify(r1));
+  assert.equal(m1.calls.filter((c) => c.url.endsWith("/images/generations")).length, 3);
+  assert.equal(r1.discarded.length, 2);
+  const m2 = mockOpenAI({ generations: [await naturalImage(64), await naturalImage(65), await naturalImage(66), await naturalImage(67)], responses: [bad(), bad(), bad()] });
+  const r2 = await generateEditorialImage({ ...BRIEF, campaign: "critico_agota" }, { fetchImpl: m2.fetchImpl, env: VENV, now: NOW });
+  assert.equal(r2.ok, false); assert.equal(m2.calls.filter((c) => c.url.endsWith("/images/generations")).length, 3, "nunca mas del maximo de variantes"); assert.deepEqual(r2.outputs, {});
+});
+
+test("critico visual: texto mal situado en la pieza final es motivo de rechazo", async () => {
+  const { generateEditorialImage } = await import("../lib/visual/index.mjs");
+  const mock = mockOpenAI({ generations: [await naturalImage(71), await naturalImage(72)], responses: [CRITIC_OK, { ...CRITIC_OK, text_placement_ok: false, mobile_legible: false }, CRITIC_OK, CRITIC_OK] });
+  const r = await generateEditorialImage({ ...BRIEF, campaign: "critico_texto" }, { fetchImpl: mock.fetchImpl, env: VENV, now: NOW });
+  assert.equal(r.ok, true);
+  assert.ok(r.discarded[0].reasons.some((x) => /texto mal situado/.test(x)) && r.discarded[0].reasons.some((x) => /movil/.test(x)));
+});
+
+test("transparencia: ilustracion e infografia sin etiqueta, fotorrealismo con Ilustración, foto real sin IA; siempre se registra aiGenerated, modelo, prompt y fecha", async () => {
+  const { generateIllustration } = await import("../lib/visual/index.mjs");
+  const { disclosureFor } = await import("../lib/visual/prompts.mjs");
+  const { load } = await import("../lib/store.mjs");
+  assert.deepEqual(disclosureFor({ type: "illustration" }, "generate"), { aiGenerated: true, label: null, class: "C-illustration" });
+  assert.equal(disclosureFor({ type: "editorial" }, "generate").label, "Ilustración");
+  assert.equal(disclosureFor({ type: "background" }, "generate").label, "Ilustración");
+  assert.equal(disclosureFor({ type: "real_work", edit: { operation: "compose" } }, "real").aiGenerated, false);
+  const r = await generateIllustration({ ...BRIEF, campaign: "ilustracion_sin_etiqueta", type: "illustration", elements: ["herramientas", "siluetas"] }, { fetchImpl: mockOpenAI({ generations: [await naturalImage(81), await naturalImage(82)] }).fetchImpl, env: ENV, now: NOW });
+  assert.equal(r.ok, true, JSON.stringify(r)); assert.equal(r.disclosure, null); assert.equal(r.aiGenerated, true); assert.equal(r.disclosureClass, "C-illustration");
+  const a = load("assets").find((x) => x.briefId === r.briefId && x.format === "feed");
+  assert.equal(a.aiGenerated, true); assert.equal(a.labelApplied, false); assert.equal(a.model, "gpt-image-test"); assert.ok(a.prompt && a.timestamp);
+  assert.match(a.prompt, /siluetas de una persona trabajando, sin rostro/); assert.match(a.prompt, /Ilustracion editorial de revista/);
+});
+
+test("direccion visual: herramientas, manos y siluetas solo en ilustracion; nunca personas ni trabajos falsos en el prompt fotorrealista", async () => {
+  const { normalizeBrief } = await import("../lib/visual/brief.mjs");
+  const { buildPrompt } = await import("../lib/visual/prompts.mjs");
+  const probs = (patch) => normalizeBrief({ ...BRIEF, ...patch }).problems.join("|");
+  assert.match(probs({ elements: ["manos"] }), /solo en ilustracion/);
+  assert.match(probs({ elements: ["dragon"] }), /no existe/);
+  assert.deepEqual(normalizeBrief({ ...BRIEF, type: "illustration", elements: ["herramientas", "manos", "siluetas", "maquinaria", "vegetacion"] }).problems, []);
+  const photo = buildPrompt({ ...BRIEF, type: "editorial", elements: [] }, 0), illus = buildPrompt({ ...BRIEF, type: "illustration", elements: ["herramientas"] }, 0);
+  assert.match(photo, /sin personas ni rostros visibles ni manos/); assert.match(photo, /no es un antes\/despues ni una obra real/);
+  assert.match(illus, /tijeras de podar/); assert.match(illus, /nadie que pueda pasar por Aitor/); assert.match(illus, /que se vea de inmediato que es una ilustracion/);
+  assert.ok(!/sin herramientas ni maquinaria visibles/.test(illus));
+});
+
+test("etiqueta discreta: Ilustración se dibuja en la esquina inferior derecha y la pieza sin etiqueta no la lleva", async () => {
+  const { composeFinal } = await import("../lib/visual/compose.mjs");
+  const bg = await naturalImage(91);
+  const withL = await sharp(await composeFinal(bg, { ...BRIEF, label: "Ilustración" }, "feed")).raw().toBuffer({ resolveWithObject: true });
+  const without = await sharp(await composeFinal(bg, { ...BRIEF }, "feed")).raw().toBuffer({ resolveWithObject: true });
+  const { width, height, channels } = withL.info;
+  let diff = 0, outside = 0;
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) { const i = (y * width + x) * channels; const d = Math.abs(withL.data[i] - without.data[i]) + Math.abs(withL.data[i + 1] - without.data[i + 1]); if (d > 12) { if (x > width * 0.6 && y > height * 0.9) diff++; else outside++; } }
+  assert.ok(diff > 150, "etiqueta visible abajo a la derecha"); assert.equal(outside, 0, "no toca nada mas");
 });
