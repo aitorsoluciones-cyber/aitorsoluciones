@@ -147,6 +147,7 @@ const COMMANDS = {
         const b = config().imageEngine;
         return out(`Gasto este mes: ${spentThisMonth().toFixed(2)} $ de ${b.monthlyBudgetUsd} $ (maximo por brief ${b.perBriefBudgetUsd} $)`);
       }
+      if (sub === "cost" && !arg) { const b = config().imageEngine; return out(`Gasto este mes: ${spentThisMonth().toFixed(4)} $ de ${b.monthlyBudgetUsd} $ (maximo por brief ${b.perBriefBudgetUsd} $)`); }
       if (sub === "run" || sub === "cost") return show(await runBrief(JSON.parse(fs.readFileSync(arg, "utf8")), { ...ctx, dryRun: ctx.dryRun || sub === "cost" }));
       if (sub === "batch") { for (const r of await runBriefQueue(ctx)) out(`${r.ok ? "OK   " : "FALLO"} ${r.brief} ${r.error || ""}`); return; }
       if (sub === "attach") { const p = attachToPiece(arg, pos.slice(2)); return out(`${p.id}: imagen adjunta (${Object.keys(p.visual.formats).join(", ") || "sin formatos"})`); }
