@@ -179,6 +179,23 @@
       "Les Cases d'Alcanar"
     ]
   },
+  "media": {
+    "_comment": "URLs HTTPS publicas de las piezas READY_TO_PUBLISH (Instagram y Google Business las exigen). Rama huerfana 'media' del mismo repositorio (sin historial comun con main, no entra en el build de la web), servida por raw.githubusercontent.com. Alternativa: provider 'netlify' si el sitio tiene activados los branch deploys de 'media'. Se purga solo (retentionDays).",
+    "provider": "github-raw",
+    "branch": "media",
+    "netlifySite": "aitorsoluciones",
+    "prefix": "m",
+    "retentionDays": 30
+  },
+  "work": {
+    "_comment": "Work/ChatGPT consume la cola con sus conectores (escritura ya disponible) y confirma con `mk work done`. Los ids de cuenta viven en <estado>/config.local.json (work.accounts), no en git.",
+    "connectors": {
+      "facebook": { "app": "Facebook organico", "single": "create_photo_post" },
+      "instagram": { "app": "Instagram", "single": "create_image_post", "carousel": "create_carousel_post", "story": "create_story" },
+      "gbp": { "app": "Google Business Profile", "single": "create_local_post" }
+    },
+    "aheadDays": 0
+  },
   "imageEngine": {
     "_comment": "Motor visual (OpenAI Images API). Modelo y clave SOLO por variables de entorno: OPENAI_IMAGE_MODEL, OPENAI_API_KEY (opcional OPENAI_VISION_MODEL para el critico).",
     "defaults": {
@@ -261,6 +278,14 @@
       "maxTechHueShare": 0.18,
       "minContrast": 28,
       "minScore": 60
+    },
+    "auto": {
+      "_comment": "Generacion automatica de imagen para piezas evergreen proximas (lo lanza `mk auto run`). Limitada por maxPerRun y por los presupuestos.",
+      "enabled": true,
+      "aheadDays": 7,
+      "maxPerRun": 2,
+      "quality": "medium",
+      "variants": 2
     },
     "critic": {
       "_comment": "Critico visual (OPENAI_VISION_MODEL). Se ejecuta sobre el fondo y sobre la pieza ya compuesta. Sin critico la pieza queda con autoPublish:false (solo revision humana).",

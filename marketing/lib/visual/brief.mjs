@@ -23,6 +23,7 @@ export function normalizeBrief(raw, { assets = load("assets"), jobs = load("jobs
     type: raw.type,
     source_images: [...(raw.source_images || [])],
     channel: raw.channel,
+    channels: [...new Set([raw.channel, ...(raw.channels || [])].filter(Boolean))],
     aspect_ratio: raw.aspect_ratio,
     headline: String(raw.headline || "").trim(),
     cta: String(raw.cta || cfg.brand.cta).trim(),
@@ -42,6 +43,7 @@ export function normalizeBrief(raw, { assets = load("assets"), jobs = load("jobs
   if (b.use_real_work) b.type = "real_work";
   else if (!TYPES.includes(b.type) || b.type === "real_work") problems.push(`type debe ser uno de ${TYPES.filter((t) => t !== "real_work").join(", ")} (o use_real_work:true)`);
   if (!CHANNELS.includes(b.channel)) problems.push(`channel debe ser uno de ${CHANNELS.join(", ")}`);
+  for (const c of b.channels) if (!CHANNELS.includes(c)) problems.push(`channels: ${c} no es un canal (${CHANNELS.join(", ")})`);
   if (!RATIOS.includes(b.aspect_ratio)) problems.push(`aspect_ratio debe ser uno de ${RATIOS.join(", ")}`);
   if (!b.headline) problems.push("headline obligatorio");
   if (!["cheap", "low", "medium", "high"].includes(b.quality) && b.quality !== "auto") problems.push("quality: low|medium|high|auto");

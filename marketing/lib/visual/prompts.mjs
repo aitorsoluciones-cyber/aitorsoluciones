@@ -66,6 +66,7 @@ Revisa la imagen adjunta (${stage === "final" ? "es la pieza FINAL ya compuesta:
 Responde SOLO con JSON con esta forma exacta:
 {"score": 0-100, "ai_look": 0-10, "brand_fit": 0-10, "commercial_appeal": 0-10, "visual_errors": [lista de errores concretos, vacia si no hay], "composition_breathes": true|false, ${stage === "final" ? '"text_placement_ok": true|false, "mobile_legible": true|false, ' : ""}"publishable": true|false, "flags": [subconjunto de: ${criteria.map((c) => `"${c}"`).join(", ")}], "notes": "una frase"}
 ai_look: 0 = parece fotografia o ilustracion de oficio, 10 = tipica imagen de IA (piel o plantas plasticas, simetria rara, brillos, objetos fundidos).
-visual_errors: deformaciones, objetos imposibles, texto basura, vegetacion imposible, maquinaria incoherente.
-${stage === "final" ? "text_placement_ok: el texto no tapa lo importante, no se corta, tiene contraste y el CTA y el logotipo estan en zonas seguras. mobile_legible: se entiende de un vistazo en un movil." : ""}
+visual_errors: SOLO errores claros y visibles a tamano movil (deformaciones, objetos imposibles, texto basura, vegetacion imposible, maquinaria incoherente). No listes matices, dudas ni detalles que solo se ven ampliando; si dudas, la lista va vacia.
+Es una imagen de ambiente ilustrativa y se etiquetara si procede: que parezca una fotografia verosimil NO es un fallo. Marca 'presenta un trabajo... como si fuera real' solo si muestra una intervencion o resultado concreto de la empresa (antes/despues, parcela recien desbrozada, operarios o maquinaria trabajando).
+${stage === "final" ? "text_placement_ok: false SOLO si el texto se corta, tapa algo importante, es ilegible o el CTA/logotipo caen fuera de zona segura; el espaciado normal entre titular y CTA es correcto. mobile_legible: se entiende de un vistazo en un movil." : ""}
 publishable: true solo si la publicarias hoy sin retocar. Marca flags solo si lo ves claramente.`;

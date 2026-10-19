@@ -177,6 +177,7 @@ export const upscaleFactor = (width, height, size) => Math.max(SIZES[size][0] / 
 const write = (dir, name, buf) => { const f = path.join(dir, name); ensureDir(path.dirname(f)); fs.writeFileSync(f, buf); return f; };
 
 export async function renderPiece(piece, { assets = load("assets"), jobs = load("jobs"), root = outDir(piece.id) } = {}) {
+  fs.rmSync(root, { recursive: true, force: true }); // sin restos de renders anteriores (otra extension o imagen)
   const files = [];
   const add = async (name, buf, format) => { const f = write(root, name, buf); const m = await sharp(f).metadata(); files.push({ file: f, format, width: m.width, height: m.height }); };
   const warnings = [];
@@ -209,6 +210,8 @@ export async function renderPiece(piece, { assets = load("assets"), jobs = load(
       const va = findById(assets, id);
       if (va && wants(fmt) && va.sourcePath && fs.existsSync(va.sourcePath)) { await add(fmt + path.extname(va.sourcePath), fs.readFileSync(va.sourcePath), fmt); taken.add(fmt); }
     }
+    const vc = (piece.visual?.carousel || []).map((id) => findById(assets, id)).filter((a) => a?.sourcePath && fs.existsSync(a.sourcePath));
+    if (vc.length && wants("carousel")) { for (const [i, a] of vc.entries()) await add(`carousel/${String(i + 1).padStart(2, "0")}${path.extname(a.sourcePath)}`, fs.readFileSync(a.sourcePath), "carousel"); taken.add("carousel"); }
     const wantsG = (fmt) => wants(fmt) && !taken.has(fmt) && !(fmt === "carousel" && taken.has("feed"));
     const tpl = piece.template || "navy";
     const slides = c.slides || [];
@@ -221,10 +224,10 @@ export async function renderPiece(piece, { assets = load("assets"), jobs = load(
       if (wantsG("gbp")) await add("gbp.png", await renderGraphic({ ...common, size: "gbp" }), "gbp");
     } else {
       const all = [{ kind: "cover", title: c.headline, tag: c.tag }, ...slides.map((s) => ({ kind: "point", tag: c.tag, title: s.t, body: s.b })), { kind: "cta", title: "¿Hablamos?", tag: "" }];
-      if (wantsG("carousel") || wantsG("feed")) for (let i = 0; i < all.length; i++) await add(`carousel/${String(i + 1).padStart(2, "0")}.png`, await renderGraphic({ template: tpl, ...all[i], index: i + 1, total: all.length, size: "feed" }), "carousel");
+      if (wantsG("carousel") || (wantsG("feed") && !taken.has("carousel"))) for (let i = 0; i < all.length; i++) await add(`carousel/${String(i + 1).padStart(2, "0")}.png`, await renderGraphic({ template: tpl, ...all[i], index: i + 1, total: all.length, size: "feed" }), "carousel");
       if (wantsG("story")) await add("story.png", await renderGraphic({ template: tpl, ...all[0], size: "story" }), "story");
       if (wantsG("gbp")) await add("gbp.png", await renderGraphic({ template: tpl, kind: "single", tag: c.tag, title: c.headline, body: slides.map((s) => s.t).join(" · "), size: "gbp" }), "gbp");
-      if (wantsG("feed")) await add("feed.png", fs.readFileSync(path.join(root, "carousel", "01.png")), "feed");
+      if (wantsG("feed")) { const first = files.find((x) => x.format === "carousel"); await add("feed" + path.extname(first.file), fs.readFileSync(first.file), "feed"); }
     }
   }
   return { files, warnings, dir: root };

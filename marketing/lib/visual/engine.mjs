@@ -111,7 +111,7 @@ async function deliver(brief0, bg, ctx, { mode = "generate", model, derivedFrom,
   const brief = { ...brief0, label: d.label };
   const extra = metaExtra(brief0, mode, { verdict: chosen?.verdict, final: chosen?.final, autoPublish: mode === "real" ? true : undefined });
   const root = outputRoot(ctx.now);
-  const channels = brief.channel === "instagram" ? ["instagram"] : [brief.channel];
+  const channels = brief.channels?.length ? brief.channels : [brief.channel];
   const finals = await resizeForChannels(bg, brief, channels);
   const outputs = {};
   const assetIds = [];

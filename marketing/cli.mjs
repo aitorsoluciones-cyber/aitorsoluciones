@@ -5,7 +5,10 @@ import path from "node:path";
 import { REPO, MK_DIR, config, home } from "./lib/paths.mjs";
 import { load, save } from "./lib/store.mjs";
 import { STATES } from "./lib/states.mjs";
-import { ingestDir, ingestManifest, importWebCases, linkOriginals } from "./lib/ingest.mjs";
+import { ingestDir, ingestManifest, importWebCases, linkOriginals, pendingDownloads, receiveFiles, itemsFromDir } from "./lib/ingest.mjs";
+import { publishMedia, pruneMedia, baseUrl, verifyUrl } from "./lib/media-host.mjs";
+import { workQueue, workDone, workFail } from "./lib/work.mjs";
+import { runAutomation } from "./lib/automation.mjs";
 import { listJobs, reviewJob, setJobStatus } from "./lib/jobs.mjs";
 import { loadBank, approveTopic, isApproved } from "./lib/evergreen.mjs";
 import { plan, bufferStatus, cancelPiece } from "./lib/planner.mjs";
@@ -96,7 +99,7 @@ const COMMANDS = {
   cancel({ pos }) { out(`${cancelPiece(pos[0]).id} cancelada; hueco y registro de uso liberados`); },
 
   async queue({ flags }) {
-    const q = await buildQueue({ today: today(flags), ahead: Number(flags.ahead) || 3, log: out });
+    const q = await buildQueue({ today: today(flags), ahead: Number(flags.ahead) || 3, rebuild: !!flags.rebuild, log: out });
     out(`En cola READY_TO_PUBLISH: ${q.length} publicaciones nuevas (${queueSummary().length} en total)`);
   },
 
@@ -185,6 +188,80 @@ const COMMANDS = {
   },
 
   // Rutina semanal: lunes/miercoles/viernes (ver config.cadence).
+  // URLs HTTPS publicas de la cola (Instagram y Google Business las exigen). Rama huerfana 'media' del repo; sin secretos.
+  async media({ pos, flags }) {
+    const [sub] = pos;
+    if (sub === "publish") {
+      const r = await publishMedia({ today: today(flags), ahead: flags.ahead !== undefined ? Number(flags.ahead) : 3, log: out, verify: !flags["no-verify"] });
+      out(`URLs publicas: ${r.published.length} piezas OK${r.failed.length ? ` · ${r.failed.length} CON ERROR` : ""} · base ${r.base || "-"}${r.commit ? " · commit " + r.commit : ""}`);
+      for (const p of r.published) out(`  ${p.name}\n    ${p.urls.files.join("\n    ")}`);
+      for (const x of r.failed) { out(`  ERROR ${x.name}: ${x.errors.map((e) => e.url + " -> " + e.error).join("; ")}`); process.exitCode = 1; }
+      return;
+    }
+    if (sub === "prune") { const r = pruneMedia({ today: today(flags), days: flags.days ? Number(flags.days) : undefined, squash: !!flags.squash, log: out }); return out(`Retiradas ${r.removed.length} piezas anteriores a ${r.cutoff}${flags.squash ? " (rama compactada)" : ""}`); }
+    if (sub === "url") return out(baseUrl());
+    throw new Error("Uso: media publish [--ahead N] [--no-verify] | prune [--days N] [--squash] | url");
+  },
+
+  // Interfaz de Work: lee la cola con sus conectores y confirma la publicacion.
+  work({ pos, flags }) {
+    const [sub] = pos;
+    if (!sub || sub === "next") {
+      const items = workQueue({ today: today(flags), ahead: flags.ahead !== undefined ? Number(flags.ahead) : undefined }).filter((i) => (flags.all ? true : i.ready || flags.blocked));
+      if (flags.human) { for (const i of items) out(`${i.scheduledFor} ${i.time || ""} ${i.channel.padEnd(9)} ${i.pieceId} ${i.ready ? "LISTA" : "BLOQUEADA: " + i.blockedBy.join("; ")}`); if (!items.length) out("Nada que publicar"); return; }
+      return out(JSON.stringify({ today: today(flags), items }, null, 2));
+    }
+    if (sub === "done") { const p = workDone(pos[1], pos[2], pos[3]); return out(`${p.id} ${pos[2]} publicada · estado pieza: ${p.status}`); }
+    if (sub === "fail") { workFail(pos[1], pos[2], pos.slice(3).join(" ")); return out("error registrado; la pieza sigue en READY_TO_PUBLISH"); }
+    throw new Error("Uso: work next [--human] [--all] [--ahead N] | done <pieceId> <canal> <url> | fail <pieceId> <canal> <motivo>");
+  },
+
+  // Drive -> pipeline sin descarga manual: Work descarga (raw/streaming) y entrega el fichero local.
+  async drive({ pos, flags }) {
+    const [sub, arg] = pos;
+    if (sub === "pending") { const p = pendingDownloads(); return out(flags.human ? p.map((x) => `${x.driveId} ${x.name} ${x.bytes || "?"} B`).join("\n") || "Nada pendiente de descargar" : JSON.stringify(p, null, 2)); }
+    if (sub === "receive") {
+      if (!arg) throw new Error("Uso: drive receive <fichero|carpeta> [--drive-id ID] [--name N] [--path \"00_NUEVOS_TRABAJOS/Trabajo/IMG.HEIC\"] [--map mapa.json] [--move]");
+      const full = path.resolve(arg);
+      const map = flags.map ? JSON.parse(fs.readFileSync(flags.map, "utf8")) : [];
+      const items = fs.statSync(full).isDirectory() ? itemsFromDir(full, map) : [{ file: full, driveId: flags["drive-id"], name: flags.name, path: flags.path, md5: flags.md5 }];
+      const r = await receiveFiles(items, { move: !!flags.move, log: out });
+      out(`Recibidos ${r.received} · enlazados ${r.attached} (nuevos registros ${r.created}) · duplicados ${r.duplicates.length} · errores ${r.errors.length}`);
+      for (const e of r.errors) { out(`  ERROR ${e.file}: ${e.error}`); process.exitCode = 1; }
+      return;
+    }
+    throw new Error("Uso: drive pending [--human] | receive <fichero|carpeta> [...]");
+  },
+
+  // Ciclo automatico (lo que lanzan las tareas programadas). No publica en plataformas.
+  async auto({ pos, flags }) {
+    const [sub = "run"] = pos;
+    if (sub !== "run") throw new Error("Uso: auto run [--quality low] [--no-visuals] [--no-media] [--prune] [--dry-run]");
+    const r = await runAutomation({ today: today(flags), quality: flags.quality, visuals: !flags["no-visuals"], media: !flags["no-media"], prune: !!flags.prune, dryRun: !!flags["dry-run"], log: out });
+    for (const w of r.warnings) out("aviso  " + w);
+    for (const e of r.errors) out("ERROR  " + e);
+    out(`Ciclo ${r.ok ? "OK" : "CON ERRORES"} · publicables por Work hoy: ${r.work.filter((x) => x.ready).length}`);
+    if (!r.ok) process.exitCode = 1;
+  },
+
+  // Prueba E2E: material/banco -> brief -> OpenAI Images -> seleccion -> composicion -> critico -> QA -> URL publica -> READY_TO_PUBLISH.
+  async e2e({ flags }) {
+    const t = today(flags);
+    plan({ today: t });
+    const pieces = load("pieces");
+    const piece = flags.piece ? pieces.find((p) => p.id === flags.piece) : pieces.filter((p) => p.status === "SCHEDULED" && p.kind === "evergreen" && !p.visual && p.channels.includes("instagram")).sort((a, b) => a.scheduledFor.localeCompare(b.scheduledFor))[0];
+    if (!piece) throw new Error("No hay pieza evergreen programada sin imagen");
+    const days = Math.max(0, Math.round((new Date(piece.scheduledFor) - new Date(t)) / 86400000));
+    out(`E2E con ${piece.id} (${piece.scheduledFor}, ${piece.channels.join("+")}) · tema ${piece.topicId}`);
+    const r = await runAutomation({ today: t, pieceId: piece.id, quality: flags.quality || "low", ahead: days, prune: false, log: out });
+    const after = load("pieces").find((p) => p.id === piece.id);
+    const work = r.work.filter((w) => w.pieceId === piece.id);
+    for (const w of r.warnings) out("aviso  " + w);
+    for (const e of r.errors) out("ERROR  " + e);
+    out(JSON.stringify({ piece: piece.id, visual: after.visual || null, readyToPublish: after.channelStatus || {}, work: work.map((w) => ({ channel: w.channel, ready: w.ready, blockedBy: w.blockedBy, imageUrls: w.imageUrls, extraUrls: w.extraUrls, tools: w.actions.map((a) => a.tool) })) }, null, 2));
+    if (!r.ok) process.exitCode = 1;
+  },
+
   async week({ flags }) {
     const t = today(flags);
     const day = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date(t + "T00:00:00Z").getUTCDay()];

@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { load, save, nowIso } from "./store.mjs";
-import { config } from "./paths.mjs";
+import { config, home, ensureDir } from "./paths.mjs";
 import { kindOf, fileHashes, describePhoto, hamming } from "./media.mjs";
 import { matchLocation, matchService, norm } from "./places.mjs";
 
@@ -189,4 +189,66 @@ export function linkOriginals({ apply = false, maxDistance = 4 } = {}) {
     save("assets", assets);
   }
   return pairs;
+}
+
+// ---------- Drive -> pipeline sin descarga manual ----------
+// Work descarga el fichero (raw/streaming) con su conector de Drive y lo deja en cualquier carpeta local; aqui se enlaza con su
+// registro (manifiesto) o se crea el registro, se verifica la integridad (md5 de Drive) y se copia al almacen estable del estado.
+export const pendingDownloads = () => load("assets").filter((a) => a.needsDownload).map((a) => ({ assetId: a.id, driveId: a.driveId, name: a.name, bytes: a.bytes, md5: a.md5, jobId: a.jobId, driveFolder: a.driveFolder }));
+
+const safeName = (s) => String(s).replace(/[^\w.\-]+/g, "_");
+
+// items: [{ file, driveId?, name?, path?, md5?, createdTime? }]. opts.move borra el original tras copiarlo.
+export async function receiveFiles(items, { move = false, log = () => {} } = {}) {
+  const dest = path.join(home(), "inbox", "drive");
+  ensureDir(dest);
+  const cfg = config();
+  const summary = { received: 0, attached: 0, created: 0, duplicates: [], errors: [], assetIds: [] };
+  for (const it of items) {
+    try {
+      const src = path.resolve(it.file);
+      if (!fs.existsSync(src)) throw new Error("no existe el fichero");
+      const kind = kindOf(src);
+      if (!kind) throw new Error("tipo de fichero no admitido");
+      summary.received++;
+      const { sha256, md5 } = await fileHashes(src);
+      let assets = load("assets");
+      const known = assets.find((a) => a.sha256 === sha256);
+      if (known) { summary.duplicates.push({ file: src, of: known.id }); continue; }
+      let rec = (it.driveId && assets.find((a) => a.driveId === it.driveId)) || assets.find((a) => a.needsDownload && a.md5 && a.md5 === md5);
+      if (rec && rec.md5 && rec.md5 !== md5) throw new Error(`md5 distinto al de Drive (${rec.md5} != ${md5}): descarga incompleta o corrupta`);
+      if (!rec) {
+        if (!it.driveId) throw new Error("fichero desconocido: indica driveId (o ingesta primero el manifiesto)");
+        ingestManifest([{ driveId: it.driveId, name: it.name || path.basename(src), path: it.path, size: fs.statSync(src).size, md5, createdTime: it.createdTime }]);
+        assets = load("assets");
+        rec = assets.find((a) => a.driveId === it.driveId);
+        summary.created++;
+      }
+      if (!rec) throw new Error("no se pudo registrar el fichero");
+      const target = path.join(dest, `${rec.driveId || sha256.slice(0, 8)}__${safeName(rec.name)}`);
+      if (path.resolve(target) !== src) fs.copyFileSync(src, target);
+      Object.assign(rec, { sha256, md5, sourcePath: target, needsDownload: false, bytes: fs.statSync(target).size });
+      if (kind === "image") {
+        const d = await describePhoto(target);
+        Object.assign(rec, { width: d.width, height: d.height, ahash: d.ahash });
+        const near = assets.find((o) => o.id !== rec.id && o.ahash && o.jobId !== rec.jobId && hamming(o.ahash, rec.ahash) <= cfg.reuse.nearDuplicateHamming);
+        if (near) rec.nearDuplicateOf = near.id;
+      }
+      save("assets", assets);
+      if (move && path.resolve(target) !== src) fs.rmSync(src, { force: true });
+      summary.attached++; summary.assetIds.push(rec.id);
+      log(`  + ${rec.id} ${rec.name}`);
+    } catch (e) { summary.errors.push({ file: it.file, error: e.message }); }
+  }
+  return summary;
+}
+
+// Carpeta con ficheros descargados: el driveId se toma de "<driveId>__<nombre>" o de un mapa opcional [{file|name, driveId, path, md5}].
+export function itemsFromDir(dir, map = []) {
+  const byName = new Map(map.map((m) => [path.basename(m.file || m.name || ""), m]));
+  return walk(path.resolve(dir)).map((file) => {
+    const base = path.basename(file), m = byName.get(base) || {};
+    const pre = base.match(/^([A-Za-z0-9_-]{20,})__(.+)$/);
+    return { file, driveId: m.driveId || (pre && pre[1]) || undefined, name: m.name || (pre && pre[2]) || base, path: m.path, md5: m.md5 };
+  });
 }

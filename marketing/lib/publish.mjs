@@ -22,21 +22,27 @@ export function filesForChannel(channel, renderDir, piece) {
   const out = { main: [], extra: [] };
   if (channel === "instagram") {
     const carousel = fs.existsSync(p("carousel")) ? fs.readdirSync(p("carousel")).sort().map((f) => "carousel/" + f) : [];
-    if (piece.kind === "work") { if (has("feed.png")) out.main.push("feed.png"); out.extra.push(...carousel); }
+    if (piece.kind === "work") { if (pick("feed")) out.main.push(pick("feed")); out.extra.push(...carousel); }
     else if (carousel.length) out.main.push(...carousel);
-    else if (has("feed.png")) out.main.push("feed.png");
-    if (has("story.png")) out.extra.push("story.png");
+    else if (pick("feed")) out.main.push(pick("feed"));
+    if (pick("story")) out.extra.push(pick("story"));
   } else if (channel === "facebook") { if (pick("feed")) out.main.push(pick("feed")); }
   else if (channel === "gbp") { if (pick("gbp") || has("gbp.jpg")) out.main.push(has("gbp.jpg") ? "gbp.jpg" : pick("gbp")); }
   return out;
 }
 
-export async function buildQueue({ today, ahead = 3, log = () => {} }) {
+// rebuild: rehace tambien lo ya preparado y aun sin publicar (p. ej. tras cambiar imagenes o formatos).
+export async function buildQueue({ today, ahead = 3, rebuild = false, log = () => {} }) {
   const pieces = load("pieces");
   const assets = load("assets");
   const jobs = load("jobs");
   const limit = new Date(new Date(today + "T00:00:00Z").getTime() + ahead * 86400000).toISOString().slice(0, 10);
   const queued = [];
+  if (rebuild) for (const piece of pieces.filter((p) => p.status === "SCHEDULED" && p.scheduledFor <= limit)) for (const ch of piece.channels) {
+    if (piece.channelStatus?.[ch] !== "READY_TO_PUBLISH") continue;
+    fs.rmSync(queueDir("READY_TO_PUBLISH", `${piece.scheduledFor}__${piece.id}__${ch}`), { recursive: true, force: true });
+    delete piece.channelStatus[ch];
+  }
   for (const piece of pieces.filter((p) => p.status === "SCHEDULED" && p.scheduledFor <= limit)) {
     const render = await renderPiece(piece, { assets, jobs, root: outDir(piece.id) });
     piece.render = { dir: render.dir, files: render.files.map((f) => path.relative(render.dir, f.file).split(path.sep).join("/")), warnings: render.warnings, at: nowIso() };

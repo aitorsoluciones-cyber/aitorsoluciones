@@ -9,7 +9,7 @@ export { readEnv, estimateCost, spentThisMonth, ConfigError, ApiError } from "./
 
 import fs from "node:fs";
 import path from "node:path";
-import { home, ensureDir } from "../paths.mjs";
+import { home, ensureDir, queueDir } from "../paths.mjs";
 import { runBrief } from "./engine.mjs";
 import { load, save, findById, nowIso } from "../store.mjs";
 import { locations, norm } from "../places.mjs";
@@ -55,9 +55,17 @@ export function attachToPiece(pieceId, assetIds) {
   chosen.forEach((a, i) => { if (!a) throw new Error(`Material inexistente: ${assetIds[i]}`); if (a.origin === "real") throw new Error(`${a.id} es una foto real: no se adjunta a piezas evergreen`); if (a.status !== "READY") throw new Error(`${a.id} no esta READY`); });
   const gen = chosen.filter((a) => a.aiGenerated);
   p.visual = {
-    assetIds, formats: Object.fromEntries(chosen.filter((a) => ["feed", "story", "gbp"].includes(a.format)).map((a) => [a.format, a.id])),
+    assetIds, carousel: chosen.filter((a) => /^carousel-\d+$/.test(a.format || "")).sort((a, b) => parseInt(a.format.slice(9)) - parseInt(b.format.slice(9))).map((a) => a.id),
+    formats: Object.fromEntries(chosen.filter((a) => ["feed", "story", "gbp"].includes(a.format)).map((a) => [a.format, a.id])),
     aiGenerated: gen.length > 0, models: [...new Set(gen.map((a) => a.model).filter(Boolean))], labelApplied: gen.some((a) => a.labelApplied), attachedAt: nowIso()
   };
+  // Si la pieza ya estaba preparada en la cola con otra imagen (p. ej. el grafico tipografico), se rehace: nada publicado se toca.
+  for (const ch of p.channels || []) {
+    if (p.channelStatus?.[ch] !== "READY_TO_PUBLISH") continue;
+    fs.rmSync(queueDir("READY_TO_PUBLISH", `${p.scheduledFor}__${p.id}__${ch}`), { recursive: true, force: true });
+    delete p.channelStatus[ch];
+  }
+  delete p.render;
   save("pieces", pieces);
   return p;
 }
@@ -75,12 +83,14 @@ export function approveAsset(assetId, who = "humano") {
 // Brief para una pieza evergreen del plan: material/banco -> brief. El titular y el CTA son los de la pieza; nada se inventa.
 export function briefFromPiece(piece, overrides = {}) {
   if (!piece || piece.kind === "work") throw new Error("briefFromPiece: solo piezas evergreen");
+  const carousel = piece.type === "carousel" && (piece.copy?.slides || []).length > 1;
   const ig = (piece.channels || []).includes("instagram");
   const channel = ig ? "instagram" : (piece.channels || [])[0] || "facebook";
   const zone = (piece.copy?.zones || []).find((z) => locations().some((l) => l.isPriority && norm(l.name) === norm(z)));
   return {
     campaign: String(piece.id).toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 60),
-    type: "editorial", source_images: [], channel, aspect_ratio: channel === "gbp" ? "4:3" : "4:5",
+    type: carousel ? "carousel" : "editorial", source_images: [], channel, channels: piece.channels || [channel], aspect_ratio: channel === "gbp" ? "4:3" : "4:5",
+    ...(carousel ? { points: piece.copy.slides.map((s) => ({ t: s.t, b: s.b })), tag: piece.copy.tag } : {}),
     headline: piece.copy.headline, cta: config().brand.cta, location: zone || null, use_real_work: false, pieceId: piece.id, ...overrides
   };
 }
@@ -92,7 +102,7 @@ export async function runForPiece(pieceId, overrides = {}, ctx = {}) {
   const r = await runBrief(briefFromPiece(piece, overrides), ctx);
   if (r.ok && !ctx.dryRun) {
     const assets = load("assets");
-    attachToPiece(pieceId, r.assetIds.filter((id) => ["feed", "story", "gbp"].includes(findById(assets, id)?.format)));
+    attachToPiece(pieceId, r.assetIds.filter((id) => /^(feed|story|gbp|carousel-\d+)$/.test(findById(assets, id)?.format || "")));
   }
   return r;
 }
