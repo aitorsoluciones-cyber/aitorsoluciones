@@ -4,7 +4,7 @@ Objetivo: que Aitor no gestione marketing a mano. Aitor solo sube fotos/vídeos 
 Todo se ejecuta desde la raíz del repo con `npm run mk -- <comando>`. Nunca se modifica producción: la web solo cambia por rama → PR → Deploy Preview.
 
 ## Lunes · producción y primera publicación
-1. **Material nuevo.** Con el conector de Drive: listar `00_NUEVOS_TRABAJOS` (`parentId = '1tuLU8DI1zJNsoKOUs6zJx9KrermCiWtV'`), guardar el listado como `drive.json`
+1. **Material nuevo.** Con el conector de Drive: listar `00_NUEVOS_TRABAJOS` (id de carpeta en `marketing/_state/config.local.json`, fuera de git), guardar el listado como `drive.json`
    (`[{driveId, name, path, mimeType, size, createdTime}]`) y `ingest --manifest drive.json`. Si hay copia local de Drive: `ingest <carpeta>`.
    El conector no descarga ficheros de varios MB: para generar activos hace falta el fichero local (Drive para escritorio o descarga manual a una carpeta y `ingest`).
 2. **Revisar** (`jobs --status NEW`): ver las fotos, fijar `--role` antes/después, `--service`, título y `--notes` (solo lo que se hizo, sin inventar).

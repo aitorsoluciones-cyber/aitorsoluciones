@@ -5,7 +5,7 @@ Infraestructura para que Work/IA produzca y gestione marketing de forma continua
 
 ```
 npm run mk -- <comando>      # CLI (marketing/cli.mjs)
-npm run mk:test              # 26 pruebas
+npm run mk:test              # 28 pruebas
 npm run mk:qa                # QA del banco y de las piezas (-- --web para QA de la web)
 ```
 
@@ -28,6 +28,7 @@ Carpetas de Drive (ya creadas): `00_NUEVOS_TRABAJOS` (NEW) · `01_PROCESADOS` (R
 | Sembrar el banco con los casos reales ya publicados en la web | `init` |
 | Detectar material nuevo (carpeta local o espejo de Drive) | `ingest <carpeta> [--origin archive]` |
 | Detectar material nuevo (listado del conector de Drive) | `ingest --manifest drive.json` |
+| Emparejar originales HEIC con las fotos ya publicadas (800 px → alta resolución) | `link-originals` (revisar) → `link-originals --apply` |
 | Ver trabajos | `jobs [--status NEW]` |
 | Revisar un trabajo | `review <id> --title ".." --service desbroce-parcelas --location alcanar --confirm-location --role <assetId>=before --notes ".." --status READY` |
 | Descartar / archivar | `reject <id>` · `archive <id>` |
@@ -43,7 +44,7 @@ Carpetas de Drive (ya creadas): `00_NUEVOS_TRABAJOS` (NEW) · `01_PROCESADOS` (R
 | Exportar a CSV / Google Sheets | `export` |
 | Rutina del día (lunes/miércoles/viernes) | `week [--day mon]` |
 
-El estado (banco, cola, métricas) vive en `marketing/_state/` (**fuera de git**: el repositorio es público) o en `MK_HOME`.
+El estado (banco, cola, métricas, ids de carpetas de Drive en `config.local.json`) vive en `marketing/_state/` (**fuera de git**: el repositorio es público) o en `MK_HOME`.
 
 ## Planificador
 

@@ -5,7 +5,7 @@ import path from "node:path";
 import { REPO, MK_DIR, config, home } from "./lib/paths.mjs";
 import { load, save } from "./lib/store.mjs";
 import { STATES } from "./lib/states.mjs";
-import { ingestDir, ingestManifest, importWebCases } from "./lib/ingest.mjs";
+import { ingestDir, ingestManifest, importWebCases, linkOriginals } from "./lib/ingest.mjs";
 import { listJobs, reviewJob, setJobStatus } from "./lib/jobs.mjs";
 import { loadBank, approveTopic, isApproved } from "./lib/evergreen.mjs";
 import { plan, bufferStatus, cancelPiece } from "./lib/planner.mjs";
@@ -54,6 +54,12 @@ const COMMANDS = {
     for (const d of s.duplicates.slice(0, 10)) out(`  duplicado ${path.basename(d.file)} = ${d.of}`);
     for (const e of s.errors || []) out(`  ERROR ${e.file}: ${e.error}`);
     out("Siguiente: npm run mk -- jobs --status NEW  (revisar y confirmar servicio/localidad)");
+  },
+
+  "link-originals"({ flags }) {
+    const pairs = linkOriginals({ apply: !!flags.apply });
+    pairs.forEach((p) => out(`${p.originalName} -> ${p.webName} (distancia ${p.distance})`));
+    out(pairs.length ? (flags.apply ? "Aplicado: las fotos de la web usan ahora el original de alta resolucion" : "Revisa las parejas a ojo y repite con --apply") : "Sin parejas");
   },
 
   jobs({ flags }) {
@@ -121,7 +127,7 @@ const COMMANDS = {
   },
 
   async qa({ flags }) {
-    const r = await runQa({ today: today(flags), web: !!flags.web, urls: flags.urls ? String(flags.urls).split(",") : undefined, lighthouse: !flags["no-lighthouse"], log: out });
+    const r = await runQa({ today: today(flags), web: !!flags.web, urls: flags.urls ? String(flags.urls).split(",").map((u) => "/" + u.replace(/^.*?\/Git\//, "").replace(/^\//, "")) : undefined, lighthouse: !flags["no-lighthouse"], log: out });
     for (const w of r.warnings) out("aviso  " + w);
     for (const e of r.errors) out("ERROR  " + e);
     out(`QA: ${r.errors.length} errores · ${r.warnings.length} avisos`);

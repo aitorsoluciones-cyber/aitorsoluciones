@@ -33,7 +33,7 @@ export function drivePlan() {
   const actions = [];
   for (const a of load("assets").filter((x) => x.driveId)) {
     const target = driveFolderFor(a.status);
-    if (target && a.driveFolder !== target.id) actions.push({ driveId: a.driveId, name: a.name, status: a.status, moveTo: target.name, folderId: target.id });
+    if (target && a.driveFolder !== target.name) actions.push({ driveId: a.driveId, name: a.name, status: a.status, moveTo: target.name, folderId: target.id });
   }
   return actions;
 }

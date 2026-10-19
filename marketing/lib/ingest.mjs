@@ -123,6 +123,7 @@ export function ingestManifest(entries) {
     assets.push({
       id: "a_d" + crypto.createHash("sha1").update(e.driveId).digest("hex").slice(0, 11), sha256: null, md5: e.md5 || null, driveId: e.driveId,
       kind, origin: "real", source: "drive", sourcePath: null, needsDownload: true, name: e.name, jobId: job.id, role: ctx.role,
+      driveFolder: parts.find((p) => Object.values(config().drive.folders).some((f) => f.name === p)) || null,
       bytes: Number(e.size) || null, status: "NEW", createdAt: nowIso(), history: []
     });
     summary.added++;
@@ -164,4 +165,28 @@ export async function importWebCases({ repo }) {
   }
   save("assets", assets); save("jobs", jobs);
   return { added };
+}
+
+// Empareja originales de alta resolucion (archivo/Drive) con las fotos ya publicadas en la web (800 px) por huella aHash.
+// Sin --apply solo lista las parejas (hay que comprobarlas a ojo); con apply, la foto web pasa a usar el original.
+export function linkOriginals({ apply = false, maxDistance = 4 } = {}) {
+  const assets = load("assets");
+  const pairs = [];
+  for (const hi of assets.filter((a) => a.kind === "image" && a.source !== "web" && a.ahash && a.sourcePath && a.nearDuplicateOf && a.status === "NEW")) {
+    const web = assets.find((a) => a.id === hi.nearDuplicateOf);
+    if (!web || web.source !== "web" || !web.ahash) continue;
+    const d = hamming(hi.ahash, web.ahash);
+    const sameRatio = Math.abs(hi.width / hi.height - web.width / web.height) < 0.02;
+    if (d <= maxDistance && sameRatio && hi.width > web.width * 1.5) pairs.push({ original: hi.id, originalName: hi.name, web: web.id, webName: web.name, distance: d });
+  }
+  if (apply) {
+    for (const p of pairs) {
+      const hi = assets.find((a) => a.id === p.original), web = assets.find((a) => a.id === p.web);
+      Object.assign(web, { sourcePath: hi.sourcePath, width: hi.width, height: hi.height, quality: "original", originalAssetId: hi.id });
+      hi.status = "ARCHIVED"; hi.linkedTo = web.id;
+      hi.history = [...(hi.history || []), { from: "NEW", to: "ARCHIVED", at: nowIso(), note: `original de ${web.id}` }];
+    }
+    save("assets", assets);
+  }
+  return pairs;
 }

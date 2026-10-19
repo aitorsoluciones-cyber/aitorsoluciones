@@ -1,5 +1,6 @@
 // QA del sistema: datos, rutas, duplicados, metadatos, guardarrailes, banco evergreen y (opcional) la web.
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { execFileSync, spawn } from "node:child_process";
 import sharp from "sharp";
@@ -48,7 +49,7 @@ export async function checkState({ today }) {
     if (!a.sha256 && !a.driveId) errors.push(`material ${a.id}: sin huella ni driveId`);
     if (!a.needsDownload && a.sourcePath && !fs.existsSync(a.sourcePath)) errors.push(`material ${a.id}: fichero inexistente ${a.sourcePath}`);
     if (!findById(jobs, a.jobId)) errors.push(`material ${a.id}: trabajo inexistente ${a.jobId}`);
-    if (a.nearDuplicateOf) warnings.push(`material ${a.id}: similar a ${a.nearDuplicateOf} (revisar)`);
+    if (a.nearDuplicateOf && a.status === "NEW") warnings.push(`material ${a.id}: similar a ${a.nearDuplicateOf} (revisar)`);
   }
   const low = assets.filter((a) => a.quality === "web-800").length;
   if (low) warnings.push(`${low} materiales proceden de la web (800 px): sirven, pero conviene el original para feed/story`);
@@ -120,7 +121,7 @@ export async function checkWeb({ urls = ["/", "/trabajos/"], lighthouse = true, 
     if (lighthouse) {
       for (const u of urls) {
         log("lighthouse " + u);
-        const out = path.join(REPO, `.mk-lh-${Date.now()}.json`);
+        const out = path.join(os.tmpdir(), `mk-lh-${Date.now()}.json`); // sin espacios: se pasa por shell en Windows
         try {
           execFileSync(process.platform === "win32" ? "npx.cmd" : "npx", ["lighthouse", "http://localhost:5077" + u, "--quiet", "--chrome-flags=--headless", "--output=json", `--output-path=${out}`], { cwd: REPO, shell: process.platform === "win32", stdio: "ignore", timeout: 180000 });
         } catch { /* lighthouse devuelve error al limpiar el perfil en Windows; el JSON se escribe igual */ }

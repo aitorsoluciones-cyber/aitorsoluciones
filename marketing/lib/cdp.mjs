@@ -34,13 +34,14 @@ export async function withBrowser(fn, port = 9400 + Math.floor(Math.random() * 4
     let id = 0;
     const pending = new Map();
     const waiters = [];
+    const timers = new Set();
     ws.onmessage = (m) => {
       const msg = JSON.parse(m.data);
       if (msg.id && pending.has(msg.id)) { const { res, rej } = pending.get(msg.id); pending.delete(msg.id); msg.error ? rej(new Error(msg.error.message)) : res(msg.result); }
       else for (const w of [...waiters]) if (w.method === msg.method) { waiters.splice(waiters.indexOf(w), 1); w.res(msg.params); }
     };
     const send = (method, params = {}) => new Promise((res, rej) => { const i = ++id; pending.set(i, { res, rej }); ws.send(JSON.stringify({ id: i, method, params })); });
-    const once = (method, ms = 20000) => new Promise((res, rej) => { const t = setTimeout(() => rej(new Error("timeout " + method)), ms); waiters.push({ method, res: (p) => { clearTimeout(t); res(p); } }); });
+    const once = (method, ms = 20000) => new Promise((res, rej) => { const t = setTimeout(() => rej(new Error("timeout " + method)), ms); timers.add(t); waiters.push({ method, res: (p) => { clearTimeout(t); res(p); } }); });
     await send("Page.enable"); await send("Runtime.enable");
     const page = {
       send,
@@ -57,7 +58,7 @@ export async function withBrowser(fn, port = 9400 + Math.floor(Math.random() * 4
         return r.result.value;
       }
     };
-    return await fn(page);
+    try { return await fn(page); } finally { for (const t of timers) clearTimeout(t); }
   } finally { proc.kill(); await sleep(300); try { fs.rmSync(profile, { recursive: true, force: true }); } catch { /* perfil en uso */ } }
 }
 

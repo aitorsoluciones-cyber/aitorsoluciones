@@ -7,7 +7,7 @@ import { listAvailable, buildCopy, inSeason, monthOf, loadBank } from "./evergre
 import { TEMPLATES } from "./assets.mjs";
 import { canUse, recordUse, lastUse } from "./repeat.mjs";
 import { lintPiece } from "./guardrails.mjs";
-import { locationById, services } from "./places.mjs";
+import { locationById, services, norm } from "./places.mjs";
 import { setJobStatus } from "./jobs.mjs";
 
 const DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
@@ -47,7 +47,7 @@ export function buildWorkCopy(job, angle) {
   const svc = SERVICE_NAME()[job.serviceId] || "Trabajo";
   const title = job.title;
   let body;
-  if (angle === "antes-despues") body = `${title}${loc ? ` en ${loc}` : ""}: antes y después del trabajo.`;
+  if (angle === "antes-despues") body = `${title}${loc && !norm(title).includes(norm(loc)) ? ` en ${loc}` : ""}: antes y después del trabajo.`;
   else if (angle === "que-hicimos") { if (!job.notes) return null; body = `${title}. Qué hicimos: ${job.notes}`; }
   else { if (!loc) return null; body = `${svc} en ${loc}: fotografías reales del resultado.`; }
   const headline = angle === "que-hicimos" ? `Qué hicimos: ${title}` : title;

@@ -14,6 +14,20 @@ const read = (f) => fs.readFileSync(f, "utf8");
 const readJsonBom = (f) => JSON.parse(read(f).replace(/^﻿/, ""));
 const writeJsonKeepBom = (f, data) => { const bom = read(f).startsWith("﻿") ? "﻿" : ""; fs.writeFileSync(f, bom + JSON.stringify(data, null, 2) + "\n"); };
 
+// Anade el caso al final de workCases.json respetando el formato existente (sin reescribir el fichero entero).
+export function appendCaseText(text, entry) {
+  const eol = text.includes("\r\n") ? "\r\n" : "\n";
+  const obj = (o) => "{ " + Object.entries(o).map(([k, x]) => JSON.stringify(k) + ": " + JSON.stringify(x)).join(", ") + " }";
+  const val = (v) => {
+    if (!Array.isArray(v)) return JSON.stringify(v);
+    if (v.length && typeof v[0] === "object") return "[" + eol + v.map((o) => "      " + obj(o)).join("," + eol) + eol + "    ]";
+    return "[" + v.map((x) => JSON.stringify(x)).join(", ") + "]";
+  };
+  const fields = Object.entries(entry).map(([k, v]) => "    " + JSON.stringify(k) + ": " + val(v)).join("," + eol);
+  const idx = text.lastIndexOf("]");
+  return text.slice(0, idx).replace(/\s+$/, "") + "," + eol + "  {" + eol + fields + eol + "  }" + eol + text.slice(idx);
+}
+
 export const slugify = (s) => norm(s).replace(/\s+/g, "-").slice(0, 60);
 
 // Valida un caso nuevo contra los datos reales del sitio. Devuelve la lista de problemas (vacia = valido).
@@ -92,8 +106,7 @@ export async function proposeCase(jobId, opts = {}) {
     const list = fs.existsSync(extra) ? readJsonBom(extra) : [];
     writeJsonKeepBom(extra, [...new Set([...list, ...names.map((n) => n[1])])]);
     execFileSync("node", ["tools/make-thumbnails.mjs"], { cwd: REPO, stdio: "ignore", env: { ...process.env, MK_ONLY: names.map((n) => n[1]).join(",") } });
-    cases.push(entry);
-    writeJsonKeepBom(casesFile, cases);
+    fs.writeFileSync(casesFile, appendCaseText(read(casesFile), entry));
     if (opts.hasPage) { // una pagina nueva anade 1 URL al sitemap: se actualiza la comprobacion SEO de forma explicita
       const seo = path.join(REPO, "tools/check-seo.mjs");
       const t = read(seo);

@@ -90,6 +90,8 @@ test("un trabajo con localidad sin confirmar nunca nombra la localidad", async (
   const c = buildWorkCopy(job, "antes-despues");
   assert.ok(!/Alcanar/.test(c.captions.instagram.replace("#LesCasesDAlcanar", "")));
   assert.equal(buildWorkCopy(job, "zona"), null);
+  const withLoc = buildWorkCopy({ ...job, title: "Finca recuperada en La Ràpita", locationId: "la-rapita", locationConfirmed: true }, "antes-despues");
+  assert.ok(!/La Ràpita en La Ràpita/.test(withLoc.captions.instagram), "localidad duplicada");
 });
 
 test("guardarrail: pieza evergreen con foto real o trabajo con grafico se rechazan", async () => {

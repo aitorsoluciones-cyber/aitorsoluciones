@@ -87,3 +87,34 @@ test("configuracion: carpetas de Drive, canales y cadencia coherentes", async ()
   assert.ok(c.cadence.minBufferWeeks >= 4);
   assert.deepEqual(c.cadence.slots.map((s) => s.day), ["mon", "wed", "fri"]);
 });
+
+test("web: anadir un caso conserva el formato y el contenido previo de workCases.json", async () => {
+  const { appendCaseText } = await import("../lib/web.mjs");
+  const repo = path.resolve(import.meta.dirname, "..", "..");
+  const text = fs.readFileSync(path.join(repo, "src/_data/workCases.json"), "utf8");
+  const out = appendCaseText(text, { id: "x", slug: "x", hasPage: false, status: "active", title: "T", serviceId: "desbroce-parcelas", locationId: "alcanar", before: "x-antes", after: "x-despues", whatWeDid: "ok", relatedServiceIds: ["a", "b"], gallery: [{ before: "g1", after: "g2" }] });
+  const parsed = JSON.parse(out.replace(/^\uFEFF/, ""));
+  const prev = JSON.parse(text.replace(/^\uFEFF/, ""));
+  assert.equal(parsed.length, prev.length + 1);
+  assert.deepEqual(parsed.slice(0, prev.length), prev);
+  assert.ok(out.startsWith(text.slice(0, text.lastIndexOf("]")).trimEnd()), "el texto anterior no cambia");
+});
+
+test("originales de alta resolucion: se emparejan por huella y proporcion y solo se aplican bajo demanda", async () => {
+  const { save, load } = await import("../lib/store.mjs");
+  const { linkOriginals } = await import("../lib/ingest.mjs");
+  save("assets", [
+    { id: "web1", kind: "image", source: "web", ahash: "ffff0000ffff0000", width: 800, height: 1067, sourcePath: "/w.webp", status: "READY" },
+    { id: "hi1", kind: "image", source: "archive", ahash: "ffff0000ffff0001", width: 3024, height: 4032, sourcePath: "/o.heic", nearDuplicateOf: "web1", status: "NEW" },
+    { id: "web2", kind: "image", source: "web", ahash: "00ff00ff00ff00ff", width: 800, height: 1067, sourcePath: "/w2.webp", status: "READY" },
+    { id: "hi2", kind: "image", source: "archive", ahash: "00ff00ff00ff00fe", width: 4032, height: 3024, sourcePath: "/o2.heic", nearDuplicateOf: "web2", status: "NEW" }
+  ]);
+  const pairs = linkOriginals({});
+  assert.deepEqual(pairs.map((p) => p.web), ["web1"], "la de otra proporcion no se empareja");
+  assert.equal(load("assets").find((a) => a.id === "web1").sourcePath, "/w.webp");
+  linkOriginals({ apply: true });
+  const a = load("assets");
+  assert.equal(a.find((x) => x.id === "web1").sourcePath, "/o.heic");
+  assert.equal(a.find((x) => x.id === "web1").quality, "original");
+  assert.equal(a.find((x) => x.id === "hi1").status, "ARCHIVED");
+});
