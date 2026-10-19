@@ -1,0 +1,72 @@
+{
+  "brand": {
+    "name": "Aitor Soluciones",
+    "tagline": "Jardinería y propiedades · Les Cases d'Alcanar",
+    "web": "aitorsoluciones.com",
+    "phoneDisplay": "603 207 780",
+    "cta": "Envíanos fotos y ubicación por WhatsApp",
+    "colors": { "navy": "#071e3b", "navy2": "#0b2d56", "orange": "#c44d0a", "orangeLight": "#f36a10", "cream": "#fdfbf8", "ink": "#122033", "white": "#ffffff" },
+    "logo": "src/assets/img/logo-aitor-soluciones.png"
+  },
+  "drive": {
+    "rootFolderId": "1V4Nze-EJJA3s9w7Xt149zNU7MuQDDRG1",
+    "folders": {
+      "new": { "name": "00_NUEVOS_TRABAJOS", "id": "1tuLU8DI1zJNsoKOUs6zJx9KrermCiWtV" },
+      "processed": { "name": "01_PROCESADOS", "id": "1C4F1VoGBgmFgrD-Kmd-RAv2b8Onu1IT-" },
+      "published": { "name": "02_PUBLICADOS", "id": "110U_CUy6EOFVZy1Y3e3HqBZ8PHHsO5HM" },
+      "rejected": { "name": "03_DESCARTADOS", "id": "1NTA85yxF_uhzSoXkshDb7E1lmhAdY3Dt" },
+      "brand": { "name": "04_MATERIAL_MARCA", "id": "1zvscUUQ1HHP7ekaEBR3E64pROcs0kOfC" }
+    },
+    "stateFolder": { "NEW": "new", "REVIEWED": "processed", "READY": "processed", "SCHEDULED": "processed", "PUBLISHED": "published", "REJECTED": "rejected", "ARCHIVED": "rejected" }
+  },
+  "inbox": {
+    "localMirror": null,
+    "archiveDir": "../fotos antes y despues"
+  },
+  "channels": {
+    "instagram": { "formats": ["feed", "story", "carousel"], "captionMax": 2200, "hashtagsMax": 8 },
+    "facebook": { "formats": ["feed"], "captionMax": 2000, "hashtagsMax": 5 },
+    "gbp": { "formats": ["gbp"], "captionMax": 1500, "hashtagsMax": 0, "ctaButton": "CALL" }
+  },
+  "cadence": {
+    "timezone": "Europe/Madrid",
+    "slots": [
+      { "day": "mon", "time": "10:00", "role": "produccion + primera publicacion", "channels": ["instagram", "facebook"] },
+      { "day": "wed", "time": "10:00", "role": "segunda revision + publicacion", "channels": ["instagram", "gbp"] },
+      { "day": "fri", "time": "12:00", "role": "cierre + preparacion de la semana siguiente", "channels": [] }
+    ],
+    "minBufferWeeks": 4,
+    "maxWorkPiecesPerWeek": 1
+  },
+  "reuse": { "cooldownDays": 120, "newAngleCooldownDays": 45, "requireNewAngle": true, "nearDuplicateHamming": 6 },
+  "hashtags": {
+    "base": ["#AitorSoluciones", "#LesCasesDAlcanar"],
+    "jardineria": ["#jardineria", "#mantenimientodejardines"],
+    "desbroce": ["#desbroce", "#limpiezadeparcelas"],
+    "poda": ["#poda", "#mantenimientoexterior"],
+    "mantenimiento": ["#mantenimientodepropiedades"],
+    "propiedades": ["#mantenimientodepropiedades", "#segundaresidencia"],
+    "segundas-residencias": ["#segundaresidencia", "#casaenlacosta"],
+    "faq": ["#presupuesto"],
+    "consejo": ["#consejos"],
+    "local": ["#Alcanar", "#TerresDeLEbre"],
+    "estacional": ["#jardineria"]
+  },
+  "guardrails": {
+    "forbiddenPatterns": [
+      "\\d+\\s?(€|euros?)",
+      "desde\\s+\\d+",
+      "\\bgratis\\b",
+      "gratuito",
+      "garantizad",
+      "\\b100\\s?%",
+      "el mejor",
+      "los mejores",
+      "m[aá]s de \\d+ (a[nñ]os|clientes|trabajos)",
+      "\\d+ rese[nñ]as",
+      "cumple (con )?la normativa",
+      "sin compromiso"
+    ],
+    "placeIgnore": ["Aitor", "Aitor Soluciones", "Google", "WhatsApp", "Instagram", "Facebook", "Alcanar", "Les Cases d'Alcanar"]
+  }
+}
