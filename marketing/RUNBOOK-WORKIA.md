@@ -28,3 +28,10 @@ Antes: `qa --web --urls /trabajos/` (y la URL del caso si lleva página).
 ## Reglas que no se saltan
 Fotos reales solo para trabajos reales · nada de localidades, clientes, resultados, precios o reseñas inventados · no duplicar ni publicar en masa · no cambiar URLs ni SEO estructural sin necesidad ·
 no publicar sin pasar `qa` · las credenciales de Meta/Google viven en variables de entorno, nunca en el repo.
+
+## Imagen para una pieza evergreen (motor visual)
+1. Escribe el brief (`marketing/brief.example.json`): campaña, tipo, canal, ratio, titular, CTA y, si procede, una localidad prioritaria. Nunca fotos reales como referencia ni `use_real_work` con material de otro trabajo.
+2. `npm run mk -- visual run brief.json --dry-run` y revisa prompts y coste. Luego sin `--dry-run`.
+3. Revisa `composed/`/`feed/` y lo descartado en `rejected/`. Si algo se ve «de IA» (manos, herramientas, vegetación imposible, brillos, colores saturados) no lo uses.
+4. `npm run mk -- visual attach <pieceId> <assetId..>`, después `qa` y la cola de siempre.
+Trabajo real con titular/logotipo: brief con `use_real_work:true` y `source_images:[<id de foto real>]` (`edit.operation: compose` por defecto, sin IA).

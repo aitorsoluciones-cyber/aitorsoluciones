@@ -15,6 +15,7 @@ import { addMetric, importCsv, recordResult, summary as reportSummary, METRICS }
 import { exportAll, drivePlan } from "./lib/exporter.mjs";
 import { proposeCase } from "./lib/web.mjs";
 import { runQa } from "./lib/qa.mjs";
+import { runBrief, runBriefQueue, loadEnvFile, attachToPiece, readEnv, estimateCost, spentThisMonth, BriefError } from "./lib/visual/index.mjs";
 
 function parse(argv) {
   const pos = [], flags = {};
@@ -124,6 +125,36 @@ const COMMANDS = {
     const r = await proposeCase(pos[1], { slug: flags.slug, hasPage: !!flags.page, problem: flags.problem, conditions: flags.conditions, related: flags.related ? String(flags.related).split(",") : [], featured: !!flags.featured, galleryPairs: pairs, dryRun: !!flags["dry-run"], noPush: !!flags["no-push"], log: out });
     out(`Rama ${r.branch} · archivos: ${r.files.length}${r.pr ? "\nPR: " + r.pr : ""}`);
     if (flags["dry-run"]) out("dry-run: cambios SIN commitear en la rama; revisa y luego 'git checkout main && git branch -D " + r.branch + "' o repite sin --dry-run");
+  },
+
+  // Motor visual (OpenAI Images API). Clave y modelo SOLO por entorno: OPENAI_API_KEY, OPENAI_IMAGE_MODEL.
+  async visual({ pos, flags }) {
+    loadEnvFile();
+    const [sub, arg] = pos;
+    const ctx = { dryRun: !!flags["dry-run"], noCritic: !!flags["no-critic"], log: out };
+    const show = (r) => {
+      if (r.dryRun) { out(`DRY-RUN brief ${r.briefId} · modo ${r.mode} · modelo ${r.model || "(sin definir)"} · tamano ${r.size ? r.size.join("x") : "-"} · ${r.plan?.variants ?? 0} variantes · coste estimado ${r.plan?.costUsd ?? 0} $`); (r.prompts || []).forEach((p, i) => out(`--- prompt variante ${i + 1} ---\n${p}`)); return; }
+      out(`${r.ok ? "OK" : "FALLO"} brief ${r.briefId} · ${r.mode}${r.operation ? "/" + r.operation : ""} · coste ${r.costUsd ?? 0} $${r.error ? " · " + r.error : ""}`);
+      for (const [k, v] of Object.entries(r.outputs || {})) out(`  ${k}: ${Array.isArray(v) ? v.length + " diapositivas" : v}`);
+      if (r.disclosure) out(`  transparencia: anade "${r.disclosure}" al texto`);
+      for (const d of r.discarded || []) out(`  descartada: ${path.basename(d.file)} (${d.reasons.join("; ")})`);
+      if (!r.ok) process.exitCode = 2;
+    };
+    try {
+      if (sub === "env") {
+        const have = (k) => (process.env[k] ? "definida" : "NO definida");
+        out(`OPENAI_API_KEY ${have("OPENAI_API_KEY")} · OPENAI_IMAGE_MODEL ${process.env.OPENAI_IMAGE_MODEL || "NO definida"} · OPENAI_VISION_MODEL ${process.env.OPENAI_VISION_MODEL || "no definida (solo puntuacion por pixeles)"}`);
+        const b = config().imageEngine;
+        return out(`Gasto este mes: ${spentThisMonth().toFixed(2)} $ de ${b.monthlyBudgetUsd} $ (maximo por brief ${b.perBriefBudgetUsd} $)`);
+      }
+      if (sub === "run" || sub === "cost") return show(await runBrief(JSON.parse(fs.readFileSync(arg, "utf8")), { ...ctx, dryRun: ctx.dryRun || sub === "cost" }));
+      if (sub === "batch") { for (const r of await runBriefQueue(ctx)) out(`${r.ok ? "OK   " : "FALLO"} ${r.brief} ${r.error || ""}`); return; }
+      if (sub === "attach") { const p = attachToPiece(arg, pos.slice(2)); return out(`${p.id}: imagen adjunta (${Object.keys(p.visual.formats).join(", ") || "sin formatos"})`); }
+      if (sub === "estimate") { const [w, h] = String(arg).split("x").map(Number); return out(`${estimateCost({ quality: flags.quality || "medium", width: w, height: h, n: Number(flags.n) || 1 })} $`); }
+      throw new Error("Uso: visual env | run <brief.json> [--dry-run] [--no-critic] | cost <brief.json> | batch | attach <pieceId> <assetId..> | estimate WxH --quality q");
+    } catch (e) {
+      if (e instanceof BriefError) { out("ERROR " + e.message); process.exitCode = 1; } else throw e;
+    }
   },
 
   async qa({ flags }) {

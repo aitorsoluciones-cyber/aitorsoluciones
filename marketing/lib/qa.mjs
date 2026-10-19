@@ -44,11 +44,11 @@ export async function checkState({ today }) {
   const shas = new Map();
   for (const a of assets) {
     if (!STATES.includes(a.status)) errors.push(`material ${a.id}: estado desconocido ${a.status}`);
-    if (!["real", "graphic"].includes(a.origin)) errors.push(`material ${a.id}: origin debe ser real|graphic`);
+    if (!["real", "graphic", "generated"].includes(a.origin)) errors.push(`material ${a.id}: origin debe ser real|graphic|generated`);
     if (a.sha256) { if (shas.has(a.sha256)) errors.push(`duplicado exacto: ${a.id} = ${shas.get(a.sha256)}`); shas.set(a.sha256, a.id); }
     if (!a.sha256 && !a.driveId) errors.push(`material ${a.id}: sin huella ni driveId`);
     if (!a.needsDownload && a.sourcePath && !fs.existsSync(a.sourcePath)) errors.push(`material ${a.id}: fichero inexistente ${a.sourcePath}`);
-    if (!findById(jobs, a.jobId)) errors.push(`material ${a.id}: trabajo inexistente ${a.jobId}`);
+    if (a.origin !== "generated" && !findById(jobs, a.jobId)) errors.push(`material ${a.id}: trabajo inexistente ${a.jobId}`);
     if (a.nearDuplicateOf && a.status === "NEW") warnings.push(`material ${a.id}: similar a ${a.nearDuplicateOf} (revisar)`);
   }
   const low = assets.filter((a) => a.quality === "web-800").length;

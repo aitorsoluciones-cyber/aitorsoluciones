@@ -10,8 +10,8 @@ import { readPhoto } from "./media.mjs";
 export const SIZES = { feed: [1080, 1350], story: [1080, 1920], gbp: [1200, 900] };
 export const TEMPLATES = ["navy", "cream", "orange", "grid"];
 
-const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const FONT = "Arial, Helvetica, sans-serif";
+export const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+export const FONT = "Arial, Helvetica, sans-serif";
 
 export function wrapText(text, maxChars) {
   const lines = [];
@@ -24,13 +24,13 @@ export function wrapText(text, maxChars) {
   if (cur) lines.push(cur);
   return lines;
 }
-const textBlock = (lines, x, y, size, lh, fill, weight = 400, extra = "") =>
+export const textBlock = (lines, x, y, size, lh, fill, weight = 400, extra = "") =>
   lines.map((l, i) => `<text x="${x}" y="${y + i * lh}" font-family="${FONT}" font-size="${size}" font-weight="${weight}" fill="${fill}" ${extra}>${esc(l)}</text>`).join("");
-const charsFor = (width, size) => Math.max(8, Math.floor(width / (size * 0.56)));
+export const charsFor = (width, size) => Math.max(8, Math.floor(width / (size * 0.56)));
 
 const rect = (x, y, w, h, fill, extra = "") => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${fill}" ${extra}/>`;
 let logoCache;
-async function logoPlate(h) {
+export async function logoPlate(h) {
   logoCache ||= fs.readFileSync(path.join(REPO, config().brand.logo));
   const logo = await sharp(logoCache).resize({ height: h - 16 }).png().toBuffer();
   const m = await sharp(logo).metadata();
@@ -203,21 +203,28 @@ export async function renderPiece(piece, { assets = load("assets"), jobs = load(
     const t = await webThumbs(afterBuf);
     await add("web-480.webp", t[480], "web-thumb"); await add("web-800.webp", t[800], "web-thumb");
   } else {
+    // Imagen generada/composicionada por el motor visual (mk visual attach): se usa tal cual en los formatos que cubre.
+    const taken = new Set();
+    for (const [fmt, id] of Object.entries(piece.visual?.formats || {})) {
+      const va = findById(assets, id);
+      if (va && wants(fmt) && va.sourcePath && fs.existsSync(va.sourcePath)) { await add(fmt + path.extname(va.sourcePath), fs.readFileSync(va.sourcePath), fmt); taken.add(fmt); }
+    }
+    const wantsG = (fmt) => wants(fmt) && !taken.has(fmt) && !(fmt === "carousel" && taken.has("feed"));
     const tpl = piece.template || "navy";
     const slides = c.slides || [];
     const single = piece.type === "single" || slides.length <= 1;
     if (single) {
       const s = slides[0] || {};
       const common = { template: tpl, kind: "single", tag: c.tag, title: c.headline || s.t, body: s.b ? (c.headline ? `${s.t}. ${s.b}` : s.b) : "" };
-      if (wants("feed")) await add("feed.png", await renderGraphic({ ...common, size: "feed" }), "feed");
-      if (wants("story")) await add("story.png", await renderGraphic({ ...common, size: "story" }), "story");
-      if (wants("gbp")) await add("gbp.png", await renderGraphic({ ...common, size: "gbp" }), "gbp");
+      if (wantsG("feed")) await add("feed.png", await renderGraphic({ ...common, size: "feed" }), "feed");
+      if (wantsG("story")) await add("story.png", await renderGraphic({ ...common, size: "story" }), "story");
+      if (wantsG("gbp")) await add("gbp.png", await renderGraphic({ ...common, size: "gbp" }), "gbp");
     } else {
       const all = [{ kind: "cover", title: c.headline, tag: c.tag }, ...slides.map((s) => ({ kind: "point", tag: c.tag, title: s.t, body: s.b })), { kind: "cta", title: "¿Hablamos?", tag: "" }];
-      if (wants("carousel") || wants("feed")) for (let i = 0; i < all.length; i++) await add(`carousel/${String(i + 1).padStart(2, "0")}.png`, await renderGraphic({ template: tpl, ...all[i], index: i + 1, total: all.length, size: "feed" }), "carousel");
-      if (wants("story")) await add("story.png", await renderGraphic({ template: tpl, ...all[0], size: "story" }), "story");
-      if (wants("gbp")) await add("gbp.png", await renderGraphic({ template: tpl, kind: "single", tag: c.tag, title: c.headline, body: slides.map((s) => s.t).join(" · "), size: "gbp" }), "gbp");
-      if (wants("feed")) await add("feed.png", fs.readFileSync(path.join(root, "carousel", "01.png")), "feed");
+      if (wantsG("carousel") || wantsG("feed")) for (let i = 0; i < all.length; i++) await add(`carousel/${String(i + 1).padStart(2, "0")}.png`, await renderGraphic({ template: tpl, ...all[i], index: i + 1, total: all.length, size: "feed" }), "carousel");
+      if (wantsG("story")) await add("story.png", await renderGraphic({ template: tpl, ...all[0], size: "story" }), "story");
+      if (wantsG("gbp")) await add("gbp.png", await renderGraphic({ template: tpl, kind: "single", tag: c.tag, title: c.headline, body: slides.map((s) => s.t).join(" · "), size: "gbp" }), "gbp");
+      if (wantsG("feed")) await add("feed.png", fs.readFileSync(path.join(root, "carousel", "01.png")), "feed");
     }
   }
   return { files, warnings, dir: root };

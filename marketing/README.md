@@ -59,7 +59,7 @@ reutilización deliberada del mismo enfoque solo tras 120 días (`plan --allow-r
 
 ## Guardarraíles (se aplican al planificar, renderizar y en `qa`)
 
-- Los trabajos solo usan **fotografías reales de ese trabajo**; lo evergreen solo gráficos tipográficos. No se generan trabajos ni fotos falsas.
+- Los trabajos solo usan **fotografías reales de ese trabajo**; lo evergreen, gráficos tipográficos o imágenes generadas **etiquetadas como IA**. No se generan trabajos ni fotos falsas.
 - Localidades: solo las de `src/_data/locations.json`, y solo nombradas si una persona las confirmó (`--confirm-location`). Nada de clientes, cifras, reseñas, precios ni garantías (patrones prohibidos en `config.json`).
 - Temas que aluden a normativa (`reviewed:false`) no se usan hasta `evergreen approve <id>`.
 - Nada de páginas SEO masivas: una página de caso exige contenido real (`problem ≥ 60`, `whatWeDid ≥ 40`) y por defecto un caso solo entra en la galería de `/trabajos/`.
@@ -74,3 +74,29 @@ Hoy no hay API/conector conectado para Google Business Profile, Facebook ni Inst
 Los adaptadores (`lib/adapters.mjs`) publican solos con `FB_PAGE_ID/FB_PAGE_TOKEN`, `IG_USER_ID/IG_TOKEN`, `GBP_ACCOUNT/GBP_LOCATION/GBP_TOKEN`, `MK_MEDIA_BASE_URL` (URL pública de la cola, necesaria para IG y GBP) y `MK_ALLOW_PUBLISH=1`. Están probados con un `fetch` simulado, no contra las cuentas reales.
 
 Procedimiento diario de Work/IA: `marketing/RUNBOOK-WORKIA.md`.
+
+## Motor visual (OpenAI Images API)
+
+Work/IA entrega un **brief** (`marketing/brief.example.json`); el motor decide si generar, editar o solo componer, llama a la API, puntúa, compone texto/logotipo **por código**, genera los tamaños y registra todo. Aitor solo aporta material nuevo.
+
+| Tipo de salida | Cuándo | Qué hace el modelo |
+|---|---|---|
+| **A) Generada** (`editorial`, `illustration`, `background`, `infographic`, `carousel`) | piezas evergreen/educativas | genera solo el fondo/escena, **sin texto, logotipos, personas ni herramientas** |
+| **B) Foto real** (`use_real_work:true`, `edit.operation`: `compose` · `enhance` · `extend_canvas`) | trabajos reales | `compose`/`enhance`: nada de IA. `extend_canvas`: el modelo solo rellena márgenes; los píxeles reales se re-pegan y se rechaza si los altera |
+| **C) Composición** (siempre) | todos | titular, CTA, localidad y **logotipo oficial** (`src/assets/img/logo-aitor-soluciones.png`) se aplican con código tras generar |
+
+```bash
+npm run mk -- visual env                       # comprueba modelo/clave (sin mostrar la clave)
+npm run mk -- visual run brief.json --dry-run  # prompts, tamaño, variantes y coste estimado; sin llamar a la API
+npm run mk -- visual run brief.json            # genera 2–3 variantes, puntúa, elige, compone, registra
+npm run mk -- visual batch                     # procesa <MK_HOME>/briefs/*.json → done/ o failed/
+npm run mk -- visual attach <pieceId> <assetId..>  # asocia imágenes a una pieza evergreen (añade la etiqueta de IA)
+npm run mk -- visual cost                      # gasto del mes frente al presupuesto
+```
+
+- **Configuración**: `OPENAI_API_KEY` y `OPENAI_IMAGE_MODEL` por variables de entorno o `<MK_HOME>/.env` (ver `marketing/.env.example`). El modelo no está fijado en el código; DALL·E se rechaza como principal. `.env*` está en `.gitignore`.
+- **Presupuesto**: `imageEngine.perBriefBudgetUsd` y `monthlyBudgetUsd` en `config.json`; el motor reduce variantes o se detiene si no caben. Cada llamada se anota en el ledger.
+- **Variantes**: 2 por defecto (máx. 3); puntuación programática (saturación, aspecto tecnológico/corporativo, nitidez, contraste, simetría) + crítico visual opcional. La mejor pasa a `composed/`; el resto se conserva en `rejected/` con sus motivos. Si ninguna pasa, el brief falla (código de salida 2) y no se compone nada.
+- **Salidas** (fuera de git y de `src/`): `<MK_HOME>/assets/marketing/AAAA/MM/{originals,generated,composed,stories,feed,gbp,web,rejected}/`. Cada activo tiene un `.json` y una entrada en `assets.json` con `id, prompt, source, model, timestamp, campaign, type, format, channel, published, hash` (+ `origin`, `score`, `review`, `derivedFrom`).
+- **Transparencia**: toda imagen con IA lleva `origin:"generated"` y la pieza debe incluir «Imagen ilustrativa creada con IA.» en cada canal (`attach` la inserta; `qa` y `lintPiece` lo exigen). Las piezas de trabajo real **no admiten** imágenes generadas; las fotos reales no se usan como referencia para generar.
+- **Instagram** exige JPEG: la cola convierte PNG→JPG al preparar `READY_TO_PUBLISH`.

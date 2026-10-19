@@ -2,18 +2,23 @@
 // en un minuto; con credenciales (variables de entorno) y MK_ALLOW_PUBLISH=1 los adaptadores publican solos.
 import fs from "node:fs";
 import path from "node:path";
+import sharp from "sharp";
 import { load, save, nowIso, findById } from "./store.mjs";
 import { queueDir, ensureDir, outDir, config } from "./paths.mjs";
 import { renderPiece } from "./assets.mjs";
 import { transition } from "./states.mjs";
 import { setJobStatus } from "./jobs.mjs";
 
-const copyInto = (dir, src, name) => { ensureDir(path.dirname(path.join(dir, name))); fs.copyFileSync(src, path.join(dir, name)); return name; };
+const copyInto = async (dir, src, name, jpeg = false) => {
+  if (jpeg && /\.png$/i.test(name)) { name = name.replace(/\.png$/i, ".jpg"); ensureDir(path.dirname(path.join(dir, name))); fs.writeFileSync(path.join(dir, name), await sharp(src).jpeg({ quality: 92, mozjpeg: true }).toBuffer()); return name; }
+  ensureDir(path.dirname(path.join(dir, name))); fs.copyFileSync(src, path.join(dir, name)); return name;
+};
 
 // Ficheros que corresponden a cada canal.
 export function filesForChannel(channel, renderDir, piece) {
   const p = (...x) => path.join(renderDir, ...x);
   const has = (f) => fs.existsSync(p(f));
+  const pick = (base) => [base + ".png", base + ".jpg"].find(has) || null;
   const out = { main: [], extra: [] };
   if (channel === "instagram") {
     const carousel = fs.existsSync(p("carousel")) ? fs.readdirSync(p("carousel")).sort().map((f) => "carousel/" + f) : [];
@@ -21,8 +26,8 @@ export function filesForChannel(channel, renderDir, piece) {
     else if (carousel.length) out.main.push(...carousel);
     else if (has("feed.png")) out.main.push("feed.png");
     if (has("story.png")) out.extra.push("story.png");
-  } else if (channel === "facebook") { if (has("feed.png")) out.main.push("feed.png"); }
-  else if (channel === "gbp") { for (const f of ["gbp.jpg", "gbp.png"]) if (has(f)) out.main.push(f); }
+  } else if (channel === "facebook") { if (pick("feed")) out.main.push(pick("feed")); }
+  else if (channel === "gbp") { if (pick("gbp") || has("gbp.jpg")) out.main.push(has("gbp.jpg") ? "gbp.jpg" : pick("gbp")); }
   return out;
 }
 
@@ -43,8 +48,11 @@ export async function buildQueue({ today, ahead = 3, log = () => {} }) {
       ensureDir(dir);
       const f = filesForChannel(ch, render.dir, piece);
       if (!f.main.length) throw new Error(`Sin activos para ${ch} en ${piece.id}`);
-      const main = f.main.map((x) => copyInto(dir, path.join(render.dir, x), x));
-      const extra = f.extra.map((x) => copyInto(dir, path.join(render.dir, x), "extra/" + x));
+      const jpeg = ch === "instagram"; // la API de Instagram solo admite JPEG
+      const main = [];
+      for (const x of f.main) main.push(await copyInto(dir, path.join(render.dir, x), x, jpeg));
+      const extra = [];
+      for (const x of f.extra) extra.push(await copyInto(dir, path.join(render.dir, x), "extra/" + x, jpeg));
       const caption = piece.copy.captions[ch];
       fs.writeFileSync(path.join(dir, "caption.txt"), caption + "\n");
       fs.writeFileSync(path.join(dir, "alt.txt"), piece.copy.alt + "\n");

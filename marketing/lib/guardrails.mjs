@@ -41,6 +41,7 @@ export function lintPiece(piece, { assets = load("assets"), jobs = load("jobs") 
   const text = [piece.copy?.headline, ...Object.values(piece.copy?.captions || {}), ...(piece.copy?.slides || []).flatMap((s) => [s.t, s.b])].filter(Boolean).join("\n");
   const allowed = [];
   if (piece.kind === "work") {
+    if (piece.visual) problems.push("las piezas de trabajo real no admiten imagen generada");
     const job = findById(jobs, piece.jobId);
     if (!job) problems.push("pieza de trabajo sin trabajo asociado");
     else {
@@ -54,9 +55,15 @@ export function lintPiece(piece, { assets = load("assets"), jobs = load("jobs") 
       }
     }
   } else {
-    for (const id of piece.assetIds || []) {
+    const ids = [...(piece.assetIds || []), ...(piece.visual?.assetIds || [])];
+    for (const id of ids) {
       const a = findById(assets, id);
-      if (a && a.origin === "real") problems.push(`pieza ${piece.kind} con foto real ${id}: solo graficos (no se presentan fotos como trabajos)`);
+      if (a && a.origin === "real") problems.push(`pieza ${piece.kind} con foto real ${id}: solo graficos o imagenes generadas (no se presentan fotos como trabajos)`);
+    }
+    // Transparencia: toda pieza con imagen generada por IA lo dice en cada canal.
+    if (ids.some((id) => findById(assets, id)?.origin === "generated")) {
+      const note = config().imageEngine?.disclosure?.generated;
+      for (const ch of piece.channels || []) if (note && !(piece.copy?.captions?.[ch] || "").includes(note)) problems.push(`${ch}: falta la etiqueta de imagen generada ("${note}")`);
     }
     if (piece.copy?.zones) allowed.push(...piece.copy.zones);
   }

@@ -4,7 +4,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { stateFile, ensureDir, home } from "./paths.mjs";
 
-export const COLLECTIONS = { assets: [], jobs: [], pieces: [], usage: [], metrics: [], scans: [], approvals: {} };
+export const COLLECTIONS = { assets: [], jobs: [], pieces: [], usage: [], metrics: [], scans: [], ledger: [], approvals: {} };
 
 export function load(name) {
   try { return JSON.parse(fs.readFileSync(stateFile(name + ".json"), "utf8")); }

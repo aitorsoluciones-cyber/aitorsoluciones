@@ -178,5 +178,92 @@
       "Alcanar",
       "Les Cases d'Alcanar"
     ]
+  },
+  "imageEngine": {
+    "_comment": "Motor visual (OpenAI Images API). Modelo y clave SOLO por variables de entorno: OPENAI_IMAGE_MODEL, OPENAI_API_KEY (opcional OPENAI_VISION_MODEL para el critico).",
+    "defaults": {
+      "variants": 2,
+      "maxVariants": 3,
+      "quality": "medium",
+      "outputFormat": "png"
+    },
+    "costUsdPer1024Square": {
+      "low": 0.006,
+      "medium": 0.05,
+      "high": 0.21
+    },
+    "costNote": "Estimacion editable (precios publicos de gpt-image-2 por imagen 1024x1024; escala con los pixeles). Comprueba la tarifa vigente en platform.openai.com.",
+    "monthlyBudgetUsd": 20,
+    "perBriefBudgetUsd": 2,
+    "sizes": {
+      "flexibleMultiple": 16,
+      "minPixels": 655360,
+      "maxPixels": 8294400,
+      "maxSide": 3840,
+      "maxRatio": 3,
+      "fixedFallback": [
+        "1024x1024",
+        "1024x1536",
+        "1536x1024"
+      ]
+    },
+    "targets": {
+      "feed": [
+        1080,
+        1350
+      ],
+      "story": [
+        1080,
+        1920
+      ],
+      "gbp": [
+        1200,
+        900
+      ],
+      "web": [
+        1600,
+        900
+      ]
+    },
+    "generationSize": {
+      "4:5": [
+        1088,
+        1360
+      ],
+      "9:16": [
+        1088,
+        1920
+      ],
+      "1:1": [
+        1024,
+        1024
+      ],
+      "4:3": [
+        1216,
+        912
+      ],
+      "16:9": [
+        1280,
+        720
+      ],
+      "3:2": [
+        1536,
+        1024
+      ],
+      "2:3": [
+        1024,
+        1536
+      ]
+    },
+    "thresholds": {
+      "maxMeanSaturation": 0.52,
+      "minSharpness": 6,
+      "maxTechHueShare": 0.18,
+      "minContrast": 28,
+      "minScore": 60
+    },
+    "disclosure": {
+      "generated": "Imagen ilustrativa creada con IA."
+    }
   }
 }
