@@ -1,0 +1,376 @@
+{
+  "_comment": "Banco evergreen: temas reutilizables con 2 enfoques (angles) cada uno. Solo consejos generales y datos que ya publica la web (alcance, FAQ, procesos). Sin precios, garantias, cifras ni localidades fuera de {{zones}}. 'reviewed:false' = requiere visto bueno de Aitor antes de usarse (mk evergreen approve <id>).",
+  "topics": [
+    {
+      "id": "desbroce-cuando", "category": "desbroce", "services": ["desbroce-parcelas"], "months": [3, 4, 5, 6, 9, 10], "reviewed": true,
+      "angles": [
+        { "id": "senales", "type": "carousel", "headline": "Desbroce: 4 señales de que toca ya",
+          "slides": [
+            { "t": "1 · La hierba tapa los accesos", "b": "Si ya no puedes pasar con comodidad por caminos o puertas, la parcela ha cogido ventaja." },
+            { "t": "2 · Aparecen zarzas", "b": "Las zarzas se hacen más difíciles cuanto más se esperan: conviene cortarlas pronto." },
+            { "t": "3 · Hay restos secos acumulados", "b": "La vegetación seca y los restos acumulados hacen más difícil el mantenimiento posterior." },
+            { "t": "4 · No ves el estado del terreno", "b": "Si no distingues desniveles, piedras o muros, es mejor despejar antes de trabajar en la parcela." }
+          ],
+          "caption": "¿Tu parcela necesita un desbroce? Estas cuatro señales suelen indicar que ha llegado el momento de actuar. Si dudas, envíanos fotos y te decimos cómo lo plantearíamos." },
+        { "id": "pregunta", "type": "single", "headline": "¿Cuándo conviene desbrozar una parcela?",
+          "slides": [{ "t": "Mejor antes de que la vegetación domine", "b": "Cuando la maleza aún es manejable, el trabajo es más sencillo y el resultado más limpio. Si ya está muy crecida, también se puede recuperar: se valora con fotos." }],
+          "caption": "No hay una fecha única: depende de cuánto crezca la vegetación en tu parcela. Lo importante es actuar antes de que el terreno quede inaccesible." }
+      ]
+    },
+    {
+      "id": "desbroce-restos", "category": "desbroce", "services": ["desbroce-parcelas"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "opciones", "type": "carousel", "headline": "Restos del desbroce: qué opciones hay",
+          "slides": [
+            { "t": "Agrupar dentro de la finca", "b": "Los restos se juntan en una zona de la parcela acordada de antemano." },
+            { "t": "Triturar", "b": "Cuando es viable, la vegetación se tritura y se deja en el terreno." },
+            { "t": "Retirar", "b": "La retirada fuera de la parcela se valora aparte, con carga y transporte." },
+            { "t": "Se decide antes de empezar", "b": "Así no hay sorpresas: lo que se hace con los restos queda definido de antemano." }
+          ],
+          "caption": "La retirada de restos no siempre está incluida: puedes elegir entre agrupar, triturar o retirar cuando sea viable. Lo dejamos definido antes de empezar." },
+        { "id": "mito", "type": "single", "headline": "«El desbroce incluye llevarse todo»",
+          "slides": [{ "t": "No siempre, y por eso se pregunta", "b": "Agrupar los restos dentro de la finca es una cosa; cargarlos y transportarlos, otra. Se acuerda antes de empezar para que el presupuesto sea claro." }],
+          "caption": "Mito frecuente: pensar que el desbroce siempre incluye retirar los restos. Pregunta siempre qué se hace con ellos y que quede por escrito." }
+      ]
+    },
+    {
+      "id": "faq-fotos-presupuesto", "category": "faq", "services": ["desbroce-parcelas", "mantenimiento-jardines"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "que-enviar", "type": "carousel", "headline": "Qué enviar para valorar un trabajo",
+          "slides": [
+            { "t": "Localidad", "b": "Dónde está la parcela o la vivienda." },
+            { "t": "Metros aproximados", "b": "Con una estimación basta; no hace falta medir al milímetro." },
+            { "t": "3 o 4 fotos", "b": "Que se vea el estado general, los accesos y las zonas más complicadas." },
+            { "t": "Acceso y qué conservar", "b": "Si entra un vehículo y qué quieres conservar, cortar o retirar." }
+          ],
+          "caption": "Con esta información podemos decirte cómo lo plantearíamos y si hace falta ver el lugar en persona." },
+        { "id": "pregunta", "type": "single", "headline": "¿Se puede valorar un trabajo solo con fotos?",
+          "slides": [{ "t": "En trabajos sencillos, muchas veces sí", "b": "Si hay dudas con el acceso, los restos, los desniveles, las zarzas o la maquinaria, acordamos una visita." }],
+          "caption": "Muchas veces sí. Cuando hay dudas, preferimos ver el sitio antes de comprometer un presupuesto." }
+      ]
+    },
+    {
+      "id": "faq-presupuesto-previo", "category": "faq", "services": [], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "claridad", "type": "single", "headline": "¿Cuándo sé lo que va a costar?",
+          "slides": [{ "t": "Antes de empezar", "b": "Recibes el presupuesto con lo que incluye el trabajo. No damos precios cerrados sin conocer lo que hay que hacer." }],
+          "caption": "Presupuesto antes de empezar y con el alcance claro. Así sabes qué se hace y qué no." },
+        { "id": "checklist", "type": "carousel", "headline": "Un buen presupuesto debería decir…",
+          "slides": [
+            { "t": "Qué se hace", "b": "El trabajo descrito de forma concreta." },
+            { "t": "Qué no se incluye", "b": "Por ejemplo, la retirada de restos o los árboles grandes." },
+            { "t": "Cómo se tratan los restos", "b": "Agrupar, triturar o retirar." },
+            { "t": "Cuándo y con qué acceso", "b": "Fechas orientativas y condiciones de acceso." }
+          ],
+          "caption": "Antes de aceptar cualquier presupuesto, comprueba que dice estas cuatro cosas." }
+      ]
+    },
+    {
+      "id": "poda-ligera", "category": "poda", "services": ["poda-mantenimiento-exterior"], "months": [1, 2, 3, 10, 11, 12], "reviewed": true,
+      "angles": [
+        { "id": "alcance", "type": "carousel", "headline": "Poda ligera: qué cubre",
+          "slides": [
+            { "t": "Árboles y arbustos", "b": "Recorte y poda ligera para mantener la forma y la salud." },
+            { "t": "Retirada de ramas", "b": "Las ramas y restos de poda se recogen y se agrupan." },
+            { "t": "Repaso del exterior", "b": "Caminos, muretes y alrededores de la vivienda." },
+            { "t": "Lo que no hacemos", "b": "Poda en altura con técnicas de escalada y tala de árboles grandes." }
+          ],
+          "caption": "Poda ligera y mantenimiento exterior: tenemos claro hasta dónde llegamos. Para trabajos en altura o árboles grandes, recomendamos un profesional especializado." },
+        { "id": "pregunta", "type": "single", "headline": "¿Poda ligera o poda fuerte?",
+          "slides": [{ "t": "Depende del árbol y del objetivo", "b": "Una poda ligera mantiene; una poda fuerte cambia el árbol. Si dudas, envía fotos y te orientamos." }],
+          "caption": "No todo se resuelve igual: la poda ligera mantiene la forma y despeja; para podas importantes o en altura conviene consultar antes." }
+      ]
+    },
+    {
+      "id": "poda-ramas-casa", "category": "poda", "services": ["poda-mantenimiento-exterior"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "revisar", "type": "carousel", "headline": "Ramas junto a la casa: qué revisar",
+          "slides": [
+            { "t": "Ramas sobre el tejado", "b": "Acumulan hojas y humedad y pueden dañar tejas." },
+            { "t": "Ramas junto a ventanas y fachada", "b": "Rozan, ensucian y dificultan el mantenimiento." },
+            { "t": "Zonas de paso", "b": "Despejar caminos y entradas evita golpes y obstáculos." }
+          ],
+          "caption": "Un repaso rápido del exterior ahorra problemas: ramas sobre el tejado, junto a la fachada y en los caminos." },
+        { "id": "temporada", "type": "single", "headline": "Antes de la temporada de lluvias, mira arriba",
+          "slides": [{ "t": "Ramas y hojas", "b": "Las ramas secas y las hojas acumuladas son lo primero que conviene revisar antes de que llegue el mal tiempo." }],
+          "caption": "Revisar las ramas cercanas a la casa antes de las lluvias es una tarea sencilla que evita sustos." }
+      ]
+    },
+    {
+      "id": "jardin-mantenimiento", "category": "jardineria", "services": ["mantenimiento-jardines"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "constancia", "type": "carousel", "headline": "Mantener a tiempo, no recuperar de cero",
+          "slides": [
+            { "t": "Siega y recorte", "b": "Césped o hierba, setos y arbustos al día." },
+            { "t": "Limpieza de restos", "b": "Ramas y restos vegetales fuera de la vista." },
+            { "t": "Visitas periódicas", "b": "Puntuales o regulares, según lo que necesite tu jardín." },
+            { "t": "Menos sorpresas", "b": "Un jardín al día evita tener que recuperarlo desde cero." }
+          ],
+          "caption": "El mantenimiento regular evita las grandes limpiezas. Acordamos visitas puntuales o periódicas según tu jardín." },
+        { "id": "pregunta", "type": "single", "headline": "¿Cada cuánto conviene mantener un jardín?",
+          "slides": [{ "t": "Depende de la época y del jardín", "b": "En primavera y otoño suele crecer más. Acordamos un ritmo realista y lo ajustamos sobre la marcha." }],
+          "caption": "No hay un calendario único. Te proponemos un ritmo de visitas según el crecimiento real del jardín." }
+      ]
+    },
+    {
+      "id": "cesped-siega", "category": "jardineria", "services": ["mantenimiento-jardines"], "months": [3, 4, 5, 6, 9, 10], "reviewed": true,
+      "angles": [
+        { "id": "tercio", "type": "single", "headline": "Regla del tercio al segar",
+          "slides": [{ "t": "No cortes más de un tercio de golpe", "b": "Segar muy bajo debilita el césped. Mejor cortar con más frecuencia y menos cantidad." }],
+          "caption": "Consejo clásico de jardinería: no retires más de un tercio de la altura de la hoja en cada siega." },
+        { "id": "checklist", "type": "carousel", "headline": "Antes de segar, comprueba…",
+          "slides": [
+            { "t": "Cuchillas afiladas", "b": "Un corte limpio daña menos la hierba." },
+            { "t": "Piedras y objetos", "b": "Retira lo que pueda salir despedido." },
+            { "t": "Hierba seca", "b": "Segar con la hierba seca da mejor resultado." }
+          ],
+          "caption": "Tres comprobaciones rápidas antes de segar que mejoran el resultado." }
+      ]
+    },
+    {
+      "id": "setos-recorte", "category": "jardineria", "services": ["mantenimiento-jardines"], "months": [3, 4, 5, 6, 9, 10], "reviewed": true,
+      "angles": [
+        { "id": "pasos", "type": "carousel", "headline": "Recorte de setos en 3 pasos",
+          "slides": [
+            { "t": "1 · Define la línea", "b": "Marca la altura y la forma antes de cortar." },
+            { "t": "2 · Corta de abajo arriba", "b": "Un poco más ancho abajo para que reciba luz." },
+            { "t": "3 · Recoge los restos", "b": "Dejar los restos sobre el seto y el suelo ensucia y dificulta el crecimiento." }
+          ],
+          "caption": "Un seto bien recortado queda más denso y ordenado. Si prefieres no hacerlo tú, lo hacemos nosotros." },
+        { "id": "pregunta", "type": "single", "headline": "¿Por qué se ensancha un seto por abajo?",
+          "slides": [{ "t": "Para que llegue la luz", "b": "Si la parte alta es más ancha, la baja se queda sin luz y se pela." }],
+          "caption": "Detalle de jardinería que se nota con el tiempo: la forma del recorte afecta a la salud del seto." }
+      ]
+    },
+    {
+      "id": "olivos-suelo", "category": "jardineria", "services": ["mantenimiento-jardines", "desbroce-parcelas"], "months": [3, 4, 5, 6, 9, 10], "reviewed": true,
+      "angles": [
+        { "id": "alrededor", "type": "single", "headline": "Olivos: despeja alrededor del tronco",
+          "slides": [{ "t": "Maleza fuera del pie del árbol", "b": "Mantener limpio el entorno del tronco facilita el trabajo y el control del terreno." }],
+          "caption": "En jardines y fincas con olivos, el mantenimiento del suelo es parte del cuidado. Desbrozamos alrededor de los troncos y dejamos las zonas de paso despejadas." },
+        { "id": "checklist", "type": "carousel", "headline": "Finca con olivos: tareas de mantenimiento",
+          "slides": [
+            { "t": "Desbroce del suelo", "b": "Hierba alta y maleza fuera de la zona de los troncos." },
+            { "t": "Accesos despejados", "b": "Que se pueda llegar a cada árbol." },
+            { "t": "Restos agrupados", "b": "Ramas y restos recogidos en un punto acordado." }
+          ],
+          "caption": "Un mantenimiento sencillo y periódico mantiene la finca ordenada y accesible." }
+      ]
+    },
+    {
+      "id": "riego-verano", "category": "consejo", "services": ["mantenimiento-jardines"], "months": [6, 7, 8], "reviewed": true,
+      "angles": [
+        { "id": "horas", "type": "single", "headline": "Riego en verano: mejor a primera o última hora",
+          "slides": [{ "t": "Menos evaporación", "b": "Regar con menos sol aprovecha mejor el agua." }],
+          "caption": "Consejo básico: en los meses de más calor, riega a primera hora o al final del día." },
+        { "id": "checklist", "type": "carousel", "headline": "Jardín en verano: 3 hábitos",
+          "slides": [
+            { "t": "Riego profundo y espaciado", "b": "Mejor menos veces y con más agua que riegos ligeros diarios." },
+            { "t": "Cubre el suelo", "b": "Una capa de acolchado ayuda a conservar la humedad." },
+            { "t": "No podes en plena ola de calor", "b": "Las plantas lo notan más; deja las podas para otro momento." }
+          ],
+          "caption": "Pequeños hábitos que ayudan a que el jardín llegue bien al final del verano." }
+      ]
+    },
+    {
+      "id": "segunda-residencia-ausencia", "category": "segundas-residencias", "services": ["mantenimiento-segundas-residencias"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "que-hacemos", "type": "carousel", "headline": "Tu segunda residencia cuando no estás",
+          "slides": [
+            { "t": "Mantenimiento del exterior", "b": "Jardín y exterior cuidados durante tu ausencia." },
+            { "t": "Puesta a punto antes de tu llegada", "b": "Para que llegues y todo esté a punto." },
+            { "t": "Fotos tras cada visita", "b": "Ves cómo está sin tener que desplazarte." },
+            { "t": "Coordinación por WhatsApp", "b": "Acordamos accesos y fechas contigo a distancia." }
+          ],
+          "caption": "Trabajamos con propietarios que viven lejos: coordinamos por WhatsApp y enviamos fotos del resultado." },
+        { "id": "pregunta", "type": "single", "headline": "¿Vives lejos de tu casa de la costa?",
+          "slides": [{ "t": "Podemos encargarnos del exterior", "b": "Visitas puntuales o periódicas, con fotos del resultado, y coordinación por WhatsApp." }],
+          "caption": "Si tu casa pasa meses sola, el jardín no se detiene. Te contamos cómo lo planteamos." }
+      ]
+    },
+    {
+      "id": "segunda-residencia-llegada", "category": "segundas-residencias", "services": ["mantenimiento-segundas-residencias", "limpieza-viviendas"], "months": [3, 4, 5, 6], "reviewed": true,
+      "angles": [
+        { "id": "antes-de-llegar", "type": "carousel", "headline": "Llegas en unos días: ¿qué conviene tener listo?",
+          "slides": [
+            { "t": "Jardín y accesos", "b": "Hierba, setos y caminos revisados." },
+            { "t": "Exterior limpio", "b": "Terrazas y zonas de paso sin restos." },
+            { "t": "Vivienda", "b": "La limpieza de la vivienda se pide como servicio propio." }
+          ],
+          "caption": "La puesta a punto antes de tu llegada es una de las peticiones más habituales. Pídela con antelación." },
+        { "id": "pregunta", "type": "single", "headline": "¿Cuándo pedir la puesta a punto?",
+          "slides": [{ "t": "Con algo de margen", "b": "Cuanto antes nos avises, mejor podemos organizar fechas y acceso." }],
+          "caption": "Avísanos con tiempo y lo dejamos organizado antes de tu llegada." }
+      ]
+    },
+    {
+      "id": "propiedades-revision", "category": "propiedades", "services": ["mantenimiento-propiedades"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "visitas", "type": "carousel", "headline": "Revisión periódica de una propiedad",
+          "slides": [
+            { "t": "Qué se mira", "b": "Estado del exterior, accesos y zonas que conviene controlar." },
+            { "t": "Qué se hace", "b": "Se actúa sobre lo acordado y se avisa de lo que haga falta." },
+            { "t": "Qué recibes", "b": "Fotos de cómo queda tras la visita." }
+          ],
+          "caption": "El mantenimiento periódico evita que los pequeños problemas se conviertan en grandes. Acordamos visitas a tu medida." },
+        { "id": "pregunta", "type": "single", "headline": "¿Mantenimiento puntual o periódico?",
+          "slides": [{ "t": "Las dos opciones existen", "b": "Tras una primera puesta a punto, podemos acordar visitas periódicas para controlar crecimiento y accesos." }],
+          "caption": "Primero se pone a punto; después se decide si basta con visitas puntuales o conviene un ritmo periódico." }
+      ]
+    },
+    {
+      "id": "propiedades-primavera", "category": "estacional", "services": ["mantenimiento-propiedades", "mantenimiento-jardines"], "months": [3, 4, 5], "reviewed": true,
+      "angles": [
+        { "id": "checklist", "type": "carousel", "headline": "Primavera: checklist del exterior",
+          "slides": [
+            { "t": "Hierba y desbroce", "b": "Con el rebrote, controla el crecimiento a tiempo." },
+            { "t": "Setos y arbustos", "b": "Un recorte ligero al empezar la temporada." },
+            { "t": "Caminos y accesos", "b": "Despeja los pasos antes de que se cierren." },
+            { "t": "Restos del invierno", "b": "Ramas caídas y hojas acumuladas fuera." }
+          ],
+          "caption": "La primavera es buen momento para poner el exterior al día. Si prefieres que lo hagamos nosotros, envíanos fotos." },
+        { "id": "pregunta", "type": "single", "headline": "¿Por dónde empiezo en primavera?",
+          "slides": [{ "t": "Accesos y hierba primero", "b": "Con los caminos despejados y la hierba controlada, el resto del trabajo es mucho más sencillo." }],
+          "caption": "Un orden sencillo: accesos, hierba y después los detalles." }
+      ]
+    },
+    {
+      "id": "verano-entorno", "category": "estacional", "services": ["desbroce-parcelas"], "months": [5, 6, 7], "reviewed": true,
+      "angles": [
+        { "id": "antes-del-verano", "type": "single", "headline": "Antes del verano, ordena el entorno",
+          "slides": [{ "t": "Vegetación seca y restos", "b": "Revisar el entorno de la vivienda y reducir la vegetación seca es una buena práctica de cuidado de la propiedad." }],
+          "caption": "Antes de los meses más secos, conviene revisar el entorno de la casa y la parcela. Consulta siempre las indicaciones de tu ayuntamiento." },
+        { "id": "checklist", "type": "carousel", "headline": "Entorno de la vivienda: 3 revisiones",
+          "slides": [
+            { "t": "Vegetación seca", "b": "Retírala o redúcela cerca de la vivienda." },
+            { "t": "Accesos", "b": "Que se pueda entrar y salir con comodidad." },
+            { "t": "Restos acumulados", "b": "No dejes montones de restos sin gestionar." }
+          ],
+          "caption": "Tres revisiones sencillas antes del verano." }
+      ]
+    },
+    {
+      "id": "otono-hojas", "category": "estacional", "services": ["mantenimiento-jardines", "poda-mantenimiento-exterior"], "months": [10, 11, 12], "reviewed": true,
+      "angles": [
+        { "id": "checklist", "type": "carousel", "headline": "Otoño: lo que conviene hacer en el jardín",
+          "slides": [
+            { "t": "Recoger hojas", "b": "Acumuladas en zonas de paso y desagües, causan problemas." },
+            { "t": "Revisar ramas", "b": "Antes del mal tiempo, mira las ramas más cercanas a la casa." },
+            { "t": "Un repaso de la hierba", "b": "Con la humedad, el crecimiento se reactiva." }
+          ],
+          "caption": "El otoño es un buen momento para repasar el exterior antes del invierno." },
+        { "id": "pregunta", "type": "single", "headline": "¿Qué hacer con tanta hoja?",
+          "slides": [{ "t": "Recógela y no la dejes en desagües", "b": "Las hojas acumuladas retienen humedad y pueden obstruir canaletas y desagües." }],
+          "caption": "Un hábito sencillo evita muchos problemas." }
+      ]
+    },
+    {
+      "id": "invierno-revision", "category": "estacional", "services": ["mantenimiento-propiedades"], "months": [12, 1, 2], "reviewed": true,
+      "angles": [
+        { "id": "tras-temporal", "type": "single", "headline": "Tras un temporal, revisa el exterior",
+          "slides": [{ "t": "Ramas, restos y accesos", "b": "Después de viento o lluvias fuertes, conviene comprobar ramas caídas y que los accesos sigan despejados." }],
+          "caption": "Si no puedes pasarte tras un temporal, podemos revisar el exterior y enviarte fotos." },
+        { "id": "checklist", "type": "carousel", "headline": "Invierno: 3 cosas que mirar fuera",
+          "slides": [
+            { "t": "Ramas caídas", "b": "Retíralas antes de que estorben." },
+            { "t": "Accesos", "b": "Comprueba que se puede llegar a la vivienda." },
+            { "t": "Restos acumulados", "b": "Hojas y ramas en zonas de paso." }
+          ],
+          "caption": "Un repaso rápido del exterior en invierno evita sorpresas." }
+      ]
+    },
+    {
+      "id": "local-zona", "category": "local", "services": [], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "donde", "type": "single", "headline": "Dónde trabajamos",
+          "slides": [{ "t": "Desde Les Cases d'Alcanar", "b": "Trabajamos en {{zones}} y en un radio aproximado de 50 km. La disponibilidad depende del trabajo y del desplazamiento." }],
+          "caption": "Nuestra base está en Les Cases d'Alcanar y trabajamos habitualmente en {{zones}}. ¿Tu parcela o vivienda está por la zona? Envíanos la localidad y unas fotos." },
+        { "id": "radio", "type": "single", "headline": "¿Hasta dónde nos desplazamos?",
+          "slides": [{ "t": "Radio aproximado de 50 km", "b": "Alcanar y alrededores. Cuéntanos dónde está y vemos si es viable." }],
+          "caption": "Trabajamos en un radio aproximado de 50 km desde Alcanar. Si dudas, pregúntanos." }
+      ]
+    },
+    {
+      "id": "proceso-trabajo", "category": "consejo", "services": [], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "pasos", "type": "carousel", "headline": "Así trabajamos",
+          "slides": [
+            { "t": "1 · Fotos y ubicación", "b": "Nos cuentas qué necesitas y nos envías fotos." },
+            { "t": "2 · Valoración", "b": "Te decimos cómo lo plantearíamos y si hace falta una visita." },
+            { "t": "3 · Presupuesto", "b": "Con lo que incluye el trabajo, antes de empezar." },
+            { "t": "4 · Trabajo y fotos finales", "b": "Hacemos el trabajo acordado y te enviamos fotos del resultado." }
+          ],
+          "caption": "Trato directo, presupuesto claro y fotos del resultado. Así trabajamos." },
+        { "id": "pregunta", "type": "single", "headline": "¿Cómo se empieza?",
+          "slides": [{ "t": "Con un mensaje por WhatsApp", "b": "Localidad, qué necesitas y 3 o 4 fotos. Con eso ya podemos orientarte." }],
+          "caption": "Empezar es sencillo: un mensaje con fotos y ubicación." }
+      ]
+    },
+    {
+      "id": "limpieza-vivienda-propia", "category": "propiedades", "services": ["limpieza-viviendas"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "servicio", "type": "single", "headline": "Limpieza de viviendas, como servicio propio",
+          "slides": [{ "t": "Aparte del jardín", "b": "La limpieza de la vivienda se plantea como servicio independiente. Cuéntanos qué necesitas." }],
+          "caption": "Además del exterior, ofrecemos limpieza de viviendas como servicio propio. Cuéntanos qué necesitas y lo valoramos." },
+        { "id": "llegada", "type": "single", "headline": "Antes de llegar de vacaciones",
+          "slides": [{ "t": "Una vivienda lista al llegar", "b": "La limpieza previa a tu llegada se puede combinar con la puesta a punto del exterior." }],
+          "caption": "Llegar y encontrarlo todo en orden: limpieza y exterior coordinados." }
+      ]
+    },
+    {
+      "id": "pintura-retoques", "category": "propiedades", "services": ["pintura"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "retoques", "type": "single", "headline": "Retoques de pintura",
+          "slides": [{ "t": "Estancias y zonas concretas", "b": "Cuéntanos qué quieres pintar y envíanos fotos para valorarlo." }],
+          "caption": "Pintura: consulta con nosotros qué quieres renovar. Valoramos con fotos y te decimos cómo lo plantearíamos." },
+        { "id": "preparacion", "type": "single", "headline": "Pintar bien empieza por preparar",
+          "slides": [{ "t": "La preparación marca el resultado", "b": "Limpiar y proteger las superficies antes de pintar influye mucho en el acabado." }],
+          "caption": "Un buen acabado se decide antes de abrir el bote." }
+      ]
+    },
+    {
+      "id": "reparaciones-pequenas", "category": "propiedades", "services": ["reparaciones-hogar"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "pendientes", "type": "single", "headline": "Esos pequeños arreglos pendientes",
+          "slides": [{ "t": "Mejor no dejarlos acumular", "b": "Pequeñas reparaciones del hogar: cuéntanos qué tienes pendiente y lo valoramos." }],
+          "caption": "Las pequeñas reparaciones se acumulan. Cuéntanos qué tienes pendiente. Para reparaciones que requieran un profesional especializado, te lo decimos." },
+        { "id": "alcance", "type": "single", "headline": "Pequeñas reparaciones: hasta dónde llegamos",
+          "slides": [{ "t": "Lo pequeño, sí", "b": "Para trabajos que requieran un profesional especializado, te lo decimos con claridad." }],
+          "caption": "Tenemos claro cuál es nuestro alcance. Así evitamos malentendidos." }
+      ]
+    },
+    {
+      "id": "faq-mantenimiento-periodico", "category": "faq", "services": ["mantenimiento-jardines"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "pregunta", "type": "single", "headline": "¿Hacéis mantenimiento después de limpiar?",
+          "slides": [{ "t": "Sí", "b": "Podemos acordar visitas puntuales o periódicas para controlar crecimiento, accesos y zonas alrededor de árboles." }],
+          "caption": "Tras una limpieza, acordamos si prefieres visitas puntuales o periódicas." },
+        { "id": "ritmo", "type": "single", "headline": "El mantenimiento a tu ritmo",
+          "slides": [{ "t": "Puntual o periódico", "b": "Lo decides tú. Nosotros proponemos un ritmo realista según el terreno." }],
+          "caption": "El mantenimiento se adapta al terreno y a lo que necesites." }
+      ]
+    },
+    {
+      "id": "faq-vive-lejos", "category": "faq", "services": ["mantenimiento-segundas-residencias"], "months": null, "reviewed": true,
+      "angles": [
+        { "id": "pregunta", "type": "single", "headline": "¿Trabajáis con propietarios que viven lejos?",
+          "slides": [{ "t": "Sí", "b": "Coordinamos por WhatsApp, enviamos fotografías del resultado y organizamos el acceso previamente." }],
+          "caption": "Muchos de nuestros clientes viven lejos. Lo coordinamos todo a distancia." },
+        { "id": "acceso", "type": "single", "headline": "Si no estás, ¿cómo entramos?",
+          "slides": [{ "t": "Se organiza antes", "b": "El acceso se acuerda previamente contigo, y recibes fotos al terminar." }],
+          "caption": "El acceso se acuerda de antemano y recibes fotos del resultado." }
+      ]
+    },
+    {
+      "id": "reglamento-municipal", "category": "consejo", "services": ["desbroce-parcelas"], "months": [4, 5, 6], "reviewed": false,
+      "angles": [
+        { "id": "consulta", "type": "single", "headline": "Parcelas limpias: consulta tu ayuntamiento",
+          "slides": [{ "t": "Cada municipio tiene sus normas", "b": "Antes del verano, comprueba las indicaciones de tu ayuntamiento sobre el mantenimiento de parcelas." }],
+          "caption": "Cada municipio tiene sus propias indicaciones sobre el mantenimiento de parcelas. Consúltalas y, si necesitas ayuda con el desbroce, escríbenos." },
+        { "id": "recordatorio", "type": "single", "headline": "Recordatorio antes del verano",
+          "slides": [{ "t": "Parcela al día", "b": "Revisa el estado de tu parcela y las indicaciones municipales." }],
+          "caption": "Un recordatorio amable para propietarios de parcelas." }
+      ]
+    }
+  ]
+}

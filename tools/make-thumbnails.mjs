@@ -37,9 +37,14 @@ const AVIF_SQUARE = ["alcanar-platja-despues", "hero-after", "rapita-despues", "
 // Fotos muy detalladas (hierba/hojas): -3 de calidad AVIF (SSIM 0,977 -> 0,970 a tamano real, indistinguible a 1:1).
 const AVIF_QDELTA = { "jardin-olivos-antes": -3, "jardin-olivos-despues": -3 };
 
-const meta = {};
+// Fotos de casos nuevos anadidas por marketing/ (mk web propose-case): src/_data/marketingImages.json
+try { BASE_NAMES.push(...JSON.parse((await fs.readFile(path.resolve("src/_data/marketingImages.json"), "utf8")).replace(/^﻿/, ""))); } catch (e) { if (e.code !== "ENOENT") throw e; }
 
-for (const name of BASE_NAMES) {
+// MK_ONLY=a,b procesa solo esas fotos y conserva el resto de imageMeta.json (casos nuevos: rapido y sin tocar lo existente).
+const ONLY = process.env.MK_ONLY ? process.env.MK_ONLY.split(",") : null;
+const meta = ONLY ? JSON.parse((await fs.readFile(path.resolve("src/_data/imageMeta.json"), "utf8")).replace(/^﻿/, "")) : {};
+
+for (const name of ONLY || BASE_NAMES) {
   const src = path.join(DIR, `${name}.webp`);
   try {
     await fs.access(src);

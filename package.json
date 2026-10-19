@@ -11,7 +11,10 @@
     "linkcheck": "node tools/check-links.mjs",
     "check": "node tools/check-links.mjs && node tools/check-jsonld.mjs && node tools/check-seo.mjs",
     "check:legal": "node tools/check-legal.mjs",
-    "serve:prod-equiv": "node tools/prod-equiv-server.mjs"
+    "serve:prod-equiv": "node tools/prod-equiv-server.mjs",
+    "mk": "node marketing/cli.mjs",
+    "mk:test": "node --test \"marketing/tests/*.test.mjs\"",
+    "mk:qa": "node marketing/cli.mjs qa"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
