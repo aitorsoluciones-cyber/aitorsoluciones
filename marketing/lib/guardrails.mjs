@@ -41,6 +41,7 @@ export function lintPiece(piece, { assets = load("assets"), jobs = load("jobs") 
   const text = [piece.copy?.headline, ...Object.values(piece.copy?.captions || {}), ...(piece.copy?.slides || []).flatMap((s) => [s.t, s.b])].filter(Boolean).join("\n");
   const allowed = [];
   if (piece.kind === "work") {
+    if (piece.visual) problems.push("las piezas de trabajo real no admiten imagen generada");
     const job = findById(jobs, piece.jobId);
     if (!job) problems.push("pieza de trabajo sin trabajo asociado");
     else {
@@ -54,9 +55,18 @@ export function lintPiece(piece, { assets = load("assets"), jobs = load("jobs") 
       }
     }
   } else {
-    for (const id of piece.assetIds || []) {
+    const ids = [...(piece.assetIds || []), ...(piece.visual?.assetIds || [])];
+    for (const id of ids) {
       const a = findById(assets, id);
-      if (a && a.origin === "real") problems.push(`pieza ${piece.kind} con foto real ${id}: solo graficos (no se presentan fotos como trabajos)`);
+      if (a && a.origin === "real") problems.push(`pieza ${piece.kind} con foto real ${id}: solo graficos o imagenes generadas (no se presentan fotos como trabajos)`);
+    }
+    // Transparencia sin deteriorar el marketing: solo la imagen generada que puede parecer una fotografia lleva etiqueta DENTRO de la imagen.
+    // Automatizacion completa: la imagen generada debe haber pasado el critico visual (o la aprobacion humana).
+    for (const id of ids) {
+      const a = findById(assets, id);
+      if (!a?.aiGenerated) continue;
+      if (a.disclosure && !a.labelApplied) problems.push(`el activo ${id} necesita la etiqueta "${a.disclosure}" dentro de la imagen`);
+      if (config().imageEngine?.critic?.requireForAuto !== false && a.autoPublish === false) problems.push(`el activo ${id} no paso el critico visual: requiere aprobacion humana (mk visual approve ${id})`);
     }
     if (piece.copy?.zones) allowed.push(...piece.copy.zones);
   }

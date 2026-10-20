@@ -6,6 +6,7 @@ import sharp from "sharp";
 export function tmpHome() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mk-test-"));
   process.env.MK_HOME = path.join(dir, "state");
+  process.once("exit", () => { try { fs.rmSync(dir, { recursive: true, force: true }); } catch { /* ya borrado */ } });
   return dir;
 }
 
@@ -20,4 +21,45 @@ export async function fakePhoto(file, seed = 1, { width = 1600, height = 1200 } 
   fs.mkdirSync(path.dirname(file), { recursive: true });
   await sharp(Buffer.from(svg)).jpeg({ quality: 90 }).toFile(file);
   return file;
+}
+
+// Imagen "natural" sintetica (tonos tierra/verde con ruido y asimetria): supera los umbrales de calidad.
+export async function naturalImage(seed = 1, width = 1088, height = 1360) {
+  const raw = Buffer.alloc(width * height * 3);
+  let s = seed * 9301 + 49297;
+  const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
+  for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+    const i = (y * width + x) * 3;
+    const sky = y < height * (0.3 + 0.1 * Math.sin(x / 90 + seed));
+    const n = (rnd() - 0.5) * 70;
+    raw[i] = Math.max(0, Math.min(255, (sky ? 150 : 95 + (x * 40) / width) + n));
+    raw[i + 1] = Math.max(0, Math.min(255, (sky ? 175 : 120 + (y * 30) / height) + n));
+    raw[i + 2] = Math.max(0, Math.min(255, (sky ? 205 : 70) + n));
+  }
+  return sharp(raw, { raw: { width, height, channels: 3 } }).png().toBuffer();
+}
+
+// Imagen con exceso de saturacion y tono cian/violeta (look tecnologico): debe rechazarse.
+export async function neonImage(width = 1088, height = 1360) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><defs><linearGradient id="g"><stop offset="0" stop-color="#00f0ff"/><stop offset="1" stop-color="#8a00ff"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>`;
+  return sharp(Buffer.from(svg)).png().toBuffer();
+}
+
+// fetch simulado de la API de imagenes y del critico (Responses): colas de respuestas por endpoint.
+export const CRITIC_OK = { score: 90, ai_look: 2, brand_fit: 8, commercial_appeal: 8, visual_errors: [], composition_breathes: true, text_placement_ok: true, mobile_legible: true, publishable: true, flags: [], notes: "ok" };
+export function mockOpenAI({ generations = [], edits = [], responses = [], failWith } = {}) {
+  const calls = [];
+  const fetchImpl = async (url, init = {}) => {
+    calls.push({ url, init });
+    if (failWith) return { ok: false, status: failWith.status, json: async () => ({ error: failWith.error }) };
+    if (url.endsWith("/responses")) {
+      const r = responses.length ? responses.shift() : CRITIC_OK;
+      return { ok: true, status: 200, json: async () => ({ output_text: typeof r === "string" ? r : JSON.stringify(r) }) };
+    }
+    const queue = url.endsWith("/images/generations") ? generations : edits;
+    const item = queue.shift();
+    const buf = typeof item === "function" ? await item(init) : item;
+    return { ok: true, status: 200, json: async () => ({ data: [{ b64_json: buf.toString("base64") }] }) };
+  };
+  return { fetchImpl, calls };
 }

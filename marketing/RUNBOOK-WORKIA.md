@@ -28,3 +28,25 @@ Antes: `qa --web --urls /trabajos/` (y la URL del caso si lleva página).
 ## Reglas que no se saltan
 Fotos reales solo para trabajos reales · nada de localidades, clientes, resultados, precios o reseñas inventados · no duplicar ni publicar en masa · no cambiar URLs ni SEO estructural sin necesidad ·
 no publicar sin pasar `qa` · las credenciales de Meta/Google viven en variables de entorno, nunca en el repo.
+
+## Publicar con los conectores de Work (diario)
+1. `npm run mk -- auto run` (genera/actualiza imágenes, QA, cola y URLs públicas).
+2. `npm run mk -- work next` → JSON. Para cada ítem con `ready:true`: ejecuta sus `actions` con el conector indicado (Facebook orgánico, Instagram, Google Business Profile) usando `imageUrls`/`extraUrls` y el texto tal cual.
+3. Con la URL de cada publicación: `npm run mk -- work done <pieza> <canal> <url>`. Si falla: `work fail <pieza> <canal> "motivo"` (sigue en cola).
+4. Ítems con `ready:false`: lee `blockedBy` (sin URL pública → `mk media publish`; Instagram sin JPEG → `mk queue --rebuild`).
+
+## Si una pieza no tiene imagen
+`mk visual state` lista el estado. `VISUAL_PENDING`: espera al siguiente `auto run` (reintenta). `REJECTED`: no se publica; revisa `rejected/` y el motivo, ajusta el brief/titular y `mk visual retry <pieza>`. No se usan plantillas tipográficas antiguas salvo `mk visual allow-graphic <pieza> --by <quién> --reason "<motivo>"` (emergencia explícita).
+
+## Limpieza semanal
+Viernes: `mk auto run --prune` (incluye `mk cleanup --apply`) y `mk verify`. Lista de limpieza de Drive para Work: `marketing/_state/drive-cleanup-for-work.md`.
+
+## Drive sin descarga manual
+`mk drive pending` → descarga cada fichero con tu descarga raw/streaming → `mk drive receive <carpeta>` (nombre `<driveId>__fichero`) → `mk jobs --status NEW` para revisar. Tras publicar: `mk drive-plan` lista qué mover entre carpetas.
+
+## Imagen para una pieza evergreen (motor visual)
+1. `npm run mk -- visual for-piece <pieza> --quality low` (o un brief a mano: `marketing/brief.example.json`). Con `--dry-run` solo muestra prompts y coste.
+2. El crítico visual revisa fondo y pieza final; lo descartado queda en `rejected/`. Si la imagen quedó sin crítico (`autoPublish:false`), revísala y `visual approve <activo>`.
+3. Transparencia: la etiqueta «Ilustración» ya va en la imagen cuando procede; no hace falta tocar los pies.
+Trabajo real con titular/logotipo: brief con `use_real_work:true` y `source_images:[<id de foto real>]` (`edit.operation: compose` por defecto, sin IA).
+

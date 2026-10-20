@@ -65,7 +65,7 @@ test("QA: detecta duplicados, localidades inventadas, ficheros inexistentes y hu
   assert.match(text, /duplicado exacto/);
   assert.match(text, /fichero inexistente/);
   assert.match(text, /localidad inventada|inexistente/);
-  assert.match(text, /origin debe ser real\|graphic/);
+  assert.match(text, /origin debe ser real\|graphic\|generated/);
 });
 
 test("exportacion CSV y plan de Drive", async () => {

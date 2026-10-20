@@ -2,38 +2,58 @@
 // en un minuto; con credenciales (variables de entorno) y MK_ALLOW_PUBLISH=1 los adaptadores publican solos.
 import fs from "node:fs";
 import path from "node:path";
+import sharp from "sharp";
 import { load, save, nowIso, findById } from "./store.mjs";
 import { queueDir, ensureDir, outDir, config } from "./paths.mjs";
 import { renderPiece } from "./assets.mjs";
+import { visualStateOf, VISUAL } from "./visual-state.mjs";
 import { transition } from "./states.mjs";
 import { setJobStatus } from "./jobs.mjs";
 
-const copyInto = (dir, src, name) => { ensureDir(path.dirname(path.join(dir, name))); fs.copyFileSync(src, path.join(dir, name)); return name; };
+const copyInto = async (dir, src, name, jpeg = false) => {
+  if (jpeg && /\.png$/i.test(name)) { name = name.replace(/\.png$/i, ".jpg"); ensureDir(path.dirname(path.join(dir, name))); fs.writeFileSync(path.join(dir, name), await sharp(src).jpeg({ quality: 92, mozjpeg: true }).toBuffer()); return name; }
+  ensureDir(path.dirname(path.join(dir, name))); fs.copyFileSync(src, path.join(dir, name)); return name;
+};
 
 // Ficheros que corresponden a cada canal.
 export function filesForChannel(channel, renderDir, piece) {
   const p = (...x) => path.join(renderDir, ...x);
   const has = (f) => fs.existsSync(p(f));
+  const pick = (base) => [base + ".png", base + ".jpg"].find(has) || null;
   const out = { main: [], extra: [] };
   if (channel === "instagram") {
     const carousel = fs.existsSync(p("carousel")) ? fs.readdirSync(p("carousel")).sort().map((f) => "carousel/" + f) : [];
-    if (piece.kind === "work") { if (has("feed.png")) out.main.push("feed.png"); out.extra.push(...carousel); }
+    if (piece.kind === "work") { if (pick("feed")) out.main.push(pick("feed")); out.extra.push(...carousel); }
     else if (carousel.length) out.main.push(...carousel);
-    else if (has("feed.png")) out.main.push("feed.png");
-    if (has("story.png")) out.extra.push("story.png");
-  } else if (channel === "facebook") { if (has("feed.png")) out.main.push("feed.png"); }
-  else if (channel === "gbp") { for (const f of ["gbp.jpg", "gbp.png"]) if (has(f)) out.main.push(f); }
+    else if (pick("feed")) out.main.push(pick("feed"));
+    if (pick("story")) out.extra.push(pick("story"));
+  } else if (channel === "facebook") { if (pick("feed")) out.main.push(pick("feed")); }
+  else if (channel === "gbp") { if (pick("gbp") || has("gbp.jpg")) out.main.push(has("gbp.jpg") ? "gbp.jpg" : pick("gbp")); }
   return out;
 }
 
-export async function buildQueue({ today, ahead = 3, log = () => {} }) {
+// rebuild: rehace tambien lo ya preparado y aun sin publicar (p. ej. tras cambiar imagenes o formatos).
+export async function buildQueue({ today, ahead = 3, rebuild = false, log = () => {} }) {
   const pieces = load("pieces");
   const assets = load("assets");
   const jobs = load("jobs");
   const limit = new Date(new Date(today + "T00:00:00Z").getTime() + ahead * 86400000).toISOString().slice(0, 10);
   const queued = [];
+  if (rebuild) for (const piece of pieces.filter((p) => p.status === "SCHEDULED" && p.scheduledFor <= limit)) for (const ch of piece.channels) {
+    if (piece.channelStatus?.[ch] !== "READY_TO_PUBLISH") continue;
+    fs.rmSync(queueDir("READY_TO_PUBLISH", `${piece.scheduledFor}__${piece.id}__${ch}`), { recursive: true, force: true });
+    delete piece.channelStatus[ch];
+  }
   for (const piece of pieces.filter((p) => p.status === "SCHEDULED" && p.scheduledFor <= limit)) {
-    const render = await renderPiece(piece, { assets, jobs, root: outDir(piece.id) });
+    let render;
+    try { render = await renderPiece(piece, { assets, jobs, root: outDir(piece.id) }); }
+    catch (e) {
+      if (e.code !== "VISUAL_PENDING") throw e;
+      if (piece.visualState !== VISUAL.REJECTED) piece.visualState = VISUAL.PENDING;
+      (queued.skipped ||= []).push({ pieceId: piece.id, state: visualStateOf(piece, assets), missing: e.missing });
+      log(`  SIN COLA ${piece.id}: ${e.message}`);
+      continue;
+    }
     piece.render = { dir: render.dir, files: render.files.map((f) => path.relative(render.dir, f.file).split(path.sep).join("/")), warnings: render.warnings, at: nowIso() };
     piece.channelStatus ||= {};
     for (const ch of piece.channels) {
@@ -43,12 +63,15 @@ export async function buildQueue({ today, ahead = 3, log = () => {} }) {
       ensureDir(dir);
       const f = filesForChannel(ch, render.dir, piece);
       if (!f.main.length) throw new Error(`Sin activos para ${ch} en ${piece.id}`);
-      const main = f.main.map((x) => copyInto(dir, path.join(render.dir, x), x));
-      const extra = f.extra.map((x) => copyInto(dir, path.join(render.dir, x), "extra/" + x));
+      const jpeg = ch === "instagram"; // la API de Instagram solo admite JPEG
+      const main = [];
+      for (const x of f.main) main.push(await copyInto(dir, path.join(render.dir, x), x, jpeg));
+      const extra = [];
+      for (const x of f.extra) extra.push(await copyInto(dir, path.join(render.dir, x), "extra/" + x, jpeg));
       const caption = piece.copy.captions[ch];
       fs.writeFileSync(path.join(dir, "caption.txt"), caption + "\n");
       fs.writeFileSync(path.join(dir, "alt.txt"), piece.copy.alt + "\n");
-      const post = { pieceId: piece.id, channel: ch, scheduledFor: piece.scheduledFor, time: piece.time, kind: piece.kind, files: main, extra, caption, alt: piece.copy.alt, status: "READY_TO_PUBLISH", warnings: render.warnings,
+      const post = { pieceId: piece.id, channel: ch, scheduledFor: piece.scheduledFor, time: piece.time, kind: piece.kind, files: main, extra, caption, alt: piece.copy.alt, status: "READY_TO_PUBLISH", renderer: piece.manualGraphic ? "manual-graphic" : "v2", visualState: visualStateOf(piece, assets), warnings: render.warnings,
         ...(ch === "gbp" ? { gbp: { topicType: "STANDARD", languageCode: "es", callToAction: { actionType: config().channels.gbp.ctaButton } } } : {}) };
       fs.writeFileSync(path.join(dir, "post.json"), JSON.stringify(post, null, 2) + "\n");
       fs.writeFileSync(path.join(dir, "PUBLICAR.md"), `# ${ch} · ${piece.scheduledFor} ${piece.time}\n\n1. Sube ${main.join(", ")} (en ese orden).\n2. Pega el texto de caption.txt.\n3. Texto alternativo: alt.txt.\n4. Cuando publiques: \`npm run mk -- published ${piece.id} ${ch} <url>\`\n`);
