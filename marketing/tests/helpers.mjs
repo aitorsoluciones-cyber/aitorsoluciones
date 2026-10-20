@@ -6,6 +6,7 @@ import sharp from "sharp";
 export function tmpHome() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mk-test-"));
   process.env.MK_HOME = path.join(dir, "state");
+  process.once("exit", () => { try { fs.rmSync(dir, { recursive: true, force: true }); } catch { /* ya borrado */ } });
   return dir;
 }
 

@@ -6,6 +6,8 @@ import sharp from "sharp";
 import { REPO, config, outDir, ensureDir } from "./paths.mjs";
 import { load, findById } from "./store.mjs";
 import { readPhoto } from "./media.mjs";
+import { VisualPendingError, visualStateOf, neededFormats } from "./visual-state.mjs";
+import { composePointSlide, composeFinal } from "./visual/compose.mjs";
 
 export const SIZES = { feed: [1080, 1350], story: [1080, 1920], gbp: [1200, 900] };
 export const TEMPLATES = ["navy", "cream", "orange", "grid"];
@@ -196,8 +198,10 @@ export async function renderPiece(piece, { assets = load("assets"), jobs = load(
     if (wants("carousel")) {
       const slides = [await photoFeed(afterBuf, { label: "DESPUÉS" })];
       if (beforeBuf) slides.push(await photoFeed(beforeBuf, { label: "ANTES" }), await beforeAfterFeed(beforeBuf, afterBuf));
-      slides.push(await renderGraphic({ template: piece.template, kind: "point", tag: "Qué hicimos", title: job.title || "Trabajo realizado", body: job.notes || "", size: "feed" }));
-      slides.push(await renderGraphic({ template: piece.template, kind: "cta", title: "¿Tienes algo parecido?", size: "feed" }));
+      // texto funcional SOBRE la foto real (velo de marca + logotipo oficial); nunca plantillas tipograficas sueltas
+      const [fw, fh] = SIZES.feed;
+      slides.push(await composePointSlide(afterBuf, { tag: "Qué hicimos", title: job.title || "Trabajo realizado", body: job.notes || "" }, { width: fw, height: fh }));
+      slides.push(await composeFinal(afterBuf, { headline: "¿Tienes algo parecido?", cta: config().brand.cta, location: null }, "feed"));
       for (let i = 0; i < slides.length; i++) await add(`carousel/${String(i + 1).padStart(2, "0")}.png`, slides[i], "carousel");
     }
     if (wants("gbp")) await add("gbp.jpg", await photoGbp(afterBuf), "gbp");
@@ -216,6 +220,12 @@ export async function renderPiece(piece, { assets = load("assets"), jobs = load(
     const tpl = piece.template || "navy";
     const slides = c.slides || [];
     const single = piece.type === "single" || slides.length <= 1;
+    // Un carrusel generado tambien aporta la portada como feed (Facebook).
+    if (!single && vc.length && wants("feed") && !taken.has("feed")) { await add("feed" + path.extname(vc[0].sourcePath), fs.readFileSync(vc[0].sourcePath), "feed"); taken.add("feed"); }
+    // Sin imagen aprobada la pieza NO se renderiza: no hay vuelta automatica a las plantillas tipograficas antiguas.
+    const needed = neededFormats(piece);
+    const missing = needed.filter((f) => !taken.has(f));
+    if (missing.length && !piece.manualGraphic) throw new VisualPendingError(piece.id, missing, visualStateOf(piece, assets));
     if (single) {
       const s = slides[0] || {};
       const common = { template: tpl, kind: "single", tag: c.tag, title: c.headline || s.t, body: s.b ? (c.headline ? `${s.t}. ${s.b}` : s.b) : "" };

@@ -75,7 +75,7 @@ async function generateVariants(brief, mode, ctx, previewFn) {
     oa.recordCost({ costUsd: imgCost, model, op: mode === "reference" ? "edit" : "generate", briefId: brief.id, n: 1 });
     spent += imgCost;
     const buf = res.images[0];
-    const file = writeFile(path.join(root, "generated"), `${brief.campaign}-${brief.id}-v${i + 1}.png`, buf);
+    const file = writeFile(path.join(root, "generated"), `${brief.campaign}-${brief.id}-v${i + 1}-${sha256(buf).slice(0, 8)}.png`, buf);
     const verdict = await validateImage(buf, { width: size[0], height: size[1], stage: "background", critic });
     if (critic) { oa.recordCost({ costUsd: cfgE.critic.costUsdPerCall, model: visionModel, op: "critic-background", briefId: brief.id, n: 1 }); spent += cfgE.critic.costUsdPerCall; }
     let final = null;
@@ -195,6 +195,14 @@ export async function generateCarouselAssets(raw, ctxIn) {
   slides.push(await composeFinal(gen.chosen.buf, { ...withLabel, headline: "¿Hablamos?" }, "feed"));
   const extra = metaExtra(brief, mode, { verdict: gen.chosen.verdict, final: gen.chosen.final });
   const outputs = { slides: [] }, assetIds = [];
+  // story y gbp de la pieza (portada compuesta con el mismo fondo) para que ningun canal dependa de plantillas tipograficas
+  const wantF = new Set((brief.channels?.length ? brief.channels : [brief.channel]).flatMap((c) => FORMATS_BY_CHANNEL[c] || []));
+  for (const fmt of ["story", "gbp"].filter((f) => wantF.has(f))) {
+    const img = await composeFinal(gen.chosen.buf, withLabel, fmt);
+    const jf = writeFile(path.join(root, DIR_BY_FORMAT[fmt]), `${brief.campaign}-${brief.id}-${fmt}.jpg`, await sharp(img).jpeg({ quality: 92, mozjpeg: true }).toBuffer());
+    const rr = await registerAsset(jf, { origin: "generated", status: "READY", prompt: gen.chosen.prompt, model: gen.model, campaign: brief.campaign, type: "carousel", channel: brief.channel, format: fmt, briefId: brief.id, derivedFrom: [gen.rawAsset.id], review: gen.chosen.verdict.reviewed, score: gen.chosen.verdict.score, extra });
+    outputs[fmt] = jf; assetIds.push(rr.asset.id);
+  }
   for (const [i, s] of slides.entries()) {
     const file = writeFile(path.join(root, "feed"), `${brief.campaign}-${brief.id}-slide${String(i + 1).padStart(2, "0")}.jpg`, await sharp(s).jpeg({ quality: 92, mozjpeg: true }).toBuffer());
     const r = await registerAsset(file, { origin: "generated", status: "READY", prompt: gen.chosen.prompt, model: gen.model, campaign: brief.campaign, type: "carousel", channel: brief.channel, format: `carousel-${i + 1}`, briefId: brief.id, derivedFrom: [gen.rawAsset.id], review: gen.chosen.verdict.reviewed, score: gen.chosen.verdict.score, extra });

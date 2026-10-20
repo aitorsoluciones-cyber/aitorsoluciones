@@ -6,6 +6,7 @@ import sharp from "sharp";
 import { load, save, nowIso, findById } from "./store.mjs";
 import { queueDir, ensureDir, outDir, config } from "./paths.mjs";
 import { renderPiece } from "./assets.mjs";
+import { visualStateOf, VISUAL } from "./visual-state.mjs";
 import { transition } from "./states.mjs";
 import { setJobStatus } from "./jobs.mjs";
 
@@ -44,7 +45,15 @@ export async function buildQueue({ today, ahead = 3, rebuild = false, log = () =
     delete piece.channelStatus[ch];
   }
   for (const piece of pieces.filter((p) => p.status === "SCHEDULED" && p.scheduledFor <= limit)) {
-    const render = await renderPiece(piece, { assets, jobs, root: outDir(piece.id) });
+    let render;
+    try { render = await renderPiece(piece, { assets, jobs, root: outDir(piece.id) }); }
+    catch (e) {
+      if (e.code !== "VISUAL_PENDING") throw e;
+      if (piece.visualState !== VISUAL.REJECTED) piece.visualState = VISUAL.PENDING;
+      (queued.skipped ||= []).push({ pieceId: piece.id, state: visualStateOf(piece, assets), missing: e.missing });
+      log(`  SIN COLA ${piece.id}: ${e.message}`);
+      continue;
+    }
     piece.render = { dir: render.dir, files: render.files.map((f) => path.relative(render.dir, f.file).split(path.sep).join("/")), warnings: render.warnings, at: nowIso() };
     piece.channelStatus ||= {};
     for (const ch of piece.channels) {
@@ -62,7 +71,7 @@ export async function buildQueue({ today, ahead = 3, rebuild = false, log = () =
       const caption = piece.copy.captions[ch];
       fs.writeFileSync(path.join(dir, "caption.txt"), caption + "\n");
       fs.writeFileSync(path.join(dir, "alt.txt"), piece.copy.alt + "\n");
-      const post = { pieceId: piece.id, channel: ch, scheduledFor: piece.scheduledFor, time: piece.time, kind: piece.kind, files: main, extra, caption, alt: piece.copy.alt, status: "READY_TO_PUBLISH", warnings: render.warnings,
+      const post = { pieceId: piece.id, channel: ch, scheduledFor: piece.scheduledFor, time: piece.time, kind: piece.kind, files: main, extra, caption, alt: piece.copy.alt, status: "READY_TO_PUBLISH", renderer: piece.manualGraphic ? "manual-graphic" : "v2", visualState: visualStateOf(piece, assets), warnings: render.warnings,
         ...(ch === "gbp" ? { gbp: { topicType: "STANDARD", languageCode: "es", callToAction: { actionType: config().channels.gbp.ctaButton } } } : {}) };
       fs.writeFileSync(path.join(dir, "post.json"), JSON.stringify(post, null, 2) + "\n");
       fs.writeFileSync(path.join(dir, "PUBLICAR.md"), `# ${ch} · ${piece.scheduledFor} ${piece.time}\n\n1. Sube ${main.join(", ")} (en ese orden).\n2. Pega el texto de caption.txt.\n3. Texto alternativo: alt.txt.\n4. Cuando publiques: \`npm run mk -- published ${piece.id} ${ch} <url>\`\n`);

@@ -35,6 +35,12 @@ no publicar sin pasar `qa` · las credenciales de Meta/Google viven en variables
 3. Con la URL de cada publicación: `npm run mk -- work done <pieza> <canal> <url>`. Si falla: `work fail <pieza> <canal> "motivo"` (sigue en cola).
 4. Ítems con `ready:false`: lee `blockedBy` (sin URL pública → `mk media publish`; Instagram sin JPEG → `mk queue --rebuild`).
 
+## Si una pieza no tiene imagen
+`mk visual state` lista el estado. `VISUAL_PENDING`: espera al siguiente `auto run` (reintenta). `REJECTED`: no se publica; revisa `rejected/` y el motivo, ajusta el brief/titular y `mk visual retry <pieza>`. No se usan plantillas tipográficas antiguas salvo `mk visual allow-graphic <pieza> --by <quién> --reason "<motivo>"` (emergencia explícita).
+
+## Limpieza semanal
+Viernes: `mk auto run --prune` (incluye `mk cleanup --apply`) y `mk verify`. Lista de limpieza de Drive para Work: `marketing/_state/drive-cleanup-for-work.md`.
+
 ## Drive sin descarga manual
 `mk drive pending` → descarga cada fichero con tu descarga raw/streaming → `mk drive receive <carpeta>` (nombre `<driveId>__fichero`) → `mk jobs --status NEW` para revisar. Tras publicar: `mk drive-plan` lista qué mover entre carpetas.
 

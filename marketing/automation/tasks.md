@@ -14,7 +14,7 @@ Prepara todo antes de la hora de publicación: plan ≥ 4 semanas, imágenes de 
 npm run mk -- auto run
 ```
 
-Viernes, además, limpia las URLs antiguas y deja el informe: `npm run mk -- auto run --prune` y `npm run mk -- report`.
+Viernes, además, **limpieza semanal** (activos obsoletos, pruebas, renders huérfanos, `rejected` vencidos y rama `media`) e informe: `npm run mk -- auto run --prune`, después `npm run mk -- verify` y `npm run mk -- report`. Una pieza sin visual aprobado NO se publica (queda `VISUAL_PENDING`/`REJECTED`; ver `npm run mk -- visual state`).
 
 Windows (Programador de tareas), **ejemplo sin ejecutar**:
 

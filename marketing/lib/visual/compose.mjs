@@ -116,7 +116,7 @@ export async function composeInfographic(background, { title, points, tag = "" }
 }
 
 // Diapositiva de un punto (carrusel): fondo velado + numero + titulo + texto, todo programatico.
-export async function composePointSlide(background, { n, total, title, body = "" }, { width = 1080, height = 1350 } = {}) {
+export async function composePointSlide(background, { n = null, total, title, body = "", tag = "" }, { width = 1080, height = 1350 } = {}) {
   const c = config().brand.colors;
   const img = await cover(background, width, height);
   const padX = Math.round(width * 0.09), maxW = width - padX * 2;
@@ -124,8 +124,11 @@ export async function composePointSlide(background, { n, total, title, body = ""
   const tLines = wrapText(title, charsFor(maxW, tSize)).slice(0, 4);
   const bLines = wrapText(body, charsFor(maxW, bSize)).slice(0, 7);
   let y = Math.round(height * 0.2);
-  const parts = [`<rect width="${width}" height="${height}" fill="${c.navy}" fill-opacity="0.82"/>`, `<circle cx="${padX + 34}" cy="${y}" r="34" fill="${c.orange}"/><text x="${padX + 34}" y="${y + 12}" text-anchor="middle" font-family="${FONT}" font-size="34" font-weight="700" fill="#fff">${n}</text>`];
-  if (total) parts.push(`<text x="${width - padX}" y="${y + 12}" text-anchor="end" font-family="${FONT}" font-size="30" font-weight="700" fill="${c.orangeLight}">${n}/${total}</text>`);
+  const badge = n == null
+    ? (tag ? `<rect x="${padX}" y="${y - 34}" width="${tag.length * 22 + 56}" height="58" rx="8" fill="${c.orange}"/><text x="${padX + 28}" y="${y + 6}" font-family="${FONT}" font-size="32" font-weight="700" fill="#fff" letter-spacing="2">${esc(tag.toUpperCase())}</text>` : "")
+    : `<circle cx="${padX + 34}" cy="${y}" r="34" fill="${c.orange}"/><text x="${padX + 34}" y="${y + 12}" text-anchor="middle" font-family="${FONT}" font-size="34" font-weight="700" fill="#fff">${n}</text>`;
+  const parts = [`<rect width="${width}" height="${height}" fill="${c.navy}" fill-opacity="0.82"/>`, badge];
+  if (total && n != null) parts.push(`<text x="${width - padX}" y="${y + 12}" text-anchor="end" font-family="${FONT}" font-size="30" font-weight="700" fill="${c.orangeLight}">${n}/${total}</text>`);
   y += 120;
   tLines.forEach((l, i) => parts.push(`<text x="${padX}" y="${y + i * Math.round(tSize * 1.12)}" font-family="${FONT}" font-size="${tSize}" font-weight="700" fill="#fff">${esc(l)}</text>`));
   y += tLines.length * Math.round(tSize * 1.12) + 30;

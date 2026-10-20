@@ -4,7 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync, spawn } from "node:child_process";
 import sharp from "sharp";
-import { REPO, config } from "./paths.mjs";
+import { REPO, config, queueDir } from "./paths.mjs";
+import { visualStateOf, VISUAL } from "./visual-state.mjs";
 import { load, findById } from "./store.mjs";
 import { STATES } from "./states.mjs";
 import { lintPiece, lintCopy } from "./guardrails.mjs";
@@ -69,6 +70,16 @@ export async function checkState({ today }) {
       if (p.slot) slots.set(p.slot, p.id);
       for (const problem of lintPiece(p, { assets, jobs })) errors.push(`pieza ${p.id}: ${problem}`);
       if (!p.copy?.alt) errors.push(`pieza ${p.id}: falta texto alternativo`);
+      // Visual: solo se publica con imagen aprobada; nada de volver a las plantillas tipograficas.
+      for (const id of p.visual?.assetIds || []) { const va = findById(assets, id); if (!va || !va.sourcePath || !fs.existsSync(va.sourcePath)) errors.push(`pieza ${p.id}: referencia rota al activo visual ${id}`); }
+      if (p.kind === "evergreen" && p.status === "SCHEDULED") {
+        const vs = visualStateOf(p, assets);
+        const queued = Object.values(p.channelStatus || {}).some((s) => s === "READY_TO_PUBLISH");
+        if (queued && vs !== VISUAL.APPROVED && vs !== VISUAL.MANUAL) errors.push(`pieza ${p.id}: en READY_TO_PUBLISH sin visual aprobado (${vs})`);
+        if (vs === VISUAL.REJECTED) warnings.push(`pieza ${p.id}: visual REJECTED, NO se publicara (mk visual retry ${p.id})`);
+        if (vs === VISUAL.PENDING) warnings.push(`pieza ${p.id}: VISUAL_PENDING (sin imagen aprobada, no se encola)`);
+        if (p.manualGraphic) warnings.push(`pieza ${p.id}: usa plantilla tipografica por excepcion manual (${p.manualGraphic.by}: ${p.manualGraphic.reason})`);
+      }
     }
     if (p.render) for (const f of p.render.files) {
       const full = path.join(p.render.dir, f);
@@ -78,6 +89,17 @@ export async function checkState({ today }) {
       if (exp) { const m = await sharp(full).metadata(); if (m.width !== exp[0] || m.height !== exp[1]) errors.push(`pieza ${p.id}: ${f} mide ${m.width}x${m.height}, esperado ${exp.join("x")}`); }
       for (const w of p.render.warnings || []) warnings.push(`pieza ${p.id}: ${w}`);
     }
+  }
+  // Cola: nada antiguo ni huerfano en READY_TO_PUBLISH.
+  const qroot = queueDir("READY_TO_PUBLISH");
+  if (fs.existsSync(qroot)) for (const name of fs.readdirSync(qroot)) {
+    const post = path.join(qroot, name, "post.json");
+    if (!fs.existsSync(post)) { errors.push(`cola ${name}: sin post.json`); continue; }
+    const j = JSON.parse(fs.readFileSync(post, "utf8"));
+    const piece = findById(pieces, j.pieceId);
+    if (!piece || piece.status !== "SCHEDULED" || piece.channelStatus?.[j.channel] !== "READY_TO_PUBLISH") errors.push(`cola ${name}: la pieza no esta en READY_TO_PUBLISH (cola huerfana o antigua)`);
+    if (!["v2", "manual-graphic"].includes(j.renderer)) errors.push(`cola ${name}: preparada con un render antiguo (reconstruye: mk queue --rebuild)`);
+    for (const f of [...(j.files || []), ...(j.extra || [])]) if (!fs.existsSync(path.join(qroot, name, f))) errors.push(`cola ${name}: falta ${f}`);
   }
   const seen = new Map();
   for (const u of usage) { const k = `${u.kind}|${u.id}|${u.angle}`; if (seen.has(k) && seen.get(k) !== u.pieceId) warnings.push(`reutilizacion: ${u.kind} ${u.id} (${u.angle}) usado en piezas distintas`); seen.set(k, u.pieceId); }

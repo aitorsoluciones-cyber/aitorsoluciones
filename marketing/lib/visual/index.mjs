@@ -66,6 +66,7 @@ export function attachToPiece(pieceId, assetIds) {
     delete p.channelStatus[ch];
   }
   delete p.render;
+  p.visualState = chosen.every((a) => a.origin !== "generated" || a.autoPublish === true) ? "VISUAL_APPROVED" : "VISUAL_PENDING";
   save("pieces", pieces);
   return p;
 }
@@ -77,6 +78,9 @@ export function approveAsset(assetId, who = "humano") {
   if (!a) throw new Error(`Material inexistente: ${assetId}`);
   a.autoPublish = true; a.humanApproved = { by: who, at: nowIso() };
   save("assets", assets);
+  const pieces = load("pieces");
+  for (const p of pieces.filter((x) => (x.visual?.assetIds || []).includes(assetId))) if ((p.visual.assetIds || []).every((id) => findById(assets, id)?.autoPublish === true)) p.visualState = "VISUAL_APPROVED";
+  save("pieces", pieces);
   return a;
 }
 

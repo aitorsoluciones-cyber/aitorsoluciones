@@ -5,7 +5,7 @@ Infraestructura para que Work/IA produzca y gestione marketing de forma continua
 
 ```
 npm run mk -- <comando>      # CLI (marketing/cli.mjs)
-npm run mk:test              # 52 pruebas
+npm run mk:test              # 58 pruebas
 npm run mk:qa                # QA del banco y de las piezas (-- --web para QA de la web)
 ```
 
@@ -121,8 +121,14 @@ npm run mk -- visual cost                      # gasto del mes frente al presupu
 - **Instagram** exige JPEG: la cola convierte PNG→JPG al preparar `READY_TO_PUBLISH`.
 - **Pieza evergreen**: `mk visual for-piece <pieza> [--quality low]` genera la imagen (o el carrusel si la pieza lo es) con su titular, la adjunta y rehace su cola.
 
+## Sin fallback tipográfico (regla)
+Una pieza evergreen solo llega a `READY_TO_PUBLISH` con un **visual aprobado** (OpenAI + crítico, o `mk visual approve`) que cubra todos sus formatos. Estados (`mk visual state`): `VISUAL_APPROVED` → se encola · `VISUAL_PENDING` → sin imagen válida, no se encola y se reintenta en el siguiente `auto run` · `REJECTED` → agotados `imageEngine.auto.maxAttempts` (2) intentos: **no se publica** hasta `mk visual retry <pieza>`. **Nunca** se vuelve automáticamente a las plantillas tipográficas antiguas (`renderGraphic` solo se usa con la excepción manual y registrada `mk visual allow-graphic <pieza> --by <quién> --reason "<motivo>"`). Las funciones de texto/overlay/CTA/logotipo se conservan solo para componer sobre fotos reales y sobre imágenes generadas.
+
+## Limpieza y mantenimiento
+`mk cleanup` (simulación) / `mk cleanup --apply`: inventario por clases `KEEP · PUBLISHED_HISTORY · SOURCE_REAL · BRAND · DELETE_OBSOLETE · DELETE_TEST · DELETE_DUPLICATE` y borrado de lo obsoleto: activos sin pieza que los use, pruebas, duplicados, renders huérfanos, colas antiguas, temporales y directorios `mk-test-*`, y `rejected` vencidos (`cleanup.rejectedDays`: 7; se conservan prompt, motivo y hash). También sincroniza la rama `media` (solo pendientes y recientes, historial compactado, `main` intacto). Nunca toca fotos reales, material de marca, textos, briefs, calendario, métricas, ledger ni piezas publicadas. Se ejecuta cada viernes dentro de `mk auto run --prune`. `mk verify` comprueba huellas, referencias, cola y URLs públicas.
+
 ## Automatización y prueba E2E
 
 - `mk auto run [--quality low] [--no-visuals] [--no-media] [--prune] [--dry-run]`: ingesta → plan (colchón ≥ 4 semanas) → imágenes de las piezas evergreen próximas (`imageEngine.auto`: 7 días, máx. 2 por ejecución, dentro de presupuesto) → QA → cola → URLs públicas → resumen de lo que Work debe publicar. Idempotente; no publica en plataformas ni toca `main`.
 - `mk e2e [--piece id] [--quality low]`: prueba completa sobre una pieza del plan (banco → brief → OpenAI Images → selección → composición → crítico → QA → URL pública → `READY_TO_PUBLISH` → ítem de `work next`).
-- Tareas programadas listas (sin activar): `marketing/automation/tasks.md`.
+- Tareas programadas listas (sin activar): `marketing/automation/tasks.md`. `--prune` ejecuta `mk cleanup --apply` (el viernes).

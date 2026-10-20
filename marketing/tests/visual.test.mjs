@@ -201,7 +201,8 @@ test("adjuntar a una pieza: solo imagen generada/grafica, con etiqueta de transp
   save("pieces", [piece, { id: "p_work", kind: "work", jobId: "j9", channels: ["instagram"], status: "SCHEDULED", copy: piece.copy, assetIds: [] }]);
   assert.throws(() => attachToPiece("p_work", [feedAsset.id]), /trabajo real/);
   assert.throws(() => attachToPiece("p_ev", ["realA"]), /foto real/);
-  const p = attachToPiece("p_ev", [feedAsset.id]);
+  const storyAsset = load("assets").find((a) => a.format === "story" && a.briefId === gen.briefId);
+  const p = attachToPiece("p_ev", [feedAsset.id, storyAsset.id]);
   // la transparencia va dentro de la imagen, no en el texto: el pie no se toca
   assert.ok(!/creada con IA/.test(p.copy.captions.facebook));
   assert.equal(p.visual.aiGenerated, true); assert.equal(p.visual.labelApplied, true); assert.deepEqual(p.visual.models, ["gpt-image-test"]);
@@ -209,7 +210,7 @@ test("adjuntar a una pieza: solo imagen generada/grafica, con etiqueta de transp
   // sin critico visual la imagen no es autoPublish: exige aprobacion humana
   assert.ok(lintPiece(load("pieces").find((x) => x.id === "p_ev"), ctx()).some((x) => /no paso el critico visual/.test(x)));
   const { approveAsset } = await import("../lib/visual/index.mjs");
-  approveAsset(feedAsset.id, "aitor");
+  approveAsset(feedAsset.id, "aitor"); approveAsset(storyAsset.id, "aitor");
   assert.deepEqual(lintPiece(load("pieces").find((x) => x.id === "p_ev"), ctx()).filter((x) => /etiqueta|critico/.test(x)), []);
   // una imagen generada fotorrealista cuya etiqueta no se aplico es un error
   const assets = load("assets"); assets.find((a) => a.id === feedAsset.id).labelApplied = false; save("assets", assets);
@@ -232,7 +233,7 @@ test("cola de briefs (task runner): procesa, mueve a done/failed y la cola de In
   assert.ok(fs.existsSync(path.join(bdir, "done", "a.json")) && fs.existsSync(path.join(bdir, "failed", "b.json")));
   const { buildQueue } = await import("../lib/publish.mjs");
   const { save } = await import("../lib/store.mjs");
-  save("pieces", [{ id: "p_ig", kind: "evergreen", type: "single", channels: ["instagram"], scheduledFor: "2026-10-19", time: "10:00", status: "SCHEDULED", assetIds: [], template: "navy", copy: { tag: "Consejo", headline: "Titular", slides: [{ t: "A", b: "B" }], captions: { instagram: "Texto" }, hashtagsByChannel: { instagram: [] }, zones: [], alt: "x" } }]);
+  save("pieces", [{ id: "p_ig", kind: "evergreen", type: "single", channels: ["instagram"], scheduledFor: "2026-10-19", time: "10:00", status: "SCHEDULED", assetIds: [], template: "navy", manualGraphic: { by: "test", reason: "prueba JPEG", at: "x" }, copy: { tag: "Consejo", headline: "Titular", slides: [{ t: "A", b: "B" }], captions: { instagram: "Texto" }, hashtagsByChannel: { instagram: [] }, zones: [], alt: "x" } }]);
   const q = await buildQueue({ today: "2026-10-19", ahead: 1 });
   const post = JSON.parse(fs.readFileSync(path.join(q[0].dir, "post.json"), "utf8"));
   assert.ok(post.files.every((f) => /\.jpg$/.test(f)), JSON.stringify(post.files));

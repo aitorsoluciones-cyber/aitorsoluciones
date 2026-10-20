@@ -117,7 +117,10 @@ test("generador de activos: medidas exactas de feed, story, carrusel, gbp y mini
   assert.ok(Object.keys(dims).filter((k) => k.startsWith("carousel/")).length >= 4);
   assert.ok(dims["web-480.webp"].startsWith("480x") && dims["web-800.webp"].startsWith("800x"));
   const ev = load("pieces").find((p) => p.kind === "evergreen" && p.type === "carousel");
-  const e = await renderPiece(ev, { root: path.join(dir, "render-ev") });
+  // sin imagen aprobada NO hay vuelta automatica a las plantillas tipograficas
+  await assert.rejects(renderPiece(ev, { root: path.join(dir, "render-ev0") }), (e) => e.code === "VISUAL_PENDING" && e.missing.length > 0);
+  // excepcion manual explicita (queda registrada)
+  const e = await renderPiece({ ...ev, manualGraphic: { by: "test", reason: "prueba", at: "x" } }, { root: path.join(dir, "render-ev") });
   assert.ok(e.files.some((f) => f.format === "carousel" && f.width === 1080 && f.height === 1350));
   assert.ok(e.files.some((f) => f.format === "story" && f.height === 1920));
 });
@@ -133,10 +136,21 @@ test("la foto real se conserva: el antes/despues usa los pixeles de las fotos (s
   assert.ok(g2 > 200, "mitad derecha = foto despues (verde)");
 });
 
+test("cola: las piezas evergreen sin visual aprobado no se encolan (VISUAL_PENDING) y el QA lo avisa", async () => {
+  const { buildQueue } = await import("../lib/publish.mjs");
+  const { load } = await import("../lib/store.mjs");
+  const q = await buildQueue({ today: TODAY, ahead: 30 });
+  assert.ok((q.skipped || []).length > 0, "hay piezas evergreen saltadas");
+  assert.ok(q.every((i) => load("pieces").find((p) => p.id === i.pieceId).kind === "work"), "solo se encolan trabajos reales");
+  assert.ok(load("pieces").some((p) => p.kind === "evergreen" && p.visualState === "VISUAL_PENDING"));
+});
+
 test("cola READY_TO_PUBLISH: ficheros por canal, texto y paso a publicado con URL real", async () => {
   const { buildQueue, markPublished, queueSummary } = await import("../lib/publish.mjs");
-  const { load } = await import("../lib/store.mjs");
-  const q = await buildQueue({ today: TODAY, ahead: 3 });
+  const { load, save } = await import("../lib/store.mjs");
+  // excepcion manual explicita para poder probar la cola de evergreen (no es el camino normal)
+  save("pieces", load("pieces").map((p) => (p.kind === "evergreen" ? { ...p, manualGraphic: { by: "test", reason: "prueba de cola", at: "x" } } : p)));
+  const q = await buildQueue({ today: TODAY, ahead: 3, rebuild: true });
   assert.ok(q.length >= 3);
   for (const item of q) {
     const post = JSON.parse(fs.readFileSync(path.join(item.dir, "post.json"), "utf8"));

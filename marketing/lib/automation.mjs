@@ -9,6 +9,8 @@ import { buildQueue } from "./publish.mjs";
 import { publishMedia, pruneMedia } from "./media-host.mjs";
 import { workQueue } from "./work.mjs";
 import { runForPiece, loadEnvFile } from "./visual/index.mjs";
+import { visualStateOf, recordVisualAttempt, VISUAL } from "./visual-state.mjs";
+import { cleanup } from "./cleanup.mjs";
 
 const addDays = (d, n) => new Date(new Date(d + "T00:00:00Z").getTime() + n * 86400000).toISOString().slice(0, 10);
 
@@ -36,15 +38,24 @@ export async function runAutomation(opts = {}) {
   // 3. imagenes de las piezas evergreen proximas que aun no tienen (motor visual)
   if (opts.visuals !== false && auto.enabled !== false) {
     const horizon = addDays(today, auto.aheadDays ?? 7);
-    const due = load("pieces").filter((x) => x.status === "SCHEDULED" && x.kind === "evergreen" && !x.visual && (opts.pieceId ? x.id === opts.pieceId : x.scheduledFor <= horizon) && x.channels.some((c) => ["instagram", "facebook", "gbp"].includes(c)));
+    const assetsNow = load("assets");
+    const due = load("pieces").filter((x) => x.status === "SCHEDULED" && x.kind === "evergreen" && ![VISUAL.APPROVED, VISUAL.MANUAL].includes(visualStateOf(x, assetsNow)) && (x.visualState !== VISUAL.REJECTED || opts.retry) && (opts.pieceId ? x.id === opts.pieceId : x.scheduledFor <= horizon) && x.channels.some((c) => ["instagram", "facebook", "gbp"].includes(c)));
     const results = [];
     for (const piece of due.slice(0, opts.pieceId ? 1 : auto.maxPerRun ?? 2)) {
       if (!process.env.OPENAI_API_KEY || !process.env.OPENAI_IMAGE_MODEL) { report.warnings.push("imagenes omitidas: falta OPENAI_API_KEY u OPENAI_IMAGE_MODEL"); break; }
       try {
         const r = await runForPiece(piece.id, { quality: opts.quality || auto.quality || "medium", variants: auto.variants || 2 }, { dryRun: !!opts.dryRun, log, fetchImpl: opts.fetchImpl, now: opts.now });
         results.push({ pieceId: piece.id, ok: r.ok, costUsd: r.costUsd, autoPublish: r.autoPublish, outputs: r.outputs, error: r.error });
-        if (!r.ok) report.warnings.push(`${piece.id}: la imagen no supero la revision (${r.error}); se usara el grafico tipografico`);
-      } catch (e) { report.warnings.push(`${piece.id}: ${e.message}`); }
+        if (!opts.dryRun) {
+          const after = recordVisualAttempt(piece.id, { ok: r.ok, reason: r.ok ? (r.autoPublish ? null : "sin critico: pendiente de aprobacion humana") : r.error, costUsd: r.costUsd });
+          if (after.visualState === VISUAL.REJECTED) report.warnings.push(`${piece.id}: visual REJECTED tras ${after.visualAttempts.length} intentos; NO se publica (mk visual retry ${piece.id})`);
+          else if (after.visualState !== VISUAL.APPROVED) report.warnings.push(`${piece.id}: VISUAL_PENDING (${r.ok ? "falta aprobacion humana" : r.error}); se reintentara en la proxima ejecucion; NO se publica con plantillas antiguas`);
+        }
+      } catch (e) {
+        if (e.constructor?.name === "ConfigError") { report.warnings.push(`${piece.id}: ${e.message}`); break; }
+        const after = opts.dryRun ? null : recordVisualAttempt(piece.id, { ok: false, reason: e.message });
+        report.warnings.push(`${piece.id}: error generando la imagen (${e.message}); ` + (after?.visualState === VISUAL.REJECTED ? `visual REJECTED tras ${after.visualAttempts.length} intentos; NO se publica (mk visual retry ${piece.id})` : "VISUAL_PENDING; NO se publica con plantillas antiguas"));
+      }
     }
     step("imagenes", { summary: `${results.filter((r) => r.ok).length}/${due.length} generadas`, results });
   }
@@ -71,7 +82,7 @@ export async function runAutomation(opts = {}) {
   }
 
   // 7. limpieza semanal de URLs antiguas
-  if (opts.prune) { try { const r = pruneMedia({ today }); step("purga", { summary: `${r.removed.length} piezas antiguas retiradas (antes de ${r.cutoff})` }); } catch (e) { report.warnings.push("purga: " + e.message); } }
+  if (opts.prune) { try { const r = await cleanup({ apply: true, today, media: opts.media !== false, log }); step("limpieza", { summary: `${r.deleted.files} ficheros y ${r.deleted.mediaDirs} piezas de media retirados; ${r.orphans.length} activos huerfanos`, report: r.counts }); } catch (e) { report.warnings.push("limpieza: " + e.message); } }
 
   // 8. lo que Work debe publicar hoy
   report.work = workQueue({ today });

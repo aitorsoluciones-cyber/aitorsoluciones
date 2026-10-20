@@ -9,6 +9,9 @@ import { ingestDir, ingestManifest, importWebCases, linkOriginals, pendingDownlo
 import { publishMedia, pruneMedia, baseUrl, verifyUrl } from "./lib/media-host.mjs";
 import { workQueue, workDone, workFail } from "./lib/work.mjs";
 import { runAutomation } from "./lib/automation.mjs";
+import { cleanup } from "./lib/cleanup.mjs";
+import { verifyState } from "./lib/verify.mjs";
+import { retryVisual, allowManualGraphic, visualStateOf } from "./lib/visual-state.mjs";
 import { listJobs, reviewJob, setJobStatus } from "./lib/jobs.mjs";
 import { loadBank, approveTopic, isApproved } from "./lib/evergreen.mjs";
 import { plan, bufferStatus, cancelPiece } from "./lib/planner.mjs";
@@ -151,6 +154,9 @@ const COMMANDS = {
         return out(`Gasto este mes: ${spentThisMonth().toFixed(2)} $ de ${b.monthlyBudgetUsd} $ (maximo por brief ${b.perBriefBudgetUsd} $)`);
       }
       if (sub === "cost" && !arg) { const b = config().imageEngine; return out(`Gasto este mes: ${spentThisMonth().toFixed(4)} $ de ${b.monthlyBudgetUsd} $ (maximo por brief ${b.perBriefBudgetUsd} $)`); }
+      if (sub === "retry") { const p = retryVisual(arg); return out(`${p.id}: intentos reiniciados (${p.visualState}); la proxima ejecucion de auto run volvera a generar`); }
+      if (sub === "allow-graphic") { const p = allowManualGraphic(arg, flags.by, flags.reason); return out(`${p.id}: plantilla tipografica permitida SOLO para esta pieza por ${p.manualGraphic.by} (${p.manualGraphic.reason})`); }
+      if (sub === "state") { for (const p of load("pieces").filter((x) => x.kind === "evergreen")) out(`${p.id} ${p.scheduledFor} ${visualStateOf(p).padEnd(16)} intentos=${(p.visualAttempts || []).length}`); return; }
       if (sub === "approve") { const a = approveAsset(arg, flags.by || "humano"); return out(`${a.id}: aprobado para autoPublish`); }
       const over = { ...(flags.quality ? { quality: flags.quality } : {}), ...(flags.variants ? { variants: Number(flags.variants) } : {}) };
       if (sub === "for-piece") return show(await runForPiece(arg, over, ctx));
@@ -259,6 +265,25 @@ const COMMANDS = {
     for (const w of r.warnings) out("aviso  " + w);
     for (const e of r.errors) out("ERROR  " + e);
     out(JSON.stringify({ piece: piece.id, visual: after.visual || null, readyToPublish: after.channelStatus || {}, work: work.map((w) => ({ channel: w.channel, ready: w.ready, blockedBy: w.blockedBy, imageUrls: w.imageUrls, extraUrls: w.extraUrls, tools: w.actions.map((a) => a.tool) })) }, null, 2));
+    if (!r.ok) process.exitCode = 1;
+  },
+
+  // Limpieza y retencion (inventario por clases; sin --apply solo informa).
+  async cleanup({ flags }) {
+    const r = await cleanup({ apply: !!flags.apply, today: today(flags), media: !flags["no-media"], squash: !flags["no-squash"], log: flags.verbose ? out : () => {} });
+    out(`${r.apply ? "LIMPIEZA APLICADA" : "SIMULACION (usa --apply)"} · ${r.today}`);
+    for (const [c, v] of Object.entries(r.counts)) out(`  ${c.padEnd(18)} ${String(v.items).padStart(4)} elementos · ${String(v.files).padStart(5)} ficheros · ${(v.bytes / 1048576).toFixed(1)} MB`);
+    if (r.apply) {
+      out(`Eliminado: ${r.deleted.files} ficheros (${(r.deleted.bytes / 1048576).toFixed(1)} MB) · duplicados ${r.deleted.duplicates} · pruebas/temporales ${r.deleted.tests} · obsoletos ${r.deleted.obsolete} · piezas de media retiradas ${r.deleted.mediaDirs}`);
+      if (r.media) out(r.media.error ? "Media: ERROR " + r.media.error : `Media: ${r.media.kept.length} publicaciones conservadas, ${r.media.removed.length} retiradas, historial ${r.media.squashed ? "compactado" : "sin cambios"} (${r.media.commits} commit), main intacto ${r.media.mainSha ? r.media.mainSha.slice(0, 7) : ""}`);
+      out(`Activos huerfanos restantes: ${r.orphans.length}`);
+    } else for (const i of r.items.slice(0, flags.all ? 1e9 : 25)) out(`  ${i.class} ${i.kind} ${i.path.split(/[\\/]/).slice(-3).join("/")} — ${i.reason}`);
+  },
+
+  // Integridad: huellas, referencias, cola y URLs publicas.
+  async verify({ flags }) {
+    const r = await verifyState({ urls: !flags["no-urls"] });
+    out(JSON.stringify(r, null, 2));
     if (!r.ok) process.exitCode = 1;
   },
 

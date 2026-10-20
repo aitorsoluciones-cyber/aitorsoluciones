@@ -79,7 +79,7 @@ const commit = (dir, msg) => {
 };
 const push = (dir, branch, force = false) => {
   try { git(["push", "-q", ...(force ? ["--force"] : []), "origin", branch], dir); }
-  catch { git(["pull", "--rebase", "-q", "origin", branch], dir); git(["push", "-q", "origin", branch], dir); }
+  catch (e) { if (process.env.MK_DEBUG) console.error("PUSH-FALLBACK", e.stderr || e.message); git(["pull", "--rebase", "-q", "origin", branch], dir); git(["push", "-q", "origin", branch], dir); }
 };
 
 const enc = (p) => p.split("/").map(encodeURIComponent).join("/");
@@ -171,4 +171,57 @@ export function pruneMedia({ today, days, squash = false, log = () => {} } = {})
     push(dir, cfg.branch, true);
   } else if (committed) push(dir, cfg.branch);
   return { cutoff, removed };
+}
+
+// Deja en la rama media SOLO lo necesario: publicaciones pendientes (READY_TO_PUBLISH) y publicadas en los ultimos retentionDays.
+// squash: compacta el historial de la rama media (solo contiene copias desechables; main no se toca, se comprueba). Las URLs
+// conservadas siguen siendo validas porque dependen de la ruta, no del commit.
+export function syncMedia({ today, squash = true, log = () => {} } = {}) {
+  const cfg = config().media;
+  const mainSha = () => { try { return git(["ls-remote", remoteOf(), "refs/heads/main"], REPO).split(/\s/)[0]; } catch { return null; } };
+  const before = mainSha();
+  const dir = ensureRepo({ log });
+  const base = baseUrl(cfg);
+  const keep = new Set();
+  const cutoff = new Date(new Date(today + "T00:00:00Z").getTime() - cfg.retentionDays * 86400000).toISOString().slice(0, 10);
+  const collect = (state, onlyRecent) => {
+    const root = path.join(home(), "queue", state);
+    if (!fs.existsSync(root)) return;
+    for (const name of fs.readdirSync(root)) {
+      if (onlyRecent && name.slice(0, 10) < cutoff) continue;
+      let post; try { post = JSON.parse(fs.readFileSync(path.join(root, name, "post.json"), "utf8")); } catch { continue; }
+      for (const u of [...(post.publicUrls?.files || []), ...(post.publicUrls?.extra || [])]) {
+        if (!u.startsWith(base)) continue;
+        keep.add(decodeURIComponent(u.slice(base.length)).split("/").slice(0, 3).join("/"));
+      }
+    }
+  };
+  collect("READY_TO_PUBLISH", false); collect("PUBLISHED", true);
+  const removed = [], kept = [];
+  const root = path.join(dir, cfg.prefix);
+  if (fs.existsSync(root)) for (const month of fs.readdirSync(root)) {
+    const mdir = path.join(root, month);
+    if (!fs.statSync(mdir).isDirectory()) continue;
+    for (const name of fs.readdirSync(mdir)) {
+      const rel = `${cfg.prefix}/${month}/${name}`;
+      if (keep.has(rel)) kept.push(rel); else { fs.rmSync(path.join(mdir, name), { recursive: true, force: true }); removed.push(rel); }
+    }
+    if (!fs.readdirSync(mdir).length) fs.rmSync(mdir, { recursive: true, force: true });
+  }
+  // ficheros sueltos en la raiz de la rama que no sean los de servicio
+  for (const f of fs.existsSync(dir) ? fs.readdirSync(dir) : []) if (!["m", ".git", "README.md", "netlify.toml", "robots.txt", cfg.prefix].includes(f)) { fs.rmSync(path.join(dir, f), { recursive: true, force: true }); removed.push(f); }
+  const committed = commit(dir, `media: sincronizada (${kept.length} publicaciones, ${removed.length} retiradas)`);
+  const commits = Number(git(["rev-list", "--count", "HEAD"], dir));
+  let squashed = false;
+  if (squash && (committed || commits > 1)) {
+    git(["checkout", "-q", "--orphan", "squash-tmp"], dir);
+    git(["add", "-A"], dir);
+    git(["-c", "user.name=Aitor Soluciones Marketing", "-c", "user.email=marketing@aitorsoluciones.invalid", "commit", "-q", "-m", "media: estado compactado"], dir);
+    git(["branch", "-M", cfg.branch], dir);
+    push(dir, cfg.branch, true);
+    squashed = true;
+  } else if (committed) push(dir, cfg.branch);
+  const after = mainSha();
+  if (before !== after) throw new Error(`Seguridad: main cambio durante la limpieza de media (${before} -> ${after})`);
+  return { kept, removed, squashed, commits: Number(git(["rev-list", "--count", "HEAD"], dir)), mainSha: after };
 }

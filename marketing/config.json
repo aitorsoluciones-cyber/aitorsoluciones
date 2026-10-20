@@ -196,6 +196,13 @@
     },
     "aheadDays": 0
   },
+  "cleanup": {
+    "_comment": "Retencion y mantenimiento (mk cleanup). Nunca toca fotos reales, material de marca, textos, briefs, calendario, metricas, ledger ni piezas publicadas.",
+    "rejectedDays": 7,
+    "graceHours": 1,
+    "testTempHours": 2,
+    "keepReports": 10
+  },
   "imageEngine": {
     "_comment": "Motor visual (OpenAI Images API). Modelo y clave SOLO por variables de entorno: OPENAI_IMAGE_MODEL, OPENAI_API_KEY (opcional OPENAI_VISION_MODEL para el critico).",
     "defaults": {
@@ -284,6 +291,7 @@
       "enabled": true,
       "aheadDays": 7,
       "maxPerRun": 2,
+      "maxAttempts": 2,
       "quality": "medium",
       "variants": 2
     },
