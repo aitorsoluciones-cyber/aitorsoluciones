@@ -1,0 +1,9 @@
+# Solo se usa si el sitio sirve esta rama (branch deploys). Sin build: se publica tal cual.
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "public, max-age=3600"
